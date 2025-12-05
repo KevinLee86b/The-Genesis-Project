@@ -1,9 +1,19 @@
-﻿namespace The_Genesis_Projekt
+﻿using System;
+using System.IO;
+using System.Threading;
+
+namespace The_Genesis_Projekt
 {
 	internal class Program
 	{
+		// Spielername
 		static string playerName = "";
-		static string saveFile = "savegame.txt";
+		// letzter gespeicherter Szenenname (für Slots)
+		static string lastScene = "Scene_Prolog";
+		// Autosave-Datei
+		static string autoSaveFile = "autosave.sav";
+		// drei manuelle Speicher-Slots
+		static string[] manualSlots = { "save_slot1.sav", "save_slot2.sav", "save_slot3.sav" };
 
 		static void Main(string[] args)
 		{
@@ -11,9 +21,7 @@
 			MainMenu();
 		}
 
-
-		// HAUPTMENÜ
-
+		// Hauptmenük
 		static void MainMenu()
 		{
 			Console.Clear();
@@ -23,7 +31,7 @@
 
 			Console.WriteLine("1) Neues Spiel");
 			Console.WriteLine("2) Spiel laden");
-			Console.WriteLine("3) Spiel speichern\n");
+			Console.WriteLine("3) Spiel speichern");
 			Console.WriteLine("4) Beenden");
 
 			Console.Write("\nAuswahl: ");
@@ -31,15 +39,22 @@
 
 			switch (choice)
 			{
-				case "1": StartNewGame(); break;
-				case "2": LoadGame(); break;
-				case "3":
-					SaveGame("Scene_Prolog");
-					Console.WriteLine("Spiel gespeichert!");
-					Console.ReadKey();
-					MainMenu();
+				case "1":
+					StartNewGame();
 					break;
-				case "4": Environment.Exit(0); break;
+
+				case "2":
+					LoadGameMenu();
+					break;
+
+				case "3":
+					SaveGameMenu();
+					break;
+
+				case "4":
+					Environment.Exit(0);
+					break;
+
 				default:
 					MainMenu();
 					break;
@@ -55,43 +70,165 @@
 			Console.Write("Gib deinen Namen ein, Commander: ");
 			playerName = Console.ReadLine();
 
-			SaveGame("Scene_Prolog");
+			SaveGame("Scene_Prolog"); // Autosave + lastScene setzen
 
 			ShowProlog();
 		}
 
 
-		// SPEICHERN & LADEN
+		// ==========================
+		// SPEICHERN & LADEN SYSTEM
+		// ==========================
 
+		// Autosave + lastScene
 		static void SaveGame(string sceneName)
 		{
-			File.WriteAllText(saveFile, sceneName + ";" + playerName);
+			lastScene = sceneName;
+			File.WriteAllText(autoSaveFile, sceneName + ";" + playerName);
 		}
 
-		static void LoadGame()
+		// Manuelles Speichern
+		static void SaveGameMenu()
 		{
-			if (!File.Exists(saveFile))
+			Console.Clear();
+			Console.WriteLine("=== Spiel speichern ===\n");
+			Console.WriteLine("Aktuelle Szene: " + lastScene);
+			Console.WriteLine("Aktueller Spieler: " + (string.IsNullOrWhiteSpace(playerName) ? "<unbekannt>" : playerName));
+			Console.WriteLine();
+
+			Console.WriteLine("In welchen Slot speichern?");
+			Console.WriteLine("1) Slot 1");
+			Console.WriteLine("2) Slot 2");
+			Console.WriteLine("3) Slot 3");
+			Console.Write("\nAuswahl: ");
+
+			string input = Console.ReadLine();
+			if (!int.TryParse(input, out int slot) || slot < 1 || slot > 3)
 			{
-				Console.WriteLine("Kein Spielstand gefunden!");
+				Console.WriteLine("Ungültige Auswahl.");
 				Console.ReadKey();
 				MainMenu();
 				return;
 			}
 
-			string[] data = File.ReadAllText(saveFile).Split(';');
-			string sceneName = data[0];
-			playerName = data[1];
+			int index = slot - 1;
+			File.WriteAllText(manualSlots[index], lastScene + ";" + playerName);
+			Console.WriteLine($"Spielstand in Slot {slot} gespeichert.");
+			Console.ReadKey();
+			MainMenu();
+		}
 
-			Console.WriteLine($"Spiel geladen. Willkommen zurück, Commander {playerName}!");
+		// Lade-Menü
+		static void LoadGameMenu()
+		{
+			Console.Clear();
+			Console.WriteLine("=== Spiel laden ===\n");
+			Console.WriteLine("1) Letzten Autosave laden");
+			Console.WriteLine("2) Manuell aus Slot laden");
+			Console.WriteLine("3) Zurück zum Hauptmenü");
+
+			Console.Write("\nAuswahl: ");
+			string choice = Console.ReadLine();
+
+			switch (choice)
+			{
+				case "1":
+					LoadAutoSave();
+					break;
+				case "2":
+					LoadManualSlot();
+					break;
+				case "3":
+					MainMenu();
+					break;
+				default:
+					LoadGameMenu();
+					break;
+			}
+		}
+
+		static void LoadAutoSave()
+		{
+			if (!File.Exists(autoSaveFile))
+			{
+				Console.WriteLine("Kein Autosave gefunden.");
+				Console.ReadKey();
+				MainMenu();
+				return;
+			}
+
+			string[] data = File.ReadAllText(autoSaveFile).Split(';');
+			if (data.Length >= 1) lastScene = data[0];
+			if (data.Length >= 2) playerName = data[1];
+
+			Console.WriteLine($"Autosave geladen. Willkommen zurück, Commander {playerName}!");
 			Thread.Sleep(800);
 
-			switch (sceneName)
+			ContinueFromScene();
+		}
+
+		static void LoadManualSlot()
+		{
+			Console.Clear();
+			Console.WriteLine("=== Manuelle Speicherstände ===\n");
+
+			for (int i = 0; i < manualSlots.Length; i++)
+			{
+				string info = File.Exists(manualSlots[i])
+					? File.ReadAllText(manualSlots[i]).Split(';')[0]
+					: "<leer>";
+				Console.WriteLine($"{i + 1}) {manualSlots[i]}  ->  {info}");
+			}
+
+			Console.Write("\nWelchen Slot laden? (1-3): ");
+			string input = Console.ReadLine();
+
+			if (!int.TryParse(input, out int slot) || slot < 1 || slot > 3)
+			{
+				Console.WriteLine("Ungültige Auswahl.");
+				Console.ReadKey();
+				MainMenu();
+				return;
+			}
+
+			int index = slot - 1;
+
+			if (!File.Exists(manualSlots[index]))
+			{
+				Console.WriteLine("In diesem Slot ist kein Spielstand gespeichert.");
+				Console.ReadKey();
+				MainMenu();
+				return;
+			}
+
+			string[] data = File.ReadAllText(manualSlots[index]).Split(';');
+			if (data.Length >= 1) lastScene = data[0];
+			if (data.Length >= 2) playerName = data[1];
+
+			Console.WriteLine($"Slot {slot} geladen. Szene: {lastScene}, Spieler: {playerName}");
+			Thread.Sleep(800);
+
+			ContinueFromScene();
+		}
+
+		// Szene anhand von lastScene wieder aufrufen
+		static void ContinueFromScene()
+		{
+			switch (lastScene)
 			{
 				case "Scene_Prolog": ShowProlog(); break;
 				case "Scene_Intro": Scene_Intro(); break;
 				case "Scene_Alarm": Scene_Alarm(); break;
+				case "Scene_Kapitel1": Scene_Kapitel1(); break;
+				case "Scene_HeliosKontakt": Scene_HeliosKontakt(); break;
+				default:
+					Console.WriteLine("Unbekannte Szene im Speicherstand. Zurück zum Hauptmenü.");
+					Console.ReadKey();
+					MainMenu();
+					break;
 			}
 		}
+
 
 
 		// TYPEWRITER
@@ -132,6 +269,9 @@
 
 		static void ShowProlog()
 		{
+			// Autosave an dieser Stelle sinnvoll
+			SaveGame("Scene_Prolog");
+
 			Console.Clear();
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.WriteLine("=== PROLOG ===\n");
@@ -180,6 +320,8 @@
 
 		static void Scene_Intro()
 		{
+			SaveGame("Scene_Intro");
+
 			Console.Clear();
 
 			// Grafik anzeigen
@@ -205,6 +347,8 @@
 
 		static void Scene_Alarm()
 		{
+			SaveGame("Scene_Alarm");
+
 			Console.Clear();
 
 			//  ALARMTON 
@@ -347,6 +491,7 @@
 				TypeText("Fortsetzung folgt…");
 				Console.ReadKey();
 
+				SaveGame("Scene_Kapitel1");
 				Scene_Kapitel1();
 				return;
 			}
@@ -372,9 +517,26 @@
 			TypeText(message);
 
 			Console.ResetColor();
-			TypeText("\nDrücke eine Taste, um zum Hauptmenü zurückzukehren…");
-			Console.ReadKey();
-			MainMenu();  // geht zurück ins Hauptmenü
+			TypeText("\nWas möchtest du tun?");
+			Console.WriteLine("1) Letzten Autosave laden");
+			Console.WriteLine("2) Speicherstand laden (Slot)");
+			Console.WriteLine("3) Hauptmenü");
+
+			Console.Write("\nAuswahl: ");
+			string choice = Console.ReadLine();
+
+			switch (choice)
+			{
+				case "1":
+					LoadAutoSave();
+					break;
+				case "2":
+					LoadManualSlot();
+					break;
+				default:
+					MainMenu();
+					break;
+			}
 		}
 
 
@@ -385,7 +547,7 @@
 		{
 			Console.ForegroundColor = ConsoleColor.Cyan;
 			Console.WriteLine("      /‾‾‾\\                  /‾‾‾\\");
-			Console.WriteLine("     |     | ----=====>     |     |");
+			Console.WriteLine("     |     |  ----=====>    |     |");
 			Console.WriteLine("      \\___/                  \\___/");
 			Console.ResetColor();
 		}
@@ -423,11 +585,13 @@
 
 			Console.ResetColor();
 		}
-		 //                            KAPITEL 1 
-		 //                      FLUCHT VON DER ERDE 
-		 
+		//                            KAPITEL 1 
+		//                      FLUCHT VON DER ERDE 
+
 		static void Scene_Kapitel1()
 		{
+			SaveGame("Scene_Kapitel1");
+
 			Console.Clear();
 
 			// KAPITEL-HEADER
@@ -537,25 +701,21 @@
 			TypeText("Und genau hier begann unsere eigentliche Reise.");
 			TypeText("");
 
+			SaveGame("Scene_HeliosKontakt");
 			Scene_HeliosKontakt();
 			return;
 		}
 
 
-
-		
-		//  GRAFIKEN 
-		
-
-		// Flotte mit drei Großschiffen 
+		// Flotte mit drei Schiffen
 		static void DrawGenesisFleet()
 		{
 			Console.ForegroundColor = ConsoleColor.Cyan;
-			Console.WriteLine("               ___        ___        ___");
-			Console.WriteLine("     [GENESIS]/___\\  [ARGOS]/___\\ [HELIOS]/___\\");
-			Console.WriteLine("              \\___/      \\___/      \\___/");
-			Console.WriteLine("                |          |          |");
-			Console.WriteLine("             ~~~~~      ~~~~~      ~~~~~");
+			Console.WriteLine("               ___          ___           ___");
+			Console.WriteLine("     [GENESIS]/___\\ [ARGOS]/___\\ [HELIOS]/___\\");
+			Console.WriteLine("              \\___/        \\___/         \\___/");
+			Console.WriteLine("                |             |              |");
+			Console.WriteLine("             ~~~~~         ~~~~~          ~~~~~");
 			Console.ResetColor();
 		}
 
@@ -593,16 +753,19 @@
 			Console.ForegroundColor = ConsoleColor.DarkCyan;
 			Console.WriteLine("           __________________________");
 			Console.WriteLine("          /                          \\");
-			Console.WriteLine("         /   [ PANORAMA-FRONTSCHEIBE ]\\");
+			Console.WriteLine("         /  [ PANORAMA-FRONTSCHEIBE ] \\");
 			Console.WriteLine("        /______________________________\\");
-			Console.WriteLine("        |   O   O   O   O   O   O     |  <- Stationskonsolen");
-			Console.WriteLine("        |                              |");
-			Console.WriteLine("        |       [   ZENTRALE   ]      |");
-			Console.WriteLine("        |______________________________|");
+			Console.WriteLine("        |   O   O   O   O   O   O      ||  <- Stationskonsolen");
+			Console.WriteLine("        |                              ||");
+			Console.WriteLine("        |       [   ZENTRALE   ]       ||");
+			Console.WriteLine("        |______________________________||");
 			Console.ResetColor();
 		}
+
 		static void Scene_HeliosKontakt()
 		{
+			SaveGame("Scene_HeliosKontakt");
+
 			Console.Clear();
 
 			// Langer Gefechtsalarm
@@ -651,171 +814,166 @@
 
 			if (input == "1")
 			{
-				TypeText("Kade: Commander, das Signal ist instabil. Sie antworten nicht… oder wollen nicht.");
-				TypeText("Kade: Die HELIOS lädt ihre Partikelkanonen auf!");
-				TypeText("");
-				TypeText("Commander: Wir haben keine Zeit. Override vorbereiten!");
-				Scene_HackMinigame();
-				return;
+			TypeText("Kade: Commander, das Signal ist instabil. Sie antworten nicht… oder wollen nicht.");
+			TypeText("Kade: Die HELIOS lädt ihre Partikelkanonen auf!");
+			TypeText("");
+			TypeText("Commander: Wir haben keine Zeit. Override vorbereiten!");
+			Scene_HackMinigame();
+			return;
 			}
 			else if (input == "2")
 			{
-				TypeText("Commander: Alles klar! Override einleiten!");
-				Scene_HackMinigame();
-				return;
+			TypeText("Commander: Alles klar! Override einleiten!");
+			Scene_HackMinigame();
+			return;
 			}
 			else if (input == "3")
 			{
-				TypeText("Kade: Commander… sie zielen auf uns! Wir müssen handeln!");
-				Thread.Sleep(800);
+			TypeText("Kade: Commander… sie zielen auf uns! Wir müssen handeln!");
+			Thread.Sleep(800);
 
-				GameOver("Die HELIOS eröffnet das Feuer. Ohne Schilde ist die GENESIS chancenlos.");
-				return;
+			GameOver("Die HELIOS eröffnet das Feuer. Ohne Schilde ist die GENESIS chancenlos.");
+			return;
 			}
 			else
 			{
-				TypeText("Ungültige Eingabe.");
-				Scene_HeliosKontakt();
-				return;
+			TypeText("Ungültige Eingabe.");
+			Scene_HeliosKontakt();
+			return;
 			}
 			static void Scene_HackMinigame()
 			{
-				Console.Clear();
+			Console.Clear();
 
-				TypeText("⚠ Zugriff verweigert…");
-				TypeText("⚠ Sicherheitssystem aktiviert…");
-				TypeText("");
-				TypeText("KADE: Commander, das System hat die Waffenkontrolle verriegelt.");
-				TypeText("KADE: Wir können sie nur zurückholen, wenn Sie den fehlerhaften Schaltkreis finden!");
-				TypeText("");
+			TypeText("⚠ Zugriff verweigert…");
+			TypeText("⚠ Sicherheitssystem aktiviert…");
+			TypeText("");
+			TypeText("KADE: Commander, das System hat die Waffenkontrolle verriegelt.");
+			TypeText("KADE: Wir können sie nur zurückholen, wenn Sie den fehlerhaften Schaltkreis finden!");
+			TypeText("");
 
-				Thread.Sleep(600);
+			Thread.Sleep(600);
 
 				// Zufälligen Schaltkreis erzeugen
-				Random rnd = new Random();
+			Random rnd = new Random();
 
 				// Symbole eines intakten Schaltkreises
-				string[] module = { "A", "B", "C", "D", "E" };
+			string[] module = { "A", "B", "C", "D", "E" };
 
 				// Fehler-Symbol, das nicht hineingehört
-				string fehlerSymbol = "X";
+			string fehlerSymbol = "X";
 
 				// Position des Fehlers bestimmen
-				int fehlerPosition = rnd.Next(0, module.Length);
+			int fehlerPosition = rnd.Next(0, module.Length);
 
 				// Ausgabe vorbereiten
-				string[] kreis = new string[module.Length];
-				for (int i = 0; i < module.Length; i++)
-					kreis[i] = module[i];
+			string[] kreis = new string[module.Length];
+			for (int i = 0; i < module.Length; i++)
+				kreis[i] = module[i];
 
 				kreis[fehlerPosition] = fehlerSymbol;  // Fehler setzen
 
 				// Spieler darf viele Versuche machen
-				while (true)
-				{
-					Console.Clear();
-					TypeText("=== SCHALTKREIS-REPARATUR – FEHLER FINDEN ===", 10);
-					Console.WriteLine();
+			while (true)
+			{
+			Console.Clear();
+			TypeText("=== SCHALTKREIS-REPARATUR – FEHLER FINDEN ===", 10);
+			Console.WriteLine();
 
-					TypeText("KADE: Ein Modul im Datenpfad ist beschädigt. Finden Sie das fehlerhafte Element!", 5);
-					Console.WriteLine();
+			TypeText("KADE: Ein Modul im Datenpfad ist beschädigt. Finden Sie das fehlerhafte Element!", 5);
+			Console.WriteLine();
 
-					// Schaltkreis anzeigen
-					Console.ForegroundColor = ConsoleColor.Cyan;
-					Console.Write("   ");
-					for (int i = 0; i < kreis.Length; i++)
-					{
-						Console.Write($"[{kreis[i]}] ");
-					}
-					Console.ResetColor();
-					Console.WriteLine("\n");
+				// Schaltkreis anzeigen
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.Write("   ");
+			for (int i = 0; i < kreis.Length; i++)
+			{
+			Console.Write($"[{kreis[i]}] ");
+			}
+			Console.ResetColor();
+			Console.WriteLine("\n");
 
-					Console.Write("Position des fehlerhaften Moduls eingeben (1–5): ");
-					string input = Console.ReadLine()!;
+			Console.Write("Position des fehlerhaften Moduls eingeben (1–5): ");
+			string input = Console.ReadLine()!;
 
-					// Check if numeric
-					if (int.TryParse(input, out int pos))
-					{
-						pos--; // Spieler gibt 1–5 ein, wir brauchen 0–4
+				// Check if numeric
+			if (int.TryParse(input, out int pos))
+			{
+			pos--; // Spieler gibt 1–5 ein, wir brauchen 0–4
 
-						if (pos == fehlerPosition)
-						{
-							TypeText("\nKADE: ✔ Fehler erkannt! Schaltkreis wird neu geroutet…", 10);
-							Console.Beep(800, 200);
+			if (pos == fehlerPosition)
+			{
+			TypeText("\nKADE: ✔ Fehler erkannt! Schaltkreis wird neu geroutet…", 10);
+			Console.Beep(800, 200);
 
-							Thread.Sleep(800);
+			Thread.Sleep(800);
 
-							TypeText("⚡ Override erfolgreich! Waffen- und Schildsysteme sind wieder online!", 10);
-							TypeText("");
+			TypeText("⚡ Override erfolgreich! Waffen- und Schildsysteme sind wieder online!", 10);
+			TypeText("");
 
-							Thread.Sleep(600);
+			Thread.Sleep(600);
 
-							// Weiter zur nächsten Szene
-							Scene_HeliosGefahr();
-							return;
-						}
-						else
-						{
-							TypeText("\nKADE: ✖ Das war nicht das fehlerhafte Modul!", 10);
-							Console.Beep(300, 200);
-							Thread.Sleep(600);
+				// Weiter zur nächsten Szene
+			Scene_HeliosGefahr();
+			return;
+			}
+			else
+			{
+			TypeText("\nKADE: ✖ Das war nicht das fehlerhafte Modul!", 10);
+			Console.Beep(300, 200);
+			Thread.Sleep(600);
 
-							TypeText("KADE: Analyse aktualisiert… versuchen Sie es erneut!", 10);
-							Thread.Sleep(600);
-						}
-					}
-					else
-					{
-						TypeText("\nKADE: Ungültige Eingabe. Bitte eine Zahl von 1 bis 5 eingeben.", 10);
-						Thread.Sleep(600);
-					}
-				}
+			TypeText("KADE: Analyse aktualisiert… versuchen Sie es erneut!", 10);
+			Thread.Sleep(600);
+			}
+			}
+			else
+			{
+			TypeText("\nKADE: Ungültige Eingabe. Bitte eine Zahl von 1 bis 5 eingeben.", 10);
+			Thread.Sleep(600);
+			}
+			}
 				//   Szene: HELIOS GEHT IN ANGRIFF
-				Scene_HeliosGefahr();
-				return;
+			Scene_HeliosGefahr();
+			return;
 			}
 			static void Scene_HeliosGefahr()
 			{
-				Console.Clear();
+			Console.Clear();
 
 				// Tiefer Alarm – länger & bedrohlich
-				Console.Beep(400, 600);
-				Console.Beep(350, 600);
-				Console.Beep(300, 600);
+			Console.Beep(400, 600);
+			Console.Beep(350, 600);
+			Console.Beep(300, 600);
 
-				TypeText("⚠️  ALARM!  Die HELIOS fährt ihre Waffensysteme hoch!");
-				TypeText("⚠️  Infizierte übernehmen die Kontrolle des Schiffes!");
-				TypeText("");
-				Thread.Sleep(600);
+			TypeText("⚠️  ALARM!  Die HELIOS fährt ihre Waffensysteme hoch!");
+			TypeText("⚠️  Infizierte übernehmen die Kontrolle des Schiffes!");
+			TypeText("");
+			Thread.Sleep(600);
 
-				TypeText("Commander: Statusbericht!");
-				Thread.Sleep(500);
+			TypeText("Commander: Statusbericht!");
+			Thread.Sleep(500);
 
-				TypeText("Kade: Commander... die HELIOS richtet die Partikelkanonen auf UNS!");
-				Thread.Sleep(700);
+			TypeText("Kade: Commander... die HELIOS richtet die Partikelkanonen auf UNS!");
+			Thread.Sleep(700);
 
-				TypeText("Commander: Haben wir Zugriff auf unsere Waffen?");
-				Thread.Sleep(600);
+			TypeText("Commander: Haben wir Zugriff auf unsere Waffen?");
+			Thread.Sleep(600);
 
-				TypeText("Kade: Positiv. Alle Systeme wieder hergestellt.");
-				TypeText("Commander: Schilde hoch, Waffen aktivieren. ");
-				TypeText("");
+			TypeText("Kade: Positiv. Alle Systeme wieder hergestellt.");
+			TypeText("Commander: Schilde hoch, Waffen aktivieren. ");
+			TypeText("");
 
-				TypeText("Kade: Wird ausgeführt.");
-				Thread.Sleep(600);
+			TypeText("Kade: Wird ausgeführt.");
+			Thread.Sleep(600);
 
-				TypeText("Commander: Ausweichmanöver. Bringt die Kampfmodule online — JETZT!");
-				Thread.Sleep(700);
+			TypeText("Commander: Ausweichmanöver. Bringt die Kampfmodule online — JETZT!");
+			Thread.Sleep(700);
 
 				// Jetzt beginnt der Kampf
-				Scene_HeliosKampf();
+			Scene_HeliosKampf();
 			}
-
-
-
-			
-			// ======================  SZENE: HELIOS KAMPF  =======================
-			
+				//  SZENE: HELIOS KAMPF  
 
 			static void Scene_HeliosKampf()
 			{
@@ -857,7 +1015,7 @@
 
 					bool ausgewichen = false;
 
-					// ------------------------ Spieleraktion ------------------------
+					//  Spieleraktion 
 					if (input == "1")
 					{
 						TypeText("GENESIS feuert!", 5);
@@ -909,7 +1067,7 @@
 					}
 
 
-					// ------------------------ Gegnerische Aktion ------------------------
+					//  Gegnerische Aktion 
 					if (!helios.Zerstoert)
 					{
 						Thread.Sleep(500);
@@ -947,17 +1105,19 @@
 					DrawExplosion();
 					Console.Beep(600, 500);
 					Console.Beep(700, 600);
-					TypeText("✔ Die HELIOS explodiert! Sieg!", 10);
+					TypeText("✔ Eine gewaltige Explosion an der Helios! Sieg!", 10);
 					TypeText("Die GENESIS treibt beschädigt, aber lebendig weiter...", 10);
 					Thread.Sleep(1200);
+
+					Scene_HeliosNachKampf();
+					return;
 				}
 			}
 
 
 
-			
-			// ========================  ASCII – SCHIFFE  =========================
-			 
+			// Genesis // Helios
+
 
 			static void DrawShipGenesis()
 			{
@@ -979,25 +1139,24 @@
 			static void DrawShipHelios()
 			{
 				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("                          _________________________________");                                                                             
-				Console.WriteLine("                   _____/            HELIOS               \\____");                                                                 
-				Console.WriteLine("                __/                                          \\__");             
-				Console.WriteLine("             __/                                              \\__");    
-				Console.WriteLine("           _/                                                   \\_");   
-				Console.WriteLine("         _/                                                     \\_");    
-				Console.WriteLine("        |                 ██████████████████████████              |");    
-				Console.WriteLine("        |            ____/                              \\____     |");          
-				Console.WriteLine("        |         __/                                      \\__    |");        
-				Console.WriteLine("         \\_      /                                            \\_ _/"); 
-				Console.WriteLine("           \\____/                                              \\_");         
+				Console.WriteLine("                          _________________________________");
+				Console.WriteLine("                   _____/            HELIOS               \\____");
+				Console.WriteLine("                __/                                          \\__");
+				Console.WriteLine("             __/                                              \\__");
+				Console.WriteLine("           _/                                                   \\_");
+				Console.WriteLine("         _/                                                     \\_");
+				Console.WriteLine("        |                 ██████████████████████████              |");
+				Console.WriteLine("        |            ____/                              \\____     |");
+				Console.WriteLine("        |         __/                                      \\__    |");
+				Console.WriteLine("         \\_      /                                            \\_ _/");
+				Console.WriteLine("           \\____/                                              \\_");
 				Console.ResetColor();
 			}
 
 
 
-			
-			// =====================  LASER & EXPLOSION  ==========================
-			
+			// Laser // Explosion
+
 
 			static void PlayLaser()
 			{
@@ -1037,8 +1196,202 @@
 				Console.WriteLine("        * * * * * * * * * * * *");
 				Console.ResetColor();
 			}
+			static void DrawHeliosDestroyed()
+			{
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("                     ____...----...____");
+				Console.WriteLine("              __..--'                 `--..__");
+				Console.WriteLine("          _.-'       HELIOS (zerstört)       `-._");
+				Console.WriteLine("       .-'     ____________███____________        `-.");
+				Console.WriteLine("     .'      _/                                \\_      `.");
+				Console.WriteLine("    /      _/   *  *   *         *     *         \\_      \\");
+				Console.WriteLine("   |     _/     *    *    *   *        *           \\_     |");
+				Console.WriteLine("   |    |      ████  *   TRÜMMER   *   ████          |    |");
+				Console.WriteLine("    \\    \\_      *     *   *   *      *           _/    /");
+				Console.WriteLine("     `.     \\_        *     *     *            _/     .'");
+				Console.WriteLine("       `-.     \\__        *   *            __/     .-'");
+				Console.WriteLine("          `--..__  `--..______________..--'  __..--'");
+				Console.WriteLine("                 `\"\"--...________...--\"\"`");
+				Console.ResetColor();
+
+			}
+			static void Scene_HeliosNachKampf()
+			{
+				Console.Clear();
+				SaveGame("Scene_HeliosNachKampf");
+
+				// Grafik der zerstörten HELIOS
+				DrawHeliosDestroyed();
+				TypeText("");
+
+				TypeText("Eine gewaltige Explosion zerreißt die HELIOS. Ein blendender Lichtblitz flutet die Brücke.");
+				TypeText("Kurz darauf driftet das einst stolze Schwesterschiff leblos und zerbrochen durch den Raum.");
+				TypeText("");
+
+				TypeText("Commander: Schadensbericht!");
+				Thread.Sleep(500);
+
+				TypeText("Oduro: Captain… unsere Schilde sind schwer beschädigt.");
+				TypeText("Oduro: Die Hülle weist deutliche strukturelle Verluste auf, aber alle Kernsysteme funktionieren stabil.");
+				TypeText("Oduro: Wir können weiterkämpfen – aber nicht unbegrenzt.");
+				TypeText("");
+
+				Console.Beep(500, 300);
+				TypeText("KADE: Commander! Eingehender Funkspruch – von der ARGOS!");
+				Thread.Sleep(500);
+
+				TypeText("ARGOS: „GENESIS, hier ist Captain Ren. Wir haben erst jetzt unsere Systeme vollständig hochgefahren.“");
+				TypeText("ARGOS: „Viele Module mussten bei laufendem Betrieb integriert werden – das hat uns Zeit gekostet.“");
+				TypeText("");
+
+				TypeText("Commander: Gibt es Neuigkeiten zu den Überlebenden der Evakuierung?");
+				Thread.Sleep(500);
+
+				TypeText("ARGOS: „Bestätigt. Wir haben mehrere Evakuierungsfähren aufgenommen.“");
+				TypeText("ARGOS: „Darunter… Ihre Frau, Captain. Sie lebt und befindet sich in stabiler Verfassung.“");
+				TypeText("");
+
+				TypeText("Für einen Moment blieb mir die Luft weg. Die Anspannung fiel von meinen Schultern.");
+				TypeText("");
+
+				Console.Beep(400, 200);
+				TypeText("KADE: Commander! Wir haben ein Problem!");
+				Thread.Sleep(300);
+
+				TypeText("KADE: Durch die Explosion der HELIOS und die massive Druckwelle…");
+				TypeText("KADE: ...ist unser Kontakt zur Atlaner-Superwaffe auf der Erdoberfläche abgerissen!");
+				TypeText("");
+
+				TypeText("Commander: Was ist mit dem Countdown?");
+				Thread.Sleep(300);
+
+				TypeText("KADE: Unklar. Wir wissen weder, ob die Waffe ausgelöst wurde…");
+				TypeText("KADE: …noch, ob der Vorgang gestoppt wurde oder außer Kontrolle gerät.");
+				TypeText("");
+
+				TypeText("Oduro: Captain… wenn die Superwaffe nicht zündet, dann wird die Erde weiterhin von Milliarden Infizierter überrollt.");
+				TypeText("Oduro: Sie haben unsere Technologie infiltriert, können das auch mit der, der Atlanter. Sie wären in der Lage selber Schiffe zu bauen.");
+				TypeText("Oduro: Sie könnten die ganze Galaxie überfluten.");
+				TypeText("Oduro: Eine Rückkehr oder spätere Kolonisierung wäre dann ebenfalls unmöglich.");
+				TypeText("");
+
+				TypeText("ARGOS: „GENESIS, wir warten auf Ihre Einschätzung. Was ist unser nächster Schritt?“");
+				TypeText("");
+
+				TypeText("Commander: Optionen?");
+				Thread.Sleep(300);
+
+				Console.WriteLine("1) Verbindung zur Atlaner-Waffe erneut aufbauen");
+				Console.WriteLine("2) Rückkehr zur Erde, Risiko einer Kontamination");
+				Console.WriteLine("3) Sofortiger Aufbruch zum geplanten Fluchtpunkt");
+				Console.Write("\nAuswahl: ");
+
+				string auswahl = Console.ReadLine();
+				SaveGame("Scene_Entscheidung_Atlaner");
+
+				
+				// ERSTE ENTSCHEIDUNG
+				
+
+				switch (auswahl)
+				{
+					case "1":
+						Scene_WaffeKontakt();
+						return;
+
+					case "2":
+						Scene_RueckkehrZurErde();
+						return;
+
+					case "3":
+						GameOver(
+							"Der sofortige Aufbruch verhindert, dass die Atlaner-Superwaffe aktiviert wird.\n" +
+							"Der Nanovirus breitet sich ungehindert aus und zerstört jede Zukunft der Menschheit."
+						);
+						return;
+
+					default:
+						TypeText("Ungültige Eingabe.");
+						Thread.Sleep(300);
+						// Wieder hierher zurück
+						Scene_HeliosNachKampf();
+						return;
+				}
+
+
+				
+				// SZENE: VERBINDUNG ZUR ATLANTER-WAFFE NOCHMAL AUFBAUEN
+				
+				static void Scene_WaffeKontakt()
+				{
+					Console.Clear();
+					SaveGame("Scene_WaffeKontakt");
+
+					TypeText("KADE: Versuche, die Verbindung zur Atlaner-Superwaffe wieder aufzubauen...");
+					Thread.Sleep(700);
+
+					Console.Beep(350, 200);
+					Console.Beep(300, 200);
+
+					TypeText("KADE: Keine Verbindung möglich. Die Hyperlink-Struktur ist instabil.");
+					TypeText("KADE: Wir erhalten keinerlei Rückmeldung von der Waffe.");
+					TypeText("");
+
+					// Zweites Entscheidungsmenü
+					Console.WriteLine("(1) Rückkehr zur Erde – Risiko einer Kontamination");
+					Console.WriteLine("(2) Sofortiger Aufbruch (HOCHGEFÄHRLICH)");
+					Console.Write("\nAuswahl: ");
+
+					string choice = Console.ReadLine();
+					SaveGame("Scene_WaffeKontakt");
+
+					switch (choice)
+					{
+						case "1":
+							Scene_RueckkehrZurErde();
+							return;
+
+						case "2":
+							GameOver(
+								"Ohne aktive Superwaffe breitet sich der Nanovirus weiter aus.\n" +
+								"Der Aufbruch war eine fatale Entscheidung. Die Menschheit geht unter."
+							);
+							return;
+
+						default:
+							TypeText("Ungültige Eingabe.");
+							Thread.Sleep(300);
+							Scene_WaffeKontakt();
+							return;
+					}
+				}
+
+
+				
+				// SZENE: RÜCKKEHR ZUR ERDE (RICHTIGE ENTSCHEIDUNG)
+				
+				static void Scene_RueckkehrZurErde()
+				{
+					Console.Clear();
+					SaveGame("Scene_RueckkehrZurErde");
+
+					TypeText("Oduro: Kurs auf die Erde setzen. Schilde stabilisieren.");
+					TypeText("KADE: Nanovirus-Signaturen weiterhin extrem hoch…");
+					TypeText("");
+
+					TypeText("ARGOS: GENESIS, wir fliegen an eurer Seite. Wir müssen wissen, ob die Superwaffe versagt hat.");
+					TypeText("");
+
+					TypeText("Commander: Haltet alle Sensoren auf maximale Empfindlichkeit. Wir dürfen uns keinen Fehler leisten.");
+					TypeText("");
+
+					TypeText("Fortsetzung folgt...");
+					Console.ReadKey();
+				}
+			}
 		}
 	}
 }
+
 
 
