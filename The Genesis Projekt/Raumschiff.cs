@@ -172,7 +172,7 @@ namespace The_Genesis_Projekt
 	public class Zerstoerer : SchiffBasis
 	{
 		public Zerstoerer(string name)
-			: base(name, schild: 120, huelle: 150, angriff: 30)
+			: base(name, schild: 150, huelle: 150, angriff: 40)
 		{ }
 	}
 }

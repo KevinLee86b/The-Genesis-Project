@@ -181,10 +181,10 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("3) Alarm – Transportsphäre");
 			Console.WriteLine("4) Kapitel 1 – Flucht von der Erde");
 			Console.WriteLine("5) Helios-Kontakt");
-			Console.WriteLine("6) Nach Helios-Kampf / Atlaner-Entscheidung");
+			Console.WriteLine("6) Nach Helios-Kampf / Atlanter-Entscheidung");
 			Console.WriteLine("7) Zerstörerkampf");
 			Console.WriteLine("8) Blindfeuer-Gefecht im Trümmerfeld");
-			Console.WriteLine("9) Atlaner-Bodenmission");
+			Console.WriteLine("9) Atlanter-Bodenmission");
 			Console.WriteLine("10) Zurück zum Hauptmenü");
 
 			Console.Write("\nAuswahl: ");
@@ -923,7 +923,7 @@ namespace The_Genesis_Projekt
 				{
 					Console.Clear();
 
-					Raumschiff genesis = new Raumschiff("GENESIS", 250, 200, 55);
+					Raumschiff genesis = new Raumschiff("GENESIS", 200, 200, 55);
 					Raumschiff helios = new Raumschiff("HELIOS", 100, 200, 45);
 
 					TypeText("⚔️   KAMPF BEGINNT — GENESIS vs. HELIOS  ⚔️", 10);
@@ -1316,7 +1316,7 @@ namespace The_Genesis_Projekt
 			SaveGame("Scene_ZerstoererKampf");
 
 			SchiffBasis genesis = new SchiffBasis("GENESIS", schild: 0, huelle: 160, angriff: 28);
-			SchiffBasis argos = new SchiffBasis("ARGOS", schild: 250, huelle: 200, angriff: 26);
+			SchiffBasis argos = new SchiffBasis("ARGOS", schild: 200, huelle: 200, angriff: 26);
 			Zerstoerer boss = new Zerstoerer("ZERSTÖRER");
 
 			TypeText("Brücke – GENESIS");
