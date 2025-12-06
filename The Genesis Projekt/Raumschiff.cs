@@ -100,4 +100,79 @@ namespace The_Genesis_Projekt
 			Console.WriteLine();
 		}
 	}
+	public class SchiffBasis
+	{
+		public string Name { get; set; }
+		public int Schild { get; set; }
+		public int MaxSchild { get; set; }
+		public int Huelle { get; set; }
+		public int MaxHuelle { get; set; }
+		public int Angriff { get; set; }
+
+		public bool Zerstoert => Huelle <= 0;
+
+		public SchiffBasis(string name, int schild, int huelle, int angriff)
+		{
+			Name = name;
+			Schild = schild;
+			MaxSchild = schild;
+			Huelle = huelle;
+			Angriff = angriff;
+		}
+
+		// Universelle Schadensberechnung
+		public void SchadenErleiden(int damage)
+		{
+			if (Schild > 0)
+			{
+				int absorb = Math.Min(Schild, damage);
+				Schild -= absorb;
+				damage -= absorb;
+			}
+
+			if (damage > 0)
+				Huelle -= damage;
+		}
+
+		public void Status()
+		{
+			Console.WriteLine($"{Name} – Schild: {Schild}/{MaxSchild}, Hülle: {Huelle}");
+		}
+	}
+
+
+	// ===============================================
+	//  JÄGER – kleine, schnelle Einheiten
+	// ===============================================
+
+	public class Jaeger : SchiffBasis
+	{
+		public Jaeger(string name)
+			: base(name, schild: 10, huelle: 20, angriff: 8)
+		{ }
+	}
+
+
+	// ===============================================
+	//  FREGATTE – mittelstarke Einheiten
+	// ===============================================
+
+	public class Fregatte : SchiffBasis
+	{
+		public Fregatte(string name)
+			: base(name, schild: 40, huelle: 60, angriff: 18)
+		{ }
+	}
+
+
+	// ===============================================
+	//  ZERSTÖRER – Boss-Einheit, stark gepanzert
+	// ===============================================
+
+	public class Zerstoerer : SchiffBasis
+	{
+		public Zerstoerer(string name)
+			: base(name, schild: 120, huelle: 150, angriff: 30)
+		{ }
+	}
 }

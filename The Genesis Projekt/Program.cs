@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
+using System.Text.Json;
 
 namespace The_Genesis_Projekt
 {
@@ -8,20 +10,24 @@ namespace The_Genesis_Projekt
 	{
 		// Spielername
 		static string playerName = "";
-		// letzter gespeicherter Szenenname (für Slots)
+		// letzter gespeicherter Szenenname
 		static string lastScene = "Scene_Prolog";
-		// Autosave-Datei
-		static string autoSaveFile = "autosave.sav";
-		// drei manuelle Speicher-Slots
-		static string[] manualSlots = { "save_slot1.sav", "save_slot2.sav", "save_slot3.sav" };
+		// JSON-Speicherdatei
+		static string saveFile = "savegame.json";
+
+		// Datenstruktur für JSON
+		class SaveData
+		{
+			public string PlayerName { get; set; }
+			public string LastScene { get; set; }
+		}
 
 		static void Main(string[] args)
 		{
 			Console.Title = "The Genesis Projekt";
 			MainMenu();
 		}
-
-		// Hauptmenük
+		// HAUPTMENÜ
 		static void MainMenu()
 		{
 			Console.Clear();
@@ -30,8 +36,8 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 
 			Console.WriteLine("1) Neues Spiel");
-			Console.WriteLine("2) Spiel laden");
-			Console.WriteLine("3) Spiel speichern");
+			Console.WriteLine("2) Weiterspielen (letzter Speicherstand)");
+			Console.WriteLine("3) Kapitel auswählen");
 			Console.WriteLine("4) Beenden");
 
 			Console.Write("\nAuswahl: ");
@@ -44,11 +50,22 @@ namespace The_Genesis_Projekt
 					break;
 
 				case "2":
-					LoadGameMenu();
+					if (TryLoadGame())
+					{
+						Console.WriteLine($"Spiel geladen. Willkommen zurück, Commander {playerName}!");
+						Thread.Sleep(800);
+						ContinueFromScene();
+					}
+					else
+					{
+						Console.WriteLine("Kein gültiger Speicherstand gefunden.");
+						Console.ReadKey();
+						MainMenu();
+					}
 					break;
 
 				case "3":
-					SaveGameMenu();
+					ChapterSelectMenu();
 					break;
 
 				case "4":
@@ -70,145 +87,55 @@ namespace The_Genesis_Projekt
 			Console.Write("Gib deinen Namen ein, Commander: ");
 			playerName = Console.ReadLine();
 
-			SaveGame("Scene_Prolog"); // Autosave + lastScene setzen
-
+			SaveGame("Scene_Prolog");
 			ShowProlog();
 		}
 
 
-		// ==========================
-		// SPEICHERN & LADEN SYSTEM
-		// ==========================
+		// SPEICHERN & LADEN (JSON)
 
-		// Autosave + lastScene
+
 		static void SaveGame(string sceneName)
 		{
 			lastScene = sceneName;
-			File.WriteAllText(autoSaveFile, sceneName + ";" + playerName);
-		}
-
-		// Manuelles Speichern
-		static void SaveGameMenu()
-		{
-			Console.Clear();
-			Console.WriteLine("=== Spiel speichern ===\n");
-			Console.WriteLine("Aktuelle Szene: " + lastScene);
-			Console.WriteLine("Aktueller Spieler: " + (string.IsNullOrWhiteSpace(playerName) ? "<unbekannt>" : playerName));
-			Console.WriteLine();
-
-			Console.WriteLine("In welchen Slot speichern?");
-			Console.WriteLine("1) Slot 1");
-			Console.WriteLine("2) Slot 2");
-			Console.WriteLine("3) Slot 3");
-			Console.Write("\nAuswahl: ");
-
-			string input = Console.ReadLine();
-			if (!int.TryParse(input, out int slot) || slot < 1 || slot > 3)
+			var data = new SaveData
 			{
-				Console.WriteLine("Ungültige Auswahl.");
-				Console.ReadKey();
-				MainMenu();
-				return;
+				PlayerName = playerName,
+				LastScene = lastScene
+			};
+
+			try
+			{
+				string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+				File.WriteAllText(saveFile, json);
 			}
-
-			int index = slot - 1;
-			File.WriteAllText(manualSlots[index], lastScene + ";" + playerName);
-			Console.WriteLine($"Spielstand in Slot {slot} gespeichert.");
-			Console.ReadKey();
-			MainMenu();
-		}
-
-		// Lade-Menü
-		static void LoadGameMenu()
-		{
-			Console.Clear();
-			Console.WriteLine("=== Spiel laden ===\n");
-			Console.WriteLine("1) Letzten Autosave laden");
-			Console.WriteLine("2) Manuell aus Slot laden");
-			Console.WriteLine("3) Zurück zum Hauptmenü");
-
-			Console.Write("\nAuswahl: ");
-			string choice = Console.ReadLine();
-
-			switch (choice)
+			catch
 			{
-				case "1":
-					LoadAutoSave();
-					break;
-				case "2":
-					LoadManualSlot();
-					break;
-				case "3":
-					MainMenu();
-					break;
-				default:
-					LoadGameMenu();
-					break;
+				// Wenn Speichern schiefgeht, Spiel soll trotzdem weiterlaufen
 			}
 		}
 
-		static void LoadAutoSave()
+		static bool TryLoadGame()
 		{
-			if (!File.Exists(autoSaveFile))
+			if (!File.Exists(saveFile))
+				return false;
+
+			try
 			{
-				Console.WriteLine("Kein Autosave gefunden.");
-				Console.ReadKey();
-				MainMenu();
-				return;
+				string json = File.ReadAllText(saveFile);
+				var data = JsonSerializer.Deserialize<SaveData>(json);
+
+				if (data == null || string.IsNullOrWhiteSpace(data.LastScene))
+					return false;
+
+				playerName = data.PlayerName ?? "";
+				lastScene = data.LastScene;
+				return true;
 			}
-
-			string[] data = File.ReadAllText(autoSaveFile).Split(';');
-			if (data.Length >= 1) lastScene = data[0];
-			if (data.Length >= 2) playerName = data[1];
-
-			Console.WriteLine($"Autosave geladen. Willkommen zurück, Commander {playerName}!");
-			Thread.Sleep(800);
-
-			ContinueFromScene();
-		}
-
-		static void LoadManualSlot()
-		{
-			Console.Clear();
-			Console.WriteLine("=== Manuelle Speicherstände ===\n");
-
-			for (int i = 0; i < manualSlots.Length; i++)
+			catch
 			{
-				string info = File.Exists(manualSlots[i])
-					? File.ReadAllText(manualSlots[i]).Split(';')[0]
-					: "<leer>";
-				Console.WriteLine($"{i + 1}) {manualSlots[i]}  ->  {info}");
+				return false;
 			}
-
-			Console.Write("\nWelchen Slot laden? (1-3): ");
-			string input = Console.ReadLine();
-
-			if (!int.TryParse(input, out int slot) || slot < 1 || slot > 3)
-			{
-				Console.WriteLine("Ungültige Auswahl.");
-				Console.ReadKey();
-				MainMenu();
-				return;
-			}
-
-			int index = slot - 1;
-
-			if (!File.Exists(manualSlots[index]))
-			{
-				Console.WriteLine("In diesem Slot ist kein Spielstand gespeichert.");
-				Console.ReadKey();
-				MainMenu();
-				return;
-			}
-
-			string[] data = File.ReadAllText(manualSlots[index]).Split(';');
-			if (data.Length >= 1) lastScene = data[0];
-			if (data.Length >= 2) playerName = data[1];
-
-			Console.WriteLine($"Slot {slot} geladen. Szene: {lastScene}, Spieler: {playerName}");
-			Thread.Sleep(800);
-
-			ContinueFromScene();
 		}
 
 		// Szene anhand von lastScene wieder aufrufen
@@ -221,6 +148,18 @@ namespace The_Genesis_Projekt
 				case "Scene_Alarm": Scene_Alarm(); break;
 				case "Scene_Kapitel1": Scene_Kapitel1(); break;
 				case "Scene_HeliosKontakt": Scene_HeliosKontakt(); break;
+
+				// Diese Szenen hängen alle an HeliosNachKampf / Entscheidungsmenü
+				case "Scene_HeliosNachKampf":
+				case "Scene_Entscheidung_Atlaner":
+				case "Scene_WaffeKontakt":
+				case "Scene_RueckkehrZurErde":
+					Scene_HeliosNachKampf();
+					break;
+
+				case "Scene_ZerstoererKampf": Scene_ZerstoererKampf(); break;
+				case "Scene_NachZerstoerer": Scene_NachZerstoerer(); break;
+
 				default:
 					Console.WriteLine("Unbekannte Szene im Speicherstand. Zurück zum Hauptmenü.");
 					Console.ReadKey();
@@ -230,22 +169,75 @@ namespace The_Genesis_Projekt
 		}
 
 
+		// KAPITEL-MENü
 
-		// TYPEWRITER
+		static void ChapterSelectMenu()
+		{
+			Console.Clear();
+			Console.WriteLine("=== Kapitel auswählen ===\n");
+			Console.WriteLine("1) Prolog");
+			Console.WriteLine("2) Intro");
+			Console.WriteLine("3) Alarm – Transportsphäre");
+			Console.WriteLine("4) Kapitel 1 – Flucht von der Erde");
+			Console.WriteLine("5) Helios-Kontakt");
+			Console.WriteLine("6) Nach Helios-Kampf / Atlaner-Entscheidung");
+			Console.WriteLine("7) Zerstörerkampf");
+			Console.WriteLine("8) Blindfeuer-Gefecht im Trümmerfeld");
+			Console.WriteLine("9) Zurück zum Hauptmenü");
+
+			Console.Write("\nAuswahl: ");
+			string choice = Console.ReadLine();
+
+			switch (choice)
+			{
+				case "1":
+					SaveGame("Scene_Prolog");
+					ShowProlog();
+					break;
+				case "2":
+					SaveGame("Scene_Intro");
+					Scene_Intro();
+					break;
+				case "3":
+					SaveGame("Scene_Alarm");
+					Scene_Alarm();
+					break;
+				case "4":
+					SaveGame("Scene_Kapitel1");
+					Scene_Kapitel1();
+					break;
+				case "5":
+					SaveGame("Scene_HeliosKontakt");
+					Scene_HeliosKontakt();
+					break;
+				case "6":
+					SaveGame("Scene_HeliosNachKampf");
+					Scene_HeliosNachKampf();
+					break;
+				case "7":
+					SaveGame("Scene_ZerstoererKampf");
+					Scene_ZerstoererKampf();
+					break;
+				case "8":
+					SaveGame("Scene_NachZerstoerer");
+					Scene_NachZerstoerer();
+					break;
+				default:
+					MainMenu();
+					break;
+			}
+		}
+		// TYPEWRITE
 		static void TypeText(string text, int delay = 18)
 		{
 			bool skip = false;
 
 			for (int i = 0; i < text.Length; i++)
 			{
-				// Wenn der Spieler eine Taste drückt -> Rest des Textes sofort anzeigen
 				if (!skip && Console.KeyAvailable)
 				{
-					// Taste aus dem Puffer entfernen
 					Console.ReadKey(true);
 					skip = true;
-
-					// Rest der Zeile am Stück ausgeben
 					Console.Write(text.Substring(i));
 					break;
 				}
@@ -259,17 +251,12 @@ namespace The_Genesis_Projekt
 
 			Console.WriteLine();
 
-			// Eingabepuffer vollständig leeren,
-			// damit keine Tasten in die nächste Zeile "durchrutschen"
 			while (Console.KeyAvailable)
 				Console.ReadKey(true);
 		}
-
 		// PROLOG SZENE
-
 		static void ShowProlog()
 		{
-			// Autosave an dieser Stelle sinnvoll
 			SaveGame("Scene_Prolog");
 
 			Console.Clear();
@@ -293,7 +280,6 @@ namespace The_Genesis_Projekt
 			TypeText("Ein technobiologischer Superorganismus löschte die Menschheit fast komplett aus.");
 			TypeText("");
 
-
 			TypeText("Drei gigantische Superschiffe der Universum-Klasse blieben als letzte Zuflucht der Menschheit und eine Begleitflotte.");
 			TypeText("Die Terraumformung auf dem Mars dauert noch zu lange.");
 			TypeText("Ihr Ziel: den mysteriösen zehnten Planeten erreichen – Heimat der Grauen.");
@@ -314,22 +300,16 @@ namespace The_Genesis_Projekt
 			SaveGame("Scene_Intro");
 			Scene_Intro();
 		}
-
-
-		//  INTRO SZENE + SCHIFFSGRAFIK
-
+		// INTRO SZENE + SCHIFFSGRAFIK
 		static void Scene_Intro()
 		{
 			SaveGame("Scene_Intro");
 
 			Console.Clear();
-
-			// Grafik anzeigen
 			DrawGenesisTop();
 			Console.WriteLine();
 			Thread.Sleep(500);
 
-			// Intro-Text
 			TypeText("Gedankenverloren ließ ich meinen Blick über die gewaltigen Gondeln der GENESIS schweifen.");
 			TypeText("Ihr riesiger Rumpf wirkte beinahe lebendig. Unglaublich was wir noch erschaffen haben.");
 			TypeText("Unter mir lag die Erde. Friedlich. Ruhig. So wunderschön und doch voller Tod. Ein letzter schöner und verstörender Moment… ");
@@ -341,17 +321,13 @@ namespace The_Genesis_Projekt
 			SaveGame("Scene_Alarm");
 			Scene_Alarm();
 		}
-
-
 		// SZENE ALARM 
-
 		static void Scene_Alarm()
 		{
 			SaveGame("Scene_Alarm");
 
 			Console.Clear();
 
-			//  ALARMTON 
 			Console.Beep(900, 250);
 			Console.Beep(900, 250);
 			Console.Beep(900, 250);
@@ -359,15 +335,13 @@ namespace The_Genesis_Projekt
 			TypeText("ALARM! ALARM! ALARM!");
 			TypeText("");
 
-			//  STEUERMANN MELDET 
 			TypeText("Steuermann: Commander! Die Transportsphäre ALPHA weicht vom Flugkorridor ab!");
 			TypeText("Steuermann: Sie nimmt direkten Kurs auf die GENESIS – ohne Freigabe!");
 			TypeText("");
 
-			// ERSTE ENTSCHEIDUNG 
 			TypeText("Was sollen wir tun?");
 			Console.WriteLine("1) Warnsignal senden");
-			Console.WriteLine("2) Abfangen mit Hilfstriebwerken");
+			Console.WriteLine("2) Beschleunigen und abfangen!");
 			Console.WriteLine("3) Ignorieren (GEFÄHRLICH!)");
 			Console.Write("\nAuswahl: ");
 
@@ -397,10 +371,6 @@ namespace The_Genesis_Projekt
 					break;
 			}
 		}
-
-
-		//  TEIL 1: WARNUNG SENDEN 
-
 		static void Scene_Alarm_Warnsignal()
 		{
 			Console.Clear();
@@ -437,18 +407,14 @@ namespace The_Genesis_Projekt
 			}
 		}
 
-
-
-		// TEIL 2: ABFANGMANÖVER
-
 		static void Scene_Alarm_Abfangen()
 		{
 			Console.Clear();
 
-			TypeText("Abfangmanöver eingeleitet! Hilfstriebwerke aktiv!");
+			TypeText("Abfangmanöver eingeleitet! Hilfstriebwerke zuschalten!");
 			Thread.Sleep(600);
 
-			TypeText("Wir verringern den Abstand… Commander, wie weiter?");
+			TypeText("Wir verringern den Abstand… Commander, wie weiter fortfahren? Ich vermute sie wurden infiziert. Gebe aber keine Garantie!");
 			Console.WriteLine("1) Andocken");
 			Console.WriteLine("2) Feuer eröffnen");
 			Console.Write("\nAuswahl: ");
@@ -466,7 +432,6 @@ namespace The_Genesis_Projekt
 			}
 			else if (choice2 == "2")
 			{
-				// Feuer-Grafik
 				Console.Clear();
 				DrawFiringGraphic();
 				Console.Beep(600, 150);
@@ -474,7 +439,6 @@ namespace The_Genesis_Projekt
 				Console.Beep(700, 200);
 				Thread.Sleep(1000);
 
-				// Explosion
 				Console.Clear();
 				DrawExplosionGraphic();
 				Console.Beep(200, 300);
@@ -501,12 +465,7 @@ namespace The_Genesis_Projekt
 				Scene_Alarm_Abfangen();
 			}
 		}
-
-
-
-
-		//  GAME OVER 
-
+		// GAME OVER
 		static void GameOver(string message)
 		{
 			Console.Clear();
@@ -518,8 +477,8 @@ namespace The_Genesis_Projekt
 
 			Console.ResetColor();
 			TypeText("\nWas möchtest du tun?");
-			Console.WriteLine("1) Letzten Autosave laden");
-			Console.WriteLine("2) Speicherstand laden (Slot)");
+			Console.WriteLine("1) Letzte Szene wiederholen");
+			Console.WriteLine("2) Kapitel auswählen");
 			Console.WriteLine("3) Hauptmenü");
 
 			Console.Write("\nAuswahl: ");
@@ -528,21 +487,26 @@ namespace The_Genesis_Projekt
 			switch (choice)
 			{
 				case "1":
-					LoadAutoSave();
+					if (TryLoadGame())
+					{
+						ContinueFromScene();
+					}
+					else
+					{
+						Console.WriteLine("Kein gültiger Speicherstand gefunden.");
+						Console.ReadKey();
+						MainMenu();
+					}
 					break;
 				case "2":
-					LoadManualSlot();
+					ChapterSelectMenu();
 					break;
 				default:
 					MainMenu();
 					break;
 			}
 		}
-
-
-
-
-		//  GRAFIKEN 
+		// GRAFIKEN / SCHIFFSGRAFIK
 		static void DrawFiringGraphic()
 		{
 			Console.ForegroundColor = ConsoleColor.Cyan;
@@ -563,10 +527,6 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 		}
 
-
-
-		// SCHIFFSGRAFIK
-
 		static void DrawGenesisTop()
 		{
 			Console.ForegroundColor = ConsoleColor.Cyan;
@@ -585,16 +545,13 @@ namespace The_Genesis_Projekt
 
 			Console.ResetColor();
 		}
-		//                            KAPITEL 1 
-		//                      FLUCHT VON DER ERDE 
-
+		// KAPITEL 1 – FLUCHT VON DER ERDE
 		static void Scene_Kapitel1()
 		{
 			SaveGame("Scene_Kapitel1");
 
 			Console.Clear();
 
-			// KAPITEL-HEADER
 			Console.ForegroundColor = ConsoleColor.Cyan;
 			Console.WriteLine("===================================================");
 			Console.WriteLine("                    KAPITEL 1");
@@ -603,7 +560,6 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 			Console.WriteLine();
 
-			// FLOTTE ZEIGEN
 			DrawGenesisFleet();
 			TypeText("");
 			TypeText("Drei gewaltige Schiffe der UNIVERSUM-Klasse glitten wie stählerne Inseln durch die Dunkelheit.");
@@ -626,7 +582,6 @@ namespace The_Genesis_Projekt
 			TypeText("Der Geruch von erhitztem Metall und ozongesättigter Luft schlug mir entgegen, der Duft eines Kriegsschiffes.");
 			TypeText("");
 
-			// GRAFIK: DOCK + WEG ZUR BRÜCKE
 			DrawDockToBridge();
 			TypeText("");
 			TypeText("Ich setzte mich in Bewegung. Gang A-17, vorbei an Technikern, Sanitätern, müden Flüchtlingen.");
@@ -639,7 +594,6 @@ namespace The_Genesis_Projekt
 			TypeText("Und genau deshalb musste ich jetzt weitergehen.");
 			TypeText("");
 
-			// GRAFIK: LIFT
 			DrawLiftPath();
 			TypeText("");
 			TypeText("Die Türen schlossen sich. Der Lift summte, als er sich nach oben bewegte.");
@@ -649,7 +603,6 @@ namespace The_Genesis_Projekt
 			TypeText("Ein Signalton. Die Türen öffneten sich zur Brücke der GENESIS.");
 			TypeText("");
 
-			// BRÜCKE
 			Console.Clear();
 			DrawBridgeSilhouette();
 			TypeText("");
@@ -706,8 +659,6 @@ namespace The_Genesis_Projekt
 			return;
 		}
 
-
-		// Flotte mit drei Schiffen
 		static void DrawGenesisFleet()
 		{
 			Console.ForegroundColor = ConsoleColor.Cyan;
@@ -719,7 +670,6 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 		}
 
-		// Dock / Landefähre -> Pfeil -> GENESIS-Silhouette
 		static void DrawDockToBridge()
 		{
 			Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -730,7 +680,6 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 		}
 
-		// Liftfahrt von Deck zu Brücke
 		static void DrawLiftPath()
 		{
 			Console.ForegroundColor = ConsoleColor.Gray;
@@ -747,7 +696,6 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 		}
 
-		// Einfache Brückensilhouette
 		static void DrawBridgeSilhouette()
 		{
 			Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -761,14 +709,13 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("        |______________________________||");
 			Console.ResetColor();
 		}
-
+		// SZENE HELIOS-KONTAKT
 		static void Scene_HeliosKontakt()
 		{
 			SaveGame("Scene_HeliosKontakt");
 
 			Console.Clear();
 
-			// Langer Gefechtsalarm
 			for (int i = 0; i < 6; i++)
 			{
 				Console.Beep(950, 500);
@@ -788,7 +735,6 @@ namespace The_Genesis_Projekt
 			TypeText("Commander: Auf den Schirm damit.");
 			Thread.Sleep(400);
 
-			// Verzerrte Übertragung
 			Console.Beep(400, 200);
 			Console.Beep(300, 200);
 
@@ -814,584 +760,1636 @@ namespace The_Genesis_Projekt
 
 			if (input == "1")
 			{
-			TypeText("Kade: Commander, das Signal ist instabil. Sie antworten nicht… oder wollen nicht.");
-			TypeText("Kade: Die HELIOS lädt ihre Partikelkanonen auf!");
-			TypeText("");
-			TypeText("Commander: Wir haben keine Zeit. Override vorbereiten!");
-			Scene_HackMinigame();
-			return;
+				TypeText("Kade: Commander, das Signal ist instabil. Sie antworten nicht… oder wollen nicht.");
+				TypeText("Kade: Die HELIOS lädt ihre Partikelkanonen auf!");
+				TypeText("");
+				TypeText("Commander: Wir haben keine Zeit. Override vorbereiten!");
+				Scene_HackMinigame();
+				return;
 			}
 			else if (input == "2")
 			{
-			TypeText("Commander: Alles klar! Override einleiten!");
-			Scene_HackMinigame();
-			return;
+				TypeText("Commander: Alles klar! Override einleiten!");
+				Scene_HackMinigame();
+				return;
 			}
 			else if (input == "3")
 			{
-			TypeText("Kade: Commander… sie zielen auf uns! Wir müssen handeln!");
-			Thread.Sleep(800);
+				TypeText("Kade: Commander… sie zielen auf uns! Wir müssen handeln!");
+				Thread.Sleep(800);
 
-			GameOver("Die HELIOS eröffnet das Feuer. Ohne Schilde ist die GENESIS chancenlos.");
-			return;
+				GameOver("Die HELIOS eröffnet das Feuer. Ohne Schilde ist die GENESIS chancenlos.");
+				return;
 			}
 			else
 			{
-			TypeText("Ungültige Eingabe.");
-			Scene_HeliosKontakt();
-			return;
+				TypeText("Ungültige Eingabe.");
+				Scene_HeliosKontakt();
+				return;
 			}
+
+			// Lokale Funktionen
+
 			static void Scene_HackMinigame()
-			{
-			Console.Clear();
-
-			TypeText("⚠ Zugriff verweigert…");
-			TypeText("⚠ Sicherheitssystem aktiviert…");
-			TypeText("");
-			TypeText("KADE: Commander, das System hat die Waffenkontrolle verriegelt.");
-			TypeText("KADE: Wir können sie nur zurückholen, wenn Sie den fehlerhaften Schaltkreis finden!");
-			TypeText("");
-
-			Thread.Sleep(600);
-
-				// Zufälligen Schaltkreis erzeugen
-			Random rnd = new Random();
-
-				// Symbole eines intakten Schaltkreises
-			string[] module = { "A", "B", "C", "D", "E" };
-
-				// Fehler-Symbol, das nicht hineingehört
-			string fehlerSymbol = "X";
-
-				// Position des Fehlers bestimmen
-			int fehlerPosition = rnd.Next(0, module.Length);
-
-				// Ausgabe vorbereiten
-			string[] kreis = new string[module.Length];
-			for (int i = 0; i < module.Length; i++)
-				kreis[i] = module[i];
-
-				kreis[fehlerPosition] = fehlerSymbol;  // Fehler setzen
-
-				// Spieler darf viele Versuche machen
-			while (true)
-			{
-			Console.Clear();
-			TypeText("=== SCHALTKREIS-REPARATUR – FEHLER FINDEN ===", 10);
-			Console.WriteLine();
-
-			TypeText("KADE: Ein Modul im Datenpfad ist beschädigt. Finden Sie das fehlerhafte Element!", 5);
-			Console.WriteLine();
-
-				// Schaltkreis anzeigen
-			Console.ForegroundColor = ConsoleColor.Cyan;
-			Console.Write("   ");
-			for (int i = 0; i < kreis.Length; i++)
-			{
-			Console.Write($"[{kreis[i]}] ");
-			}
-			Console.ResetColor();
-			Console.WriteLine("\n");
-
-			Console.Write("Position des fehlerhaften Moduls eingeben (1–5): ");
-			string input = Console.ReadLine()!;
-
-				// Check if numeric
-			if (int.TryParse(input, out int pos))
-			{
-			pos--; // Spieler gibt 1–5 ein, wir brauchen 0–4
-
-			if (pos == fehlerPosition)
-			{
-			TypeText("\nKADE: ✔ Fehler erkannt! Schaltkreis wird neu geroutet…", 10);
-			Console.Beep(800, 200);
-
-			Thread.Sleep(800);
-
-			TypeText("⚡ Override erfolgreich! Waffen- und Schildsysteme sind wieder online!", 10);
-			TypeText("");
-
-			Thread.Sleep(600);
-
-				// Weiter zur nächsten Szene
-			Scene_HeliosGefahr();
-			return;
-			}
-			else
-			{
-			TypeText("\nKADE: ✖ Das war nicht das fehlerhafte Modul!", 10);
-			Console.Beep(300, 200);
-			Thread.Sleep(600);
-
-			TypeText("KADE: Analyse aktualisiert… versuchen Sie es erneut!", 10);
-			Thread.Sleep(600);
-			}
-			}
-			else
-			{
-			TypeText("\nKADE: Ungültige Eingabe. Bitte eine Zahl von 1 bis 5 eingeben.", 10);
-			Thread.Sleep(600);
-			}
-			}
-				//   Szene: HELIOS GEHT IN ANGRIFF
-			Scene_HeliosGefahr();
-			return;
-			}
-			static void Scene_HeliosGefahr()
-			{
-			Console.Clear();
-
-				// Tiefer Alarm – länger & bedrohlich
-			Console.Beep(400, 600);
-			Console.Beep(350, 600);
-			Console.Beep(300, 600);
-
-			TypeText("⚠️  ALARM!  Die HELIOS fährt ihre Waffensysteme hoch!");
-			TypeText("⚠️  Infizierte übernehmen die Kontrolle des Schiffes!");
-			TypeText("");
-			Thread.Sleep(600);
-
-			TypeText("Commander: Statusbericht!");
-			Thread.Sleep(500);
-
-			TypeText("Kade: Commander... die HELIOS richtet die Partikelkanonen auf UNS!");
-			Thread.Sleep(700);
-
-			TypeText("Commander: Haben wir Zugriff auf unsere Waffen?");
-			Thread.Sleep(600);
-
-			TypeText("Kade: Positiv. Alle Systeme wieder hergestellt.");
-			TypeText("Commander: Schilde hoch, Waffen aktivieren. ");
-			TypeText("");
-
-			TypeText("Kade: Wird ausgeführt.");
-			Thread.Sleep(600);
-
-			TypeText("Commander: Ausweichmanöver. Bringt die Kampfmodule online — JETZT!");
-			Thread.Sleep(700);
-
-				// Jetzt beginnt der Kampf
-			Scene_HeliosKampf();
-			}
-				//  SZENE: HELIOS KAMPF  
-
-			static void Scene_HeliosKampf()
 			{
 				Console.Clear();
 
-				// Zwei Schiffe erstellen
-				Raumschiff genesis = new Raumschiff("GENESIS", 120, 160, 35);
-				Raumschiff helios = new Raumschiff("HELIOS", 100, 130, 28);
+				TypeText("⚠ Zugriff verweigert…");
+				TypeText("⚠ Sicherheitssystem aktiviert…");
+				TypeText("");
+				TypeText("KADE: Commander, das System hat die Waffenkontrolle verriegelt.");
+				TypeText("KADE: Wir können sie nur zurückholen, wenn Sie den fehlerhaften Schaltkreis finden!");
+				TypeText("");
 
-				TypeText("⚔️   KAMPF BEGINNT — GENESIS vs. HELIOS  ⚔️", 10);
-				Thread.Sleep(800);
+				Thread.Sleep(600);
 
-				int runde = 1;
+				Random rnd = new Random();
+				string[] module = { "A", "B", "C", "D", "E" };
+				string fehlerSymbol = "X";
+				int fehlerPosition = rnd.Next(0, module.Length);
 
-				while (!genesis.Zerstoert && !helios.Zerstoert)
+				string[] kreis = new string[module.Length];
+				for (int i = 0; i < module.Length; i++)
+					kreis[i] = module[i];
+
+				kreis[fehlerPosition] = fehlerSymbol;
+
+				while (true)
 				{
 					Console.Clear();
-					TypeText($"===== RUNDE {runde} =====", 5);
+					TypeText("=== SCHALTKREIS-REPARATUR – FEHLER FINDEN ===", 10);
 					Console.WriteLine();
 
-					// Beide Schiffe anzeigen
-					DrawShipGenesis();
-					DrawShipHelios();
+					TypeText("KADE: Ein Modul im Datenpfad ist beschädigt. Finden Sie das fehlerhafte Element!", 5);
 					Console.WriteLine();
 
-					genesis.StatusAnzeigen();
-					Console.WriteLine();
-					helios.StatusAnzeigen();
-
-					Console.WriteLine();
-					Console.WriteLine("Aktionen:");
-					Console.WriteLine("[1] Angriff");
-					Console.WriteLine("[2] Schild verstärken");
-					Console.WriteLine("[3] Ausweichmanöver");
-					Console.WriteLine("[4] Hackversuch (Riskant)");
-					Console.Write("\nAuswahl: ");
-					string input = Console.ReadLine();
-					Console.WriteLine();
-
-					bool ausgewichen = false;
-
-					//  Spieleraktion 
-					if (input == "1")
+					Console.ForegroundColor = ConsoleColor.Cyan;
+					Console.Write("   ");
+					for (int i = 0; i < kreis.Length; i++)
 					{
-						TypeText("GENESIS feuert!", 5);
-						PlayLaser();
-						DrawLaserLeftToRight();
-						helios.SchadenErleiden(genesis.Angriff);
-						Thread.Sleep(600);
+						Console.Write($"[{kreis[i]}] ");
 					}
-					else if (input == "2")
-					{
-						TypeText("Schilde werden verstärkt...", 10);
-						Console.Beep(400, 200);
-						genesis.Schild += 25;
+					Console.ResetColor();
+					Console.WriteLine("\n");
 
-						if (genesis.Schild > genesis.MaxSchild)
+					Console.Write("Position des fehlerhaften Moduls eingeben (1–5): ");
+					string input = Console.ReadLine()!;
+
+					if (int.TryParse(input, out int pos))
+					{
+						pos--;
+
+						if (pos == fehlerPosition)
 						{
-							TypeText("⚠️ Überladung! Schild bricht kurz zusammen!", 10);
-							genesis.Schild = 10;
-							genesis.Huelle -= 10;
-						}
-					}
-					else if (input == "3")
-					{
-						TypeText("GENESIS führt ein Ausweichmanöver aus!", 10);
-						ausgewichen = true;
-						Console.Beep(300, 100);
-						Console.Beep(350, 100);
-						Console.Beep(400, 100);
-					}
-					else if (input == "4")
-					{
-						TypeText("HACK-Versuch wird gestartet...", 10);
-						Console.Beep(600, 200);
+							TypeText("\nKADE: ✔ Fehler erkannt! Schaltkreis wird neu geroutet…", 10);
+							Console.Beep(800, 200);
 
-						if (new Random().Next(1, 100) <= 30)
-						{
-							TypeText("✔ Hack erfolgreich! HELIOS verliert ihr Schild!", 10);
-							helios.Schild = 0;
+							Thread.Sleep(800);
+
+							TypeText("⚡ Override erfolgreich! Waffen- und Schildsysteme sind wieder online!", 10);
+							TypeText("");
+
+							Thread.Sleep(600);
+
+							Scene_HeliosGefahr();
+							return;
 						}
 						else
 						{
-							TypeText("❌ Hack fehlgeschlagen! Selbstschaden!", 10);
-							genesis.Huelle -= 25;
+							TypeText("\nKADE: ✖ Das war nicht das fehlerhafte Modul!", 10);
+							Console.Beep(300, 200);
+							Thread.Sleep(600);
+
+							TypeText("KADE: Analyse aktualisiert… versuchen Sie es erneut!", 10);
+							Thread.Sleep(600);
 						}
 					}
 					else
 					{
-						TypeText("Ungültige Eingabe – du verlierst die Aktion!", 10);
+						TypeText("\nKADE: Ungültige Eingabe. Bitte eine Zahl von 1 bis 5 eingeben.", 10);
+						Thread.Sleep(600);
 					}
 
+				}
 
-					//  Gegnerische Aktion 
-					if (!helios.Zerstoert)
+				static void Scene_HeliosGefahr()
+				{
+					Console.Clear();
+
+					Console.Beep(400, 600);
+					Console.Beep(350, 600);
+					Console.Beep(300, 600);
+
+					TypeText("⚠️  ALARM!  Die HELIOS fährt ihre Waffensysteme hoch!");
+					TypeText("⚠️  Infizierte übernehmen die Kontrolle des Schiffes!");
+					TypeText("⚠️  Wir mmüssen sofort angreifen. Der einzige Vorteil ist das Sie noch nicht wissen wie alle Systeme funktionieren!");
+					TypeText("⚠️  Sie wissen nicht wie alle Systeme auf 100 Prozent laufen, die KI des Schiffes wird sie zu beginn noch bremsen können.");
+					TypeText("");
+					Thread.Sleep(600);
+
+					TypeText("Commander: Statusbericht!");
+					Thread.Sleep(500);
+
+					TypeText("Kade: Commander... die HELIOS richtet die Partikelkanonen auf UNS!");
+					Thread.Sleep(700);
+
+					TypeText("Commander: Haben wir Zugriff auf unsere Waffen?");
+					Thread.Sleep(600);
+
+					TypeText("Kade: Positiv. Alle Systeme wieder hergestellt.");
+					TypeText("Commander: Schilde hoch, Waffen aktivieren. ");
+					TypeText("");
+
+					TypeText("Kade: Wird ausgeführt.");
+					Thread.Sleep(600);
+
+					TypeText("Commander: Ausweichmanöver. Bringt die Kampfmodule online — JETZT!");
+					Thread.Sleep(700);
+
+					Scene_HeliosKampf();
+				}
+
+				static void Scene_HeliosKampf()
+				{
+					Console.Clear();
+
+					Raumschiff genesis = new Raumschiff("GENESIS", 250, 200, 55);
+					Raumschiff helios = new Raumschiff("HELIOS", 100, 200, 45);
+
+					TypeText("⚔️   KAMPF BEGINNT — GENESIS vs. HELIOS  ⚔️", 10);
+					Thread.Sleep(800);
+
+					int runde = 1;
+
+					while (!genesis.Zerstoert && !helios.Zerstoert)
 					{
-						Thread.Sleep(500);
-						TypeText("HELIOS erwidert das Feuer!", 5);
+						Console.Clear();
+						TypeText($"===== RUNDE {runde} =====", 5);
+						Console.WriteLine();
 
-						if (!ausgewichen)
+						DrawShipGenesis();
+						DrawShipHelios();
+						Console.WriteLine();
+
+						genesis.StatusAnzeigen();
+						Console.WriteLine();
+						helios.StatusAnzeigen();
+
+						Console.WriteLine();
+						Console.WriteLine("Aktionen:");
+						Console.WriteLine("[1] Angriff");
+						Console.WriteLine("[2] Schild verstärken");
+						Console.WriteLine("[3] Ausweichmanöver");
+						Console.WriteLine("[4] Hackversuch (Riskant)");
+						Console.Write("\nAuswahl: ");
+						string input = Console.ReadLine();
+						Console.WriteLine();
+
+						bool ausgewichen = false;
+
+						if (input == "1")
 						{
-							PlayLaserEnemy();
-							DrawLaserRightToLeft();
-							genesis.SchadenErleiden(helios.Angriff);
+							TypeText("GENESIS feuert!", 5);
+							PlayLaser();
+							DrawLaserLeftToRight();
+							helios.SchadenErleiden(genesis.Angriff);
+							Thread.Sleep(600);
+						}
+						else if (input == "2")
+						{
+							TypeText("Schilde werden verstärkt...", 10);
+							Console.Beep(400, 200);
+							genesis.Schild += 25;
+
+							if (genesis.Schild > genesis.MaxSchild)
+							{
+								TypeText("⚠️ Überladung! Schild bricht kurz zusammen!", 10);
+								genesis.Schild = 10;
+								genesis.Huelle -= 10;
+							}
+						}
+						else if (input == "3")
+						{
+							TypeText("GENESIS führt ein Ausweichmanöver aus!", 10);
+							ausgewichen = true;
+							Console.Beep(300, 100);
+							Console.Beep(350, 100);
+							Console.Beep(400, 100);
+						}
+						else if (input == "4")
+						{
+							TypeText("HACK-Versuch wird gestartet...", 10);
+							Console.Beep(600, 200);
+
+							if (new Random().Next(1, 100) <= 30)
+							{
+								TypeText("✔ Hack erfolgreich! HELIOS verliert ihr Schild!", 10);
+								helios.Schild = 0;
+							}
+							else
+							{
+								TypeText("❌ Hack fehlgeschlagen! Selbstschaden!", 10);
+								genesis.Huelle -= 25;
+							}
 						}
 						else
 						{
-							TypeText("→ GENESIS ist ausgewichen! Kein Treffer!", 5);
+							TypeText("Ungültige Eingabe – du verlierst die Aktion!", 10);
 						}
+
+						if (!helios.Zerstoert)
+						{
+							Thread.Sleep(500);
+							TypeText("HELIOS erwidert das Feuer!", 5);
+
+							if (!ausgewichen)
+							{
+								PlayLaserEnemy();
+								DrawLaserRightToLeft();
+								genesis.SchadenErleiden(helios.Angriff);
+							}
+							else
+							{
+								TypeText("→ GENESIS ist ausgewichen! Kein Treffer!", 5);
+							}
+						}
+
+						Thread.Sleep(900);
+						runde++;
 					}
 
-					Thread.Sleep(900);
-					runde++;
+					Console.Clear();
+
+					if (genesis.Zerstoert)
+					{
+						DrawExplosion();
+						Console.Beep(200, 500);
+						Console.Beep(150, 600);
+						TypeText("❌ Die GENESIS wurde zerstört...", 10);
+						GameOver("Du konntest der HELIOS nicht standhalten.");
+						return;
+					}
+					else
+					{
+						DrawExplosion();
+						Console.Beep(600, 500);
+						Console.Beep(700, 600);
+						TypeText("✔ Eine gewaltige Explosion an der Helios! Sieg!", 10);
+						TypeText("Die GENESIS treibt beschädigt, aber lebendig weiter...", 10);
+						Thread.Sleep(1200);
+
+						Scene_HeliosNachKampf();
+						return;
+					}
 				}
+			}
+		}
 
-				Console.Clear();
+		static void DrawShipGenesis()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("                                                                                ________________________________");
+			Console.WriteLine("                                                                         _____/           GENESIS              \\_____");
+			Console.WriteLine("                                                                      __/                                          \\__");
+			Console.WriteLine("                                                                   __/                                              \\__");
+			Console.WriteLine("                                                                 _/                                                   \\_");
+			Console.WriteLine("                                                               _/                                                     \\_");
+			Console.WriteLine("                                                              |                 ██████████████████████████              |");
+			Console.WriteLine("                                                              |            ____/                              \\____     |");
+			Console.WriteLine("                                                              |         __/                                      \\__    |");
+			Console.WriteLine("                                                               \\_      /                                            \\_ _/");
+			Console.WriteLine("                                                                 \\____/                                              \\_");
+			Console.ResetColor();
+		}
 
-				if (genesis.Zerstoert)
-				{
-					DrawExplosion();
-					Console.Beep(200, 500);
-					Console.Beep(150, 600);
-					TypeText("❌ Die GENESIS wurde zerstört...", 10);
-					GameOver("Du konntest der HELIOS nicht standhalten.");
+		static void DrawShipHelios()
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("                          _________________________________");
+			Console.WriteLine("                   _____/            HELIOS               \\____");
+			Console.WriteLine("                __/                                          \\__");
+			Console.WriteLine("             __/                                              \\__");
+			Console.WriteLine("           _/                                                   \\_");
+			Console.WriteLine("         _/                                                     \\_");
+			Console.WriteLine("        |                 ██████████████████████████              |");
+			Console.WriteLine("        |            ____/                              \\____     |");
+			Console.WriteLine("        |         __/                                      \\__    |");
+			Console.WriteLine("         \\_      /                                            \\_ _/");
+			Console.WriteLine("           \\____/                                              \\_");
+			Console.ResetColor();
+		}
+
+		static void PlayLaser()
+		{
+			Console.Beep(900, 100);
+			Console.Beep(1000, 80);
+		}
+
+		static void PlayLaserEnemy()
+		{
+			Console.Beep(600, 100);
+			Console.Beep(550, 100);
+		}
+
+		static void DrawLaserLeftToRight()
+		{
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine(">>>>>>>>>=======================>");
+			Console.ResetColor();
+		}
+
+		static void DrawLaserRightToLeft()
+		{
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("<========================<<<<<<<<<");
+			Console.ResetColor();
+		}
+
+		static void DrawExplosion()
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("         * * * * * * * * * * * ");
+			Console.WriteLine("       *************************");
+			Console.WriteLine("      *************************** ");
+			Console.WriteLine("     * * * * *  BOOOOOM  * * * * *");
+			Console.WriteLine("     *****************************");
+			Console.WriteLine("      **************************");
+			Console.WriteLine("        * * * * * * * * * * * *");
+			Console.ResetColor();
+		}
+
+		static void DrawHeliosDestroyed()
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("                     ____...----...____");
+			Console.WriteLine("              __..--'                 `--..__");
+			Console.WriteLine("          _.-'       HELIOS (zerstört)       `-._");
+			Console.WriteLine("       .-'     ____________███____________        `-.");
+			Console.WriteLine("     .'      _/                                \\_      `.");
+			Console.WriteLine("    /      _/   *  *   *         *     *         \\_      \\");
+			Console.WriteLine("   |     _/     *    *    *   *        *           \\_     |");
+			Console.WriteLine("   |    |      ████  *   TRÜMMER   *   ████          |    |");
+			Console.WriteLine("    \\    \\_      *     *   *   *      *           _/    /");
+			Console.WriteLine("     `.     \\_        *     *     *            _/     .'");
+			Console.WriteLine("       `-.     \\__        *   *            __/     .-'");
+			Console.WriteLine("          `--..__  `--..______________..--'  __..--'");
+			Console.WriteLine("                 `\"\"--...________...--\"\"`");
+			Console.ResetColor();
+		}
+		// SZENE HELIOS NACH KAMPF
+		static void Scene_HeliosNachKampf()
+		{
+			Console.Clear();
+			SaveGame("Scene_HeliosNachKampf");
+
+			DrawHeliosDestroyed();
+			TypeText("");
+
+			TypeText("Eine gewaltige Explosion zerreißt die HELIOS. Ein blendender Lichtblitz flutet die Brücke.");
+			TypeText("Kurz darauf driftet das einst stolze Schwesterschiff leblos und zerbrochen durch den Raum.");
+			TypeText("");
+
+			TypeText("Commander: Schadensbericht!");
+			Thread.Sleep(500);
+
+			TypeText("Oduro: Captain… unsere Schilde sind schwer beschädigt.");
+			TypeText("Oduro: Die Hülle weist deutliche strukturelle Verluste auf, aber alle Kernsysteme funktionieren stabil.");
+			TypeText("Oduro: Wir können weiterkämpfen – aber nicht unbegrenzt.");
+			TypeText("");
+
+			Console.Beep(500, 300);
+			TypeText("KADE: Commander! Eingehender Funkspruch – von der ARGOS!");
+			Thread.Sleep(500);
+
+			TypeText("ARGOS: „GENESIS, hier ist Captain Ren. Wir haben erst jetzt unsere Systeme vollständig hochgefahren.“");
+			TypeText("ARGOS: „Viele Module mussten bei laufendem Betrieb integriert werden – das hat uns Zeit gekostet.“");
+			TypeText("");
+
+			TypeText("Commander: Gibt es Neuigkeiten zu den Überlebenden der Evakuierung?");
+			Thread.Sleep(500);
+
+			TypeText("ARGOS: „Bestätigt. Wir haben mehrere Evakuierungsfähren aufgenommen.“");
+			TypeText("ARGOS: „Darunter… Ihre Frau, Captain. Sie lebt und befindet sich in stabiler Verfassung.“");
+			TypeText("");
+
+			TypeText("Für einen Moment blieb mir die Luft weg. Die Anspannung fiel von meinen Schultern.");
+			TypeText("");
+
+			Console.Beep(400, 200);
+			TypeText("KADE: Commander! Wir haben ein Problem!");
+			Thread.Sleep(300);
+
+			TypeText("KADE: Durch die Explosion der HELIOS und die massive Druckwelle…");
+			TypeText("KADE: ...ist unser Kontakt zur Atlaner-Superwaffe auf der Erdoberfläche abgerissen!");
+			TypeText("");
+
+			TypeText("Commander: Was ist mit dem Countdown?");
+			Thread.Sleep(300);
+
+			TypeText("KADE: Unklar. Wir wissen weder, ob die Waffe ausgelöst wurde…");
+			TypeText("KADE: …noch, ob der Vorgang gestoppt wurde oder außer Kontrolle gerät.");
+			TypeText("");
+
+			TypeText("Oduro: Captain… wenn die Superwaffe nicht zündet, dann wird die Erde weiterhin von Milliarden Infizierter überrollt.");
+			TypeText("Oduro: Sie haben unsere Technologie infiltriert, können das auch mit der, der Atlanter. Sie wären in der Lage selber Schiffe zu bauen.");
+			TypeText("Oduro: Sie könnten die ganze Galaxie überfluten.");
+			TypeText("Oduro: Eine Rückkehr oder spätere Kolonisierung wäre dann ebenfalls unmöglich.");
+			TypeText("");
+
+			TypeText("ARGOS: „GENESIS, wir warten auf Ihre Einschätzung. Was ist unser nächster Schritt?“");
+			TypeText("");
+
+			TypeText("Commander: Optionen?");
+			Thread.Sleep(300);
+
+			Console.WriteLine("1) Verbindung zur Atlaner-Waffe erneut aufbauen");
+			Console.WriteLine("2) Rückkehr zur Erde, Risiko einer Kontamination");
+			Console.WriteLine("3) Sofortiger Aufbruch zum geplanten Fluchtpunkt");
+			Console.Write("\nAuswahl: ");
+
+			string auswahl = Console.ReadLine();
+			SaveGame("Scene_Entscheidung_Atlaner");
+
+			switch (auswahl)
+			{
+				case "1":
+					Scene_WaffeKontakt();
 					return;
-				}
-				else
-				{
-					DrawExplosion();
-					Console.Beep(600, 500);
-					Console.Beep(700, 600);
-					TypeText("✔ Eine gewaltige Explosion an der Helios! Sieg!", 10);
-					TypeText("Die GENESIS treibt beschädigt, aber lebendig weiter...", 10);
-					Thread.Sleep(1200);
 
+				case "2":
+					Scene_RueckkehrZurErde();
+					return;
+
+				case "3":
+					GameOver(
+						"Der sofortige Aufbruch verhindert, dass die Atlaner-Superwaffe aktiviert wird.\n" +
+						"Der Nanovirus breitet sich ungehindert aus und zerstört jede Zukunft der Menschheit."
+					);
+					return;
+
+				default:
+					TypeText("Ungültige Eingabe.");
+					Thread.Sleep(300);
 					Scene_HeliosNachKampf();
 					return;
-				}
 			}
 
-
-
-			// Genesis // Helios
-
-
-			static void DrawShipGenesis()
-			{
-				Console.ForegroundColor = ConsoleColor.Cyan;
-				Console.WriteLine("                                                                                ________________________________");
-				Console.WriteLine("                                                                         _____/           GENESIS              \\_____");
-				Console.WriteLine("                                                                      __/                                          \\__");
-				Console.WriteLine("                                                                   __/                                              \\__");
-				Console.WriteLine("                                                                 _/                                                   \\_");
-				Console.WriteLine("                                                               _/                                                     \\_");
-				Console.WriteLine("                                                              |                 ██████████████████████████              |");
-				Console.WriteLine("                                                              |            ____/                              \\____     |");
-				Console.WriteLine("                                                              |         __/                                      \\__    |");
-				Console.WriteLine("                                                               \\_      /                                            \\_ _/");
-				Console.WriteLine("                                                                 \\____/                                              \\_");
-				Console.ResetColor();
-			}
-
-			static void DrawShipHelios()
-			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("                          _________________________________");
-				Console.WriteLine("                   _____/            HELIOS               \\____");
-				Console.WriteLine("                __/                                          \\__");
-				Console.WriteLine("             __/                                              \\__");
-				Console.WriteLine("           _/                                                   \\_");
-				Console.WriteLine("         _/                                                     \\_");
-				Console.WriteLine("        |                 ██████████████████████████              |");
-				Console.WriteLine("        |            ____/                              \\____     |");
-				Console.WriteLine("        |         __/                                      \\__    |");
-				Console.WriteLine("         \\_      /                                            \\_ _/");
-				Console.WriteLine("           \\____/                                              \\_");
-				Console.ResetColor();
-			}
-
-
-
-			// Laser // Explosion
-
-
-			static void PlayLaser()
-			{
-				Console.Beep(900, 100);
-				Console.Beep(1000, 80);
-			}
-
-			static void PlayLaserEnemy()
-			{
-				Console.Beep(600, 100);
-				Console.Beep(550, 100);
-			}
-
-			static void DrawLaserLeftToRight()
-			{
-				Console.ForegroundColor = ConsoleColor.Yellow;
-				Console.WriteLine(">>>>>>>>>=======================>");
-				Console.ResetColor();
-			}
-
-			static void DrawLaserRightToLeft()
-			{
-				Console.ForegroundColor = ConsoleColor.Yellow;
-				Console.WriteLine("<========================<<<<<<<<<");
-				Console.ResetColor();
-			}
-
-			static void DrawExplosion()
-			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("         * * * * * * * * * * * ");
-				Console.WriteLine("       *************************");
-				Console.WriteLine("      *************************** ");
-				Console.WriteLine("     * * * * *  BOOOOOM  * * * * *");
-				Console.WriteLine("     *****************************");
-				Console.WriteLine("      **************************");
-				Console.WriteLine("        * * * * * * * * * * * *");
-				Console.ResetColor();
-			}
-			static void DrawHeliosDestroyed()
-			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("                     ____...----...____");
-				Console.WriteLine("              __..--'                 `--..__");
-				Console.WriteLine("          _.-'       HELIOS (zerstört)       `-._");
-				Console.WriteLine("       .-'     ____________███____________        `-.");
-				Console.WriteLine("     .'      _/                                \\_      `.");
-				Console.WriteLine("    /      _/   *  *   *         *     *         \\_      \\");
-				Console.WriteLine("   |     _/     *    *    *   *        *           \\_     |");
-				Console.WriteLine("   |    |      ████  *   TRÜMMER   *   ████          |    |");
-				Console.WriteLine("    \\    \\_      *     *   *   *      *           _/    /");
-				Console.WriteLine("     `.     \\_        *     *     *            _/     .'");
-				Console.WriteLine("       `-.     \\__        *   *            __/     .-'");
-				Console.WriteLine("          `--..__  `--..______________..--'  __..--'");
-				Console.WriteLine("                 `\"\"--...________...--\"\"`");
-				Console.ResetColor();
-
-			}
-			static void Scene_HeliosNachKampf()
+			static void Scene_WaffeKontakt()
 			{
 				Console.Clear();
-				SaveGame("Scene_HeliosNachKampf");
+				SaveGame("Scene_WaffeKontakt");
 
-				// Grafik der zerstörten HELIOS
-				DrawHeliosDestroyed();
+				TypeText("KADE: Versuche, die Verbindung zur Atlaner-Superwaffe wieder aufzubauen...");
+				Thread.Sleep(700);
+
+				Console.Beep(350, 200);
+				Console.Beep(300, 200);
+
+				TypeText("KADE: Keine Verbindung möglich. Die Hyperlink-Struktur ist instabil.");
+				TypeText("KADE: Wir erhalten keinerlei Rückmeldung von der Waffe.");
 				TypeText("");
 
-				TypeText("Eine gewaltige Explosion zerreißt die HELIOS. Ein blendender Lichtblitz flutet die Brücke.");
-				TypeText("Kurz darauf driftet das einst stolze Schwesterschiff leblos und zerbrochen durch den Raum.");
-				TypeText("");
-
-				TypeText("Commander: Schadensbericht!");
-				Thread.Sleep(500);
-
-				TypeText("Oduro: Captain… unsere Schilde sind schwer beschädigt.");
-				TypeText("Oduro: Die Hülle weist deutliche strukturelle Verluste auf, aber alle Kernsysteme funktionieren stabil.");
-				TypeText("Oduro: Wir können weiterkämpfen – aber nicht unbegrenzt.");
-				TypeText("");
-
-				Console.Beep(500, 300);
-				TypeText("KADE: Commander! Eingehender Funkspruch – von der ARGOS!");
-				Thread.Sleep(500);
-
-				TypeText("ARGOS: „GENESIS, hier ist Captain Ren. Wir haben erst jetzt unsere Systeme vollständig hochgefahren.“");
-				TypeText("ARGOS: „Viele Module mussten bei laufendem Betrieb integriert werden – das hat uns Zeit gekostet.“");
-				TypeText("");
-
-				TypeText("Commander: Gibt es Neuigkeiten zu den Überlebenden der Evakuierung?");
-				Thread.Sleep(500);
-
-				TypeText("ARGOS: „Bestätigt. Wir haben mehrere Evakuierungsfähren aufgenommen.“");
-				TypeText("ARGOS: „Darunter… Ihre Frau, Captain. Sie lebt und befindet sich in stabiler Verfassung.“");
-				TypeText("");
-
-				TypeText("Für einen Moment blieb mir die Luft weg. Die Anspannung fiel von meinen Schultern.");
-				TypeText("");
-
-				Console.Beep(400, 200);
-				TypeText("KADE: Commander! Wir haben ein Problem!");
-				Thread.Sleep(300);
-
-				TypeText("KADE: Durch die Explosion der HELIOS und die massive Druckwelle…");
-				TypeText("KADE: ...ist unser Kontakt zur Atlaner-Superwaffe auf der Erdoberfläche abgerissen!");
-				TypeText("");
-
-				TypeText("Commander: Was ist mit dem Countdown?");
-				Thread.Sleep(300);
-
-				TypeText("KADE: Unklar. Wir wissen weder, ob die Waffe ausgelöst wurde…");
-				TypeText("KADE: …noch, ob der Vorgang gestoppt wurde oder außer Kontrolle gerät.");
-				TypeText("");
-
-				TypeText("Oduro: Captain… wenn die Superwaffe nicht zündet, dann wird die Erde weiterhin von Milliarden Infizierter überrollt.");
-				TypeText("Oduro: Sie haben unsere Technologie infiltriert, können das auch mit der, der Atlanter. Sie wären in der Lage selber Schiffe zu bauen.");
-				TypeText("Oduro: Sie könnten die ganze Galaxie überfluten.");
-				TypeText("Oduro: Eine Rückkehr oder spätere Kolonisierung wäre dann ebenfalls unmöglich.");
-				TypeText("");
-
-				TypeText("ARGOS: „GENESIS, wir warten auf Ihre Einschätzung. Was ist unser nächster Schritt?“");
-				TypeText("");
-
-				TypeText("Commander: Optionen?");
-				Thread.Sleep(300);
-
-				Console.WriteLine("1) Verbindung zur Atlaner-Waffe erneut aufbauen");
-				Console.WriteLine("2) Rückkehr zur Erde, Risiko einer Kontamination");
-				Console.WriteLine("3) Sofortiger Aufbruch zum geplanten Fluchtpunkt");
+				Console.WriteLine("(1) Rückkehr zur Erde – Risiko einer Kontamination");
+				Console.WriteLine("(2) Sofortiger Aufbruch (HOCHGEFÄHRLICH)");
 				Console.Write("\nAuswahl: ");
 
-				string auswahl = Console.ReadLine();
-				SaveGame("Scene_Entscheidung_Atlaner");
+				string choice = Console.ReadLine();
+				SaveGame("Scene_WaffeKontakt");
 
-				
-				// ERSTE ENTSCHEIDUNG
-				
-
-				switch (auswahl)
+				switch (choice)
 				{
 					case "1":
-						Scene_WaffeKontakt();
-						return;
-
-					case "2":
 						Scene_RueckkehrZurErde();
 						return;
 
-					case "3":
+					case "2":
 						GameOver(
-							"Der sofortige Aufbruch verhindert, dass die Atlaner-Superwaffe aktiviert wird.\n" +
-							"Der Nanovirus breitet sich ungehindert aus und zerstört jede Zukunft der Menschheit."
+							"Ohne aktive Superwaffe breitet sich der Nanovirus weiter aus.\n" +
+							"Der Aufbruch war eine fatale Entscheidung. Die Menschheit geht unter."
 						);
 						return;
 
 					default:
 						TypeText("Ungültige Eingabe.");
 						Thread.Sleep(300);
-						// Wieder hierher zurück
-						Scene_HeliosNachKampf();
+						Scene_WaffeKontakt();
 						return;
 				}
+			}
 
+			static void Scene_RueckkehrZurErde()
+			{
+				Console.Clear();
+				SaveGame("Scene_RueckkehrZurErde");
 
-				
-				// SZENE: VERBINDUNG ZUR ATLANTER-WAFFE NOCHMAL AUFBAUEN
-				
-				static void Scene_WaffeKontakt()
+				TypeText("Oduro: Kurs auf die Erde setzen. Schilde stabilisieren.");
+				TypeText("KADE: Nanovirus-Signaturen weiterhin extrem hoch…");
+				TypeText("");
+
+				TypeText("ARGOS: GENESIS, wir fliegen an eurer Seite. Wir müssen wissen, ob die Superwaffe versagt hat.");
+				TypeText("");
+
+				TypeText("Commander: Haltet alle Sensoren auf maximale Empfindlichkeit. Wir dürfen uns keinen Fehler leisten.");
+				TypeText("");
+
+				TypeText("Fortsetzung folgt...");
+				Console.ReadKey();
+
+				Scene_ZerstoererKampf();
+				return;
+			}
+		}
+		// SZENE ZERSTÖRERKAMPF
+		static void Scene_ZerstoererKampf()
+		{
+			Console.Clear();
+			SaveGame("Scene_ZerstoererKampf");
+
+			SchiffBasis genesis = new SchiffBasis("GENESIS", schild: 0, huelle: 160, angriff: 28);
+			SchiffBasis argos = new SchiffBasis("ARGOS", schild: 250, huelle: 200, angriff: 26);
+			Zerstoerer boss = new Zerstoerer("ZERSTÖRER");
+
+			TypeText("Brücke – GENESIS");
+			TypeText("");
+			TypeText("KADE: Commander! Neuer Kontakt im Trümmerfeld – schwer bewaffnetes Schiff nähert sich!");
+			TypeText("Oduro: Er ist kleiner als die HELIOS, aber stark gepanzert. Signatur: Ein Zerstörer. Alles sind infiziert…");
+			TypeText("Kade: Er hat sich vermutlich hinter der Helios versteckt.");
+			TypeText("");
+			TypeText("Commander: Auf den Schirm! Alle Systeme auf Gefechtsbereitschaft!");
+			TypeText("");
+
+			Thread.Sleep(800);
+
+			bool ausweichenAktiv = false;
+			Random rnd = new Random();
+
+			while (!genesis.Zerstoert && !argos.Zerstoert && !boss.Zerstoert)
+			{
+				Console.Clear();
+				ZeichneKampfSzene(genesis, argos, boss);
+				Console.WriteLine();
+				ZeigeFlottenStatus(genesis, argos, boss);
+				Console.WriteLine();
+
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("=== TAKTISCHE OPTIONEN GEGEN DEN ZERSTÖRER ===");
+				Console.ResetColor();
+				Console.WriteLine("[1] Torpedosalve (GENESIS + ARGOS)");
+				Console.WriteLine("[2] Partikelstrahlen – konzentrierter Beschuss");
+				Console.WriteLine("[3] Ausweichmanöver – ARGOS deckt die GENESIS");
+				Console.WriteLine("[4] ARGOS-Schilde verstärken");
+				Console.WriteLine("[5] Nur Status aktualisieren");
+				Console.Write("\nAuswahl: ");
+
+				string choice = Console.ReadLine();
+				Console.WriteLine();
+
+				ausweichenAktiv = false;
+
+				switch (choice)
 				{
-					Console.Clear();
-					SaveGame("Scene_WaffeKontakt");
+					case "1":
+						TypeText("Commander: Alle Torpedowerfer – ZIEL ZERSTÖRER! Feuer!", 10);
+						TorpedoSalveVonFlotte();
+						int torpedoSchaden = 50 + rnd.Next(10, 21);
+						boss.SchadenErleiden(torpedoSchaden);
+						TypeText($"Treffer! Der Zerstörer verliert {torpedoSchaden} Strukturpunkte!", 10);
+						break;
 
-					TypeText("KADE: Versuche, die Verbindung zur Atlaner-Superwaffe wieder aufzubauen...");
-					Thread.Sleep(700);
+					case "2":
+						TypeText("Commander: Partikelstrahlen bündeln – volle Energie auf seine Schwachstellen!", 10);
+						PartikelstrahlFlotte();
+						int strahlenSchaden = 40 + rnd.Next(5, 26);
+						boss.SchadenErleiden(strahlenSchaden);
+						TypeText($"Die gebündelten Strahlen reißen die Panzerung des Zerstörers auf ({strahlenSchaden} Schaden).", 10);
+						break;
 
-					Console.Beep(350, 200);
-					Console.Beep(300, 200);
+					case "3":
+						TypeText("Commander: GENESIS aus der Schusslinie – ARGOS, decken Sie uns!", 10);
+						AusweichAnimation();
+						ausweichenAktiv = true;
+						break;
 
-					TypeText("KADE: Keine Verbindung möglich. Die Hyperlink-Struktur ist instabil.");
-					TypeText("KADE: Wir erhalten keinerlei Rückmeldung von der Waffe.");
-					TypeText("");
+					case "4":
+						TypeText("Oduro: Schilde der ARGOS werden verstärkt…", 10);
+						Console.Beep(500, 120);
+						Console.Beep(650, 120);
+						int schildBoost = 25;
+						argos.Schild += schildBoost;
+						if (argos.Schild > argos.MaxSchild) argos.Schild = argos.MaxSchild;
+						TypeText($"ARGOS-Schilde steigen um {schildBoost} Punkte.", 10);
+						break;
 
-					// Zweites Entscheidungsmenü
-					Console.WriteLine("(1) Rückkehr zur Erde – Risiko einer Kontamination");
-					Console.WriteLine("(2) Sofortiger Aufbruch (HOCHGEFÄHRLICH)");
-					Console.Write("\nAuswahl: ");
+					case "5":
+						TypeText("Taktische Übersicht wird aktualisiert…", 10);
+						break;
 
-					string choice = Console.ReadLine();
-					SaveGame("Scene_WaffeKontakt");
+					default:
+						TypeText("Ungültige Eingabe. Die Crew zögert – wertvolle Sekunden vergehen!", 10);
+						break;
+				}
 
-					switch (choice)
+				if (boss.Zerstoert) break;
+
+				Thread.Sleep(700);
+				TypeText("ATLANTER-ZERSTÖRER: Waffensysteme laden – gegnerisches Feuer kommt!", 10);
+				PartikelstrahlGegner();
+
+				int bossDamage = boss.Angriff + rnd.Next(-5, 11);
+				if (bossDamage < 15) bossDamage = 15;
+
+				SchiffBasis ziel;
+
+				if (ausweichenAktiv)
+				{
+					ziel = argos;
+					TypeText("ARGOS schiebt sich zwischen GENESIS und den Beschuss!", 10);
+				}
+				else
+				{
+					ziel = (rnd.Next(100) < 70) ? genesis : argos;
+				}
+
+				WendeSchadenAn(ziel, bossDamage);
+
+				if (genesis.Zerstoert)
+				{
+					CinematicExplosionGenesis();
+					GameOver("Die GENESIS wurde im Feuer des Zerstörers zerrissen – die letzte Hoffnung der Menschheit erlischt.");
+					return;
+				}
+
+				if (argos.Zerstoert)
+				{
+					CinematicExplosionArgos();
+					GameOver("Die ARGOS wird zerstört, bevor sie die GENESIS weiter schützen kann. Die Flotte zerbricht.");
+					return;
+				}
+			}
+
+			Console.Clear();
+			CinematicExplosionZerstoerer();
+			TypeText("Der Zerstörer bricht auseinander. Trümmer und brennende Fragmente treiben durch den Raum.", 10);
+			Thread.Sleep(800);
+
+			TypeText("Ich atme schwer aus, während die Explosion alle Winkel des Bildschirms erreichen.", 10);
+			TypeText("Für einen Moment wirkt der Weltraum wie ein brennender Sturm aus Licht.", 10);
+			TypeText("");
+
+			TypeText("Commander: Verbindung zur ARGOS.", 10);
+			TypeText("ARGOS-Captain Ren: Wir siehts bei euch aus GENESIS? Status des Ziels?", 10);
+			TypeText("Commander: Zerstörer vernichtet. Aber wir wurden vom Orbit der Erde abgedriftet seit den Kämpfen.", 10);
+			TypeText("Commander: ARGOS, nehmen Sie sofort Kurs auf die Erde. Schauen sie nach der Waffe, warum sie nicht gezündet hat, bis wir nachrücken.", 10);
+			TypeText("Ren: Verstanden. ARGOS kehrt zur Erde zurück.", 10);
+			TypeText("");
+
+			TypeText("Interne Kommunikation – alle Maschinendecks.", 10);
+			TypeText("Chefingenieur: Antrieb wird stabilisiert. Schildgitter in Rekalibrierung. Sensoren sind seit dem letzten Treffer schwer beschädigt.", 10);
+			TypeText("Commander: Priorität auf Antrieb und Hülle. Wir müssen rasch aufschließen.", 10);
+			TypeText("");
+
+			TypeText("KADE: Commander… neue Bewegungen im Trümmerfeld.", 10);
+			TypeText("Commander: Auf den Schirm.", 10);
+			TypeText("");
+
+			TypeText("Oduro: Ich zähle zwei schwere Bomber, eine Fregatte und ein Landungsschiff.", 10);
+			TypeText("Oduro: Sie müssen vor der Explosion der HELIOS aus dem Hangar entkommen sein.", 10);
+			TypeText("KADE: Die ARGOS ist bereits außer Reichweite. Wir sind allein.", 10);
+			TypeText("Oduro: Unsere Schilde sind noch offline und die Sensorphalanx ist teilweise ausgefallen.", 10);
+			TypeText("KADE: Wir bekommen keine exakten Zielerfassungen mehr.", 10);
+			TypeText("");
+
+			TypeText("Commander: Dann feuern wir auf Sicht. Ohne richtige Zielerfassung wird das ein riesen Spaß.", 10);
+			TypeText("Commander: Legen Sie mir das Trümmerfeld als taktisches Gitter auf den Hauptschirm. Uns bleibt nichts anderes übrig.", 10);
+			TypeText("Commander: Wir haben die Intelligenz des Nanoviruses weit unterschätzt. Sie wussten ganz genau was wir vor hatten.", 10);
+			TypeText("");
+
+			Scene_NachZerstoerer();
+		}
+		// HILFSMETHODEN KAMPF/ZERSTÖRER
+		static void WendeSchadenAn(SchiffBasis ziel, int damage)
+		{
+			int vorherSchild = ziel.Schild;
+			int vorherHuelle = ziel.Huelle;
+
+			ziel.SchadenErleiden(damage);
+
+			int deltaSchild = vorherSchild - ziel.Schild;
+			int deltaHuelle = vorherHuelle - ziel.Huelle;
+
+			if (deltaSchild < 0) deltaSchild = 0;
+			if (deltaHuelle < 0) deltaHuelle = 0;
+
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.Write($"Treffer auf {ziel.Name}: ");
+			Console.ResetColor();
+
+			List<string> teile = new List<string>();
+			if (deltaSchild > 0) teile.Add($"Schild -{deltaSchild}");
+			if (deltaHuelle > 0) teile.Add($"Hülle -{deltaHuelle}");
+
+			Console.WriteLine(string.Join(", ", teile));
+
+			if (ziel.Zerstoert)
+			{
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine($"{ziel.Name} wird tödlich getroffen!");
+				Console.ResetColor();
+			}
+
+			Thread.Sleep(500);
+		}
+
+		static void ZeichneKampfSzene(SchiffBasis genesis, SchiffBasis argos, SchiffBasis boss)
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("                         [ GENESIS ]");
+			Console.WriteLine("                        _______________");
+			Console.WriteLine("                _______/               \\______");
+			Console.WriteLine("             __/                               \\__");
+			Console.WriteLine("           _/                                     \\_");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("                         [ ARGOS ]");
+			Console.WriteLine("                      ___/_______\\___");
+			Console.WriteLine("                   __/               \\__");
+			Console.WriteLine("                 _/                     \\_");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("\n                                      [ ZERSTÖRER ]");
+			Console.WriteLine("                                      ____===[###]===____");
+			Console.WriteLine("                                  ___/                    \\___");
+			Console.WriteLine("                                 /                            \\");
+			Console.WriteLine("                                |   ███████    ███████         |");
+			Console.WriteLine("                                 \\__                      ____/");
+			Console.ResetColor();
+		}
+
+		static void ZeigeFlottenStatus(SchiffBasis genesis, SchiffBasis argos, SchiffBasis boss)
+		{
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"GENESIS   - Schild: {genesis.Schild}/{genesis.MaxSchild}, Hülle: {genesis.Huelle}/{genesis.MaxHuelle}");
+			Console.WriteLine($"ARGOS     - Schild: {argos.Schild}/{argos.MaxSchild}, Hülle: {argos.Huelle}/{argos.MaxHuelle}");
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine($"ZERSTÖRER - Schild: {boss.Schild}/{boss.MaxSchild}, Hülle: {boss.Huelle}/{boss.MaxHuelle}");
+			Console.ResetColor();
+		}
+
+		static void CinematicExplosionGenesis()
+		{
+			Console.Clear();
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("          *** GENESIS EXPLODIERT ***");
+			Console.WriteLine("             * * * * * * * * *");
+			Console.WriteLine("          ************************");
+			Console.WriteLine("       ********  G  E  N  E  S  I  S  ********");
+			Console.WriteLine("          ************************");
+			Console.WriteLine("             * * * * * * * * *");
+			Console.ResetColor();
+			Thread.Sleep(1200);
+		}
+
+		static void CinematicExplosionArgos()
+		{
+			Console.Clear();
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("          *** ARGOS WIRD ZERISSEN ***");
+			Console.WriteLine("             * * * * * * * *");
+			Console.WriteLine("          **********************");
+			Console.WriteLine("       ********  A  R  G  O  S  ********");
+			Console.WriteLine("          **********************");
+			Console.WriteLine("             * * * * * * * *");
+			Console.ResetColor();
+			Thread.Sleep(1200);
+		}
+
+		static void CinematicExplosionZerstoerer()
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("               *** ZERSTÖRER EXPLODIERT ***");
+			Console.WriteLine("                  * * * * * * * * *");
+			Console.WriteLine("              ***************************");
+			Console.WriteLine("           ********   B  O  O  O  M   ********");
+			Console.WriteLine("              ***************************");
+			Console.WriteLine("                  * * * * * * * * *");
+			Console.ResetColor();
+			Thread.Sleep(1200);
+		}
+
+		static void TorpedoSalveVonFlotte()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("GENESIS + ARGOS: >>>=====> >>>=====> >>>=====>");
+			Console.ResetColor();
+			Console.Beep(900, 90);
+			Console.Beep(1000, 80);
+			Thread.Sleep(200);
+		}
+
+		static void PartikelstrahlFlotte()
+		{
+			Console.ForegroundColor = ConsoleColor.Magenta;
+			Console.WriteLine("GENESIS:  |||||||||||||||||||||||||||>");
+			Console.WriteLine("ARGOS:    |||||||||||||||||||||||||||>");
+			Console.ResetColor();
+			Console.Beep(700, 150);
+			Console.Beep(850, 180);
+			Thread.Sleep(250);
+		}
+
+		static void PartikelstrahlGegner()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkRed;
+			Console.WriteLine("ZERSTÖRER: <#########################");
+			Console.ResetColor();
+			Console.Beep(500, 180);
+			Console.Beep(400, 200);
+			Thread.Sleep(250);
+		}
+
+		static void AusweichAnimation()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("GENESIS weicht aus… ARGOS verändert Vektor und deckt das Flaggschiff.");
+			Console.ResetColor();
+			Console.Beep(300, 80);
+			Console.Beep(350, 80);
+			Console.Beep(400, 80);
+			Thread.Sleep(300);
+		}
+
+		static void TorpedoSalveSichtmodus()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine(">>>=====>    >>>=====>    >>>=====>");
+			Console.ResetColor();
+			Console.Beep(900, 80);
+			Console.Beep(950, 80);
+			Thread.Sleep(200);
+		}
+
+		static void PartikelSalveKleinschiffe()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine("<-*-*-*-*-*   <-*-*-*-*-*   <-*-*-*-*-*");
+			Console.ResetColor();
+			Console.Beep(600, 90);
+			Console.Beep(550, 90);
+			Thread.Sleep(200);
+		}
+
+		static void KleineExplosionImGitter(int row, int col)
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine($"Explosion bei Feld ({(char)('A' + row)}{col + 1})!");
+			Console.ResetColor();
+			Console.Beep(700, 120);
+			Console.Beep(500, 150);
+			Thread.Sleep(250);
+		}
+		// HILFSKLASSE FÜR BLINDFEUER
+		class FeindSchiff
+		{
+			public string Name;
+			public char Symbol;
+			public int TrefferZumVersenken;
+			public int Treffer;
+			public List<(int Row, int Col)> Zellen = new List<(int, int)>();
+
+			public bool Lebendig => Treffer < TrefferZumVersenken;
+
+			public bool EnthältZelle(int r, int c)
+			{
+				foreach (var z in Zellen)
+				{
+					if (z.Row == r && z.Col == c) return true;
+				}
+				return false;
+			}
+		}
+		// BLINDFEUER-MINISPIEL
+		static void Scene_NachZerstoerer()
+		{
+			Console.Clear();
+			SaveGame("Scene_NachZerstoerer");
+
+			TypeText("Brücke – GENESIS, wenige Minuten nach der Zerstörung des Zerstörers.", 10);
+			TypeText("Das Licht der Explosion verblasst, doch das Trümmerfeld bleibt – ein chaotisches Meer aus Metall.", 10);
+			TypeText("");
+
+			TypeText("KADE: Commander, die Bomber und die Fregatte nutzen das Trümmerfeld als Deckung.", 10);
+			TypeText("KADE: Das Landungsschiff hält sich zurück, wahrscheinlich voller Infizierter.", 10);
+			TypeText("Oduro: Unsere Schilde bleiben offline. Wir haben nur noch Hülle und Glück.", 10);
+			TypeText("Commander: Dann kämpfen wir mit dem, was uns bleibt.", 10);
+			TypeText("Commander: Blindfeuer-Modus aktivieren. Koordinatengitter auf den Hauptschirm!", 10);
+			Console.WriteLine();
+
+			SchiffBasis genesis = new SchiffBasis("GENESIS", schild: 0, huelle: 160, angriff: 0);
+
+			const int rows = 20;
+			const int cols = 30;
+			char[,] grid = new char[rows, cols];
+
+			for (int r = 0; r < rows; r++)
+				for (int c = 0; c < cols; c++)
+					grid[r, c] = '.';
+
+			List<FeindSchiff> feinde = new List<FeindSchiff>();
+
+			FeindSchiff fregatte = new FeindSchiff
+			{
+				Name = "FREGATTE",
+				Symbol = 'F',
+				TrefferZumVersenken = 2,
+				Treffer = 0
+			};
+			int frRow = 5;
+			int frColStart = 10;
+			for (int c = frColStart; c < frColStart + 6; c++)
+			{
+				fregatte.Zellen.Add((frRow, c));
+				grid[frRow, c] = fregatte.Symbol;
+			}
+			feinde.Add(fregatte);
+
+			FeindSchiff bomber1 = new FeindSchiff
+			{
+				Name = "TORPEDO-BOMBER 1",
+				Symbol = 'B',
+				TrefferZumVersenken = 1,
+				Treffer = 0
+			};
+			int b1Row = 10;
+			int b1ColStart = 4;
+			for (int c = b1ColStart; c < b1ColStart + 3; c++)
+			{
+				bomber1.Zellen.Add((b1Row, c));
+				grid[b1Row, c] = bomber1.Symbol;
+			}
+			feinde.Add(bomber1);
+
+			FeindSchiff bomber2 = new FeindSchiff
+			{
+				Name = "TORPEDO-BOMBER 2",
+				Symbol = 'B',
+				TrefferZumVersenken = 1,
+				Treffer = 0
+			};
+			int b2Row = 13;
+			int b2ColStart = 22;
+			for (int c = b2ColStart; c < b2ColStart + 3; c++)
+			{
+				bomber2.Zellen.Add((b2Row, c));
+				grid[b2Row, c] = bomber2.Symbol;
+			}
+			feinde.Add(bomber2);
+
+			FeindSchiff lander = new FeindSchiff
+			{
+				Name = "LANDUNGSSCHIFF",
+				Symbol = 'L',
+				TrefferZumVersenken = 1,
+				Treffer = 0
+			};
+			int lRow = 15;
+			int lColStart = 14;
+			for (int dr = 0; dr < 2; dr++)
+			{
+				for (int dc = 0; dc < 4; dc++)
+				{
+					int rr = lRow + dr;
+					int cc = lColStart + dc;
+					lander.Zellen.Add((rr, cc));
+					grid[rr, cc] = lander.Symbol;
+				}
+			}
+			feinde.Add(lander);
+
+			Random rnd = new Random();
+
+			while (!genesis.Zerstoert && feinde.Exists(f => f.Lebendig))
+			{
+				Console.Clear();
+				ZeichneBlindfeuerBildschirm(grid, rows, cols, genesis);
+
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("Hinweis: F = Fregatte, B = Bomber, L = Landungsschiff");
+				Console.WriteLine("        X = zerstört, o = Fehlschuss");
+				Console.ResetColor();
+				Console.WriteLine();
+
+				Console.Write("Zielkoordinate eingeben (z.B. C12, X zum Abbrechen): ");
+				string eingabe = Console.ReadLine().Trim().ToUpper();
+
+				if (eingabe == "X")
+				{
+					TypeText("Commander: Gefecht abgebrochen. Hoffen wir, dass wir das nicht bereuen…", 10);
+					return;
+				}
+
+				if (eingabe.Length < 2 || eingabe.Length > 3)
+				{
+					TypeText("KADE: Ungültiges Format. Buchstabe + Zahl, Commander. (z.B. C12)", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				char rowChar = eingabe[0];
+				if (rowChar < 'A' || rowChar >= 'A' + rows)
+				{
+					TypeText("KADE: Diese Zeile existiert nicht im Gitter.", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				if (!int.TryParse(eingabe.Substring(1), out int colNum))
+				{
+					TypeText("KADE: Das ist keine gültige Zahl.", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				int rIndex = rowChar - 'A';
+				int cIndex = colNum - 1;
+
+				if (cIndex < 0 || cIndex >= cols)
+				{
+					TypeText("KADE: Spalte liegt außerhalb unseres Sichtbereichs.", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				char feld = grid[rIndex, cIndex];
+				if (feld == 'X' || feld == 'o')
+				{
+					TypeText("Oduro: Diese Koordinate haben wir bereits beschossen.", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				Console.WriteLine();
+				TypeText("Torpedos unterwegs…", 10);
+				TorpedoSalveSichtmodus();
+
+				FeindSchiff getroffenesSchiff = null;
+				foreach (var f in feinde)
+				{
+					if (f.Lebendig && f.EnthältZelle(rIndex, cIndex))
 					{
-						case "1":
-							Scene_RueckkehrZurErde();
-							return;
-
-						case "2":
-							GameOver(
-								"Ohne aktive Superwaffe breitet sich der Nanovirus weiter aus.\n" +
-								"Der Aufbruch war eine fatale Entscheidung. Die Menschheit geht unter."
-							);
-							return;
-
-						default:
-							TypeText("Ungültige Eingabe.");
-							Thread.Sleep(300);
-							Scene_WaffeKontakt();
-							return;
+						getroffenesSchiff = f;
+						break;
 					}
 				}
 
-
-				
-				// SZENE: RÜCKKEHR ZUR ERDE (RICHTIGE ENTSCHEIDUNG)
-				
-				static void Scene_RueckkehrZurErde()
+				if (getroffenesSchiff != null)
 				{
-					Console.Clear();
-					SaveGame("Scene_RueckkehrZurErde");
+					getroffenesSchiff.Treffer++;
 
-					TypeText("Oduro: Kurs auf die Erde setzen. Schilde stabilisieren.");
-					TypeText("KADE: Nanovirus-Signaturen weiterhin extrem hoch…");
-					TypeText("");
+					if (getroffenesSchiff.Treffer >= getroffenesSchiff.TrefferZumVersenken)
+					{
+						foreach (var z in getroffenesSchiff.Zellen)
+						{
+							grid[z.Row, z.Col] = 'X';
+						}
 
-					TypeText("ARGOS: GENESIS, wir fliegen an eurer Seite. Wir müssen wissen, ob die Superwaffe versagt hat.");
-					TypeText("");
+						KleineExplosionImGitter(rIndex, cIndex);
+						TypeText($"Treffer! {getroffenesSchiff.Name} wurde vernichtet!", 10);
+					}
+					else
+					{
+						grid[rIndex, cIndex] = 'X';
+						TypeText("Solider Treffer! Die Fregatte hält noch, aber ihre Hülle bricht auf!", 10);
+					}
+				}
+				else
+				{
+					grid[rIndex, cIndex] = 'o';
+					TypeText("Fehlschuss – nur Trümmer und leere Dunkelheit.", 10);
+				}
 
-					TypeText("Commander: Haltet alle Sensoren auf maximale Empfindlichkeit. Wir dürfen uns keinen Fehler leisten.");
-					TypeText("");
+				Thread.Sleep(500);
 
-					TypeText("Fortsetzung folgt...");
-					Console.ReadKey();
+				if (feinde.Exists(f => f.Lebendig))
+				{
+					Console.WriteLine();
+					TypeText("Feindliche Kleinverbände eröffnen das Gegenfeuer auf die GENESIS!", 10);
+					PartikelSalveKleinschiffe();
+
+					int gesamtschaden = 0;
+					foreach (var f in feinde)
+					{
+						if (!f.Lebendig) continue;
+
+						switch (f.Symbol)
+						{
+							case 'F':
+								gesamtschaden += 5;
+								break;
+							case 'B':
+								gesamtschaden += 4;
+								break;
+							case 'L':
+								gesamtschaden += 2;
+								break;
+						}
+					}
+
+					if (gesamtschaden < 2) gesamtschaden = 2;
+
+					WendeSchadenAn(genesis, gesamtschaden);
+
+					if (genesis.Zerstoert)
+					{
+						CinematicExplosionGenesis();
+						GameOver("Die GENESIS wird im Blindfeuer-Gefecht zerfetzt. Niemand bleibt zurück, um die Erde zu retten.");
+						return;
+					}
 				}
 			}
+
+			Console.Clear();
+			ZeichneBlindfeuerBildschirm(grid, rows, cols, genesis);
+			Console.WriteLine();
+
+			TypeText("KADE: Commander… keine feindlichen Signaturen mehr. Wir haben das Feld bereinigt.", 10);
+			TypeText("Oduro: GENESIS ist schwer beschädigt, aber wir leben noch.", 10);
+			TypeText("Commander: Reparaturteams auf alle Decks. Wir kehren zur Erde zurück – egal, was uns dort erwartet.", 10);
+			Console.WriteLine();
+			TypeText("Fortsetzung folgt…", 10);
+			Console.ReadKey();
+
+			SaveGame("Scene_CaptainRest");
+			Scene_CaptainRest();
+			return;
+		}
+
+		static void ZeichneBlindfeuerBildschirm(char[,] grid, int rows, int cols, SchiffBasis genesis)
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("============== TAKTISCHES HAUPTDISPLAY – BLINDFEUER-MODUS ==============");
+			Console.ResetColor();
+
+			Console.WriteLine($"GENESIS – Hülle: {genesis.Huelle}/{genesis.MaxHuelle} | Schilde: OFFLINE");
+			Console.WriteLine();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.Write("     ");
+			for (int c = 1; c <= cols; c++)
+				Console.Write($"{c,2} ");
+			Console.WriteLine();
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.Write("    +");
+			for (int c = 0; c < cols; c++)
+				Console.Write("--");
+			Console.WriteLine("+");
+			Console.ResetColor();
+
+			for (int r = 0; r < rows; r++)
+			{
+				char rowLabel = (char)('A' + r);
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.Write($" {rowLabel}  |");
+				Console.ResetColor();
+
+				for (int c = 0; c < cols; c++)
+				{
+					char ch = grid[r, c];
+
+					switch (ch)
+					{
+						case 'F':
+							Console.ForegroundColor = ConsoleColor.Red;
+							break;
+						case 'B':
+							Console.ForegroundColor = ConsoleColor.Yellow;
+							break;
+						case 'L':
+							Console.ForegroundColor = ConsoleColor.Cyan;
+							break;
+						case 'X':
+							Console.ForegroundColor = ConsoleColor.Green;
+							break;
+						case 'o':
+							Console.ForegroundColor = ConsoleColor.DarkGray;
+							break;
+						default:
+							Console.ForegroundColor = ConsoleColor.DarkGray;
+							break;
+					}
+
+					Console.Write($" {ch}");
+				}
+
+				Console.ResetColor();
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.WriteLine(" |");
+				Console.ResetColor();
+			}
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.Write("    +");
+			for (int c = 0; c < cols; c++)
+				Console.Write("--");
+			Console.WriteLine("+");
+			Console.ResetColor();
+		}
+		static void Scene_CaptainRest()
+
+		{
+			// Autosave für diese Szene
+			SaveGame("Scene_CaptainRest");
+
+			Console.Clear();
+			TypeText("Die Brücke der GENESIS wirkt plötzlich größer, jetzt da das Feuer verstummt ist.", 12);
+			TypeText("Für einen Moment sagt niemand etwas. Nur das leise Knacken überhitzter Paneele ist zu hören.", 12);
+			TypeText("");
+
+			TypeText("Oduro: Keine weiteren Kontakte auf den Nahsensoren. Das Trümmerfeld beruhigt sich.", 12);
+			TypeText("Kade: Ich überprüfe die letzten Telemetriedaten… aber es sieht so aus, als hätten wir es geschafft.", 12);
+			TypeText("");
+
+			TypeText("Eine schwere Erleichterung geht durch meinen Körper. Die Anspannung der letzten Stunden fällt nur langsam ab.", 12);
+			TypeText("");
+
+			TypeText("Commander: Alle Systeme stufenweise aus dem Gefechtsmodus holen.", 12);
+			TypeText("Commander: Reparaturteams auf alle Decks. Sobald der Antrieb wieder voll zur Verfügung steht, schließen wir zur ARGOS auf.", 12);
+			TypeText("");
+
+			TypeText("Ich atmete einmal tief durch und sehe Oduro an.", 12);
+			TypeText("");
+
+			TypeText("Commander: Lieutenant Oduro…", 12);
+			TypeText("Oduro: Captain?", 12);
+			TypeText("Commander: Sie haben auf der Brücke einen kühlen Kopf bewahrt. Mit sofortiger Wirkung sind Sie mein Erster Offizier.", 12);
+			TypeText("");
+
+			TypeText("Für einen winzigen Moment zuckte ein Lächeln über ihr Gesicht, bevor es wieder von Professionalität überdeckt wird.", 12);
+			TypeText("Oduro: Aye, Captain.", 12);
+			TypeText("");
+
+			TypeText("Commander: Kade.", 12);
+			TypeText("Kade: Ja, Captain?", 12);
+			TypeText("Commander: Ihre Arbeit an den Sensoren und Systemen hat uns mehr als einmal den Hals gerettet.", 12);
+			TypeText("Commander: Sie werden zum Lieutenant Commander befördert. Zweiter Offizier auf der Brücke.", 12);
+			TypeText("");
+
+			TypeText("Kade: ...Verstanden, Captain. Ich werde Sie nicht enttäuschen.", 12);
+			TypeText("");
+
+			TypeText("Ich werfe einen letzten Blick auf die Frontscheibe, auf das Trümmerfeld, in dem noch vereinzelt Funken verglühender Metallstücke aufleuchten.", 12);
+			TypeText("");
+
+			TypeText("Commander: Oduro, sie haben das Kommando. Ich ziehe mich für einen Moment zurück.", 12);
+			TypeText("Oduro: Wir halten Sie auf dem Laufenden, Captain.", 12);
+			TypeText("");
+
+			Console.WriteLine();
+			TypeText("Ich trete in den Turbolift.", 12);
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawTurboLiftRoute();
+			TypeText("");
+			TypeText("Die Türen schließen sich mit einem leichten Zischen. Der Lift ruckt an.", 12);
+			TypeText("Zuerst geht es dutzende Decks hinab, vorbei an Hangars, Frachträumen und Versorgungsebenen.", 12);
+			TypeText("Dann wechselt der Lift die Richtung, schießt quer durch das Innere des Schiffes, wie eine Bahn in einem stählernen Labyrinth.", 12);
+			TypeText("Schließlich geht es wieder aufwärts, viele Decks hinauf, bis in den oberen Wohnbereich der Offiziere.", 12);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um auf dem Captain-Deck anzukommen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawCaptainsDeckOverview();
+			TypeText("");
+			TypeText("Die Türen öffnen sich. Das Offiziersdeck.", 12);
+			TypeText("Die Luft wirkt hier stiller, gedämpfter, als läge ein unsichtbares Schutzfeld über diesem Bereich.", 12);
+			TypeText("");
+
+			TypeText("Ich gehe den kurzen Gang hinunter zu meinem neuen Quartier. Die Beschriftung neben der Tür blinkt bereits:", 12);
+			TypeText("[ CAPTAIN'S QUARTERS ]", 12);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um das Quartier zu betreten...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawCaptainsQuarters();
+			TypeText("");
+			TypeText("Das Quartier ist groß, beinahe absurd groß, wenn man bedenkt wie wenig Platz die meisten Menschen noch haben.", 12);
+			TypeText("Ein breites Panoramafenster zeigt die dunkle Weite des Alls.", 12);
+			TypeText("Trümmerteile ziehen langsam an der GENESIS vorbei, wie rostige Blätter im Wind.", 12);
+			TypeText("");
+
+			TypeText("Mein Blick bleibt einen Moment an der weit entfernten Erde hängen. Friedlich. Ruhig. Von hier aus sieht sie aus wie immer.", 12);
+			TypeText("Nur wir wissen, was dort unten lauert.", 12);
+			TypeText("");
+
+			TypeText("Ich lasse mich auf das Sofa sinken und öffne das kleine Versorgungsmodul an der Wand.", 12);
+			TypeText("Eine einfache Mahlzeit, nichts Besonderes, aber warm und nahrhaft.", 12);
+			TypeText("Zum ersten Mal seit Stunden spüre ich so etwas wie Hunger.", 12);
+			TypeText("");
+
+			TypeText("Nachdem der letzte Bissen verschwunden ist, ziehe ich die Uniformjacke aus und gehe in die Nasszelle.", 12);
+			TypeText("Echte Wassertropfen prasseln auf meine Haut, kein Recyclingnebel, kein Spartimer.", 12);
+			TypeText("Für einen Moment vergesse ich Schlachten, Viren und alte Zivilisationen.", 12);
+			TypeText("");
+
+			TypeText("Zurück im Hauptraum des Quartiers werfe ich einen letzten Blick aus dem Fenster.", 12);
+			TypeText("Die GENESIS wirkt auf einmal weniger wie eine Maschine und mehr wie ein lebender Organismus, der durchhalten will, genau wie wir.", 12);
+			TypeText("");
+
+			TypeText("Ich lege mich auf das Bett. Der Körper ist erschöpft, der Geist arbeitet weiter.", 12);
+			TypeText("Erinnerungen an vergangene Einsätze blitzen auf, an die Zeit in der genoptimierten Infanterie...", 12);
+			TypeText("...an die geheimen Anlagen auf der Erde, die wir bewacht haben, ohne zu verstehen, was dort wirklich lag.", 12);
+			TypeText("");
+
+			TypeText("Langsam schiebt sich die Müdigkeit wie ein Schleier über meine Gedanken.", 12);
+			TypeText("Bevor ich einschlafe, schicke ich meiner Frau eine Nachricht.", 12);
+			TypeText("Morgen… oder was immer an Bord eines Schiffes als Morgen gilt… beginnt der nächste Schritt.", 12);
+			TypeText("");
+
+			Console.WriteLine();
+			TypeText("Die GENESIS hält Kurs. Die ARGOS ist irgendwo voraus, auf dem Weg zur Erde.", 12);
+			TypeText("Und tief in mir weiß ich: Ich werde wieder hinuntergehen müssen.", 12);
+			TypeText("");
+
+			Console.WriteLine("\nDrücke eine Taste, um zur nächsten Szene (Erde & Flottenaufstellung) zu wechseln...");
+			Console.ReadKey();
+
+			// Übergang zur nächsten Szene
+			Scene_EarthApproach();
+		}
+
+		// ------------------------------------------
+		// ASCII-Grafik: Turbolift-Strecke (lange Route)
+		// ------------------------------------------
+		static void DrawTurboLiftRoute()
+		{
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("                [ BRÜCKE / DECK 1 ]");
+			Console.WriteLine("                         |");
+			Console.WriteLine("                         v");
+			Console.WriteLine("                     [ DECK 12 ]");
+			Console.WriteLine("                         |");
+			Console.WriteLine("                         v");
+			Console.WriteLine("                     [ DECK 24 ]");
+			Console.WriteLine("                         |");
+			Console.WriteLine("                         v");
+			Console.WriteLine("                     [ DECK 36 ]");
+			Console.WriteLine("                         |");
+			Console.WriteLine("                         v");
+			Console.WriteLine("                 ====== QUERTRANSIT ======");
+			Console.WriteLine("                         →  →  →");
+			Console.WriteLine("                     [ SEKTION B ]");
+			Console.WriteLine("                         |");
+			Console.WriteLine("                         v");
+			Console.WriteLine("                     [ DECK 41 ]");
+			Console.WriteLine("                         |");
+			Console.WriteLine("                         v");
+			Console.WriteLine("                     [ DECK 45 ]");
+			Console.WriteLine("                         |");
+			Console.WriteLine("                         v");
+			Console.WriteLine("                 [ CAPTAIN-DECK / DECK 47 ]");
+			Console.ResetColor();
+		}
+
+		// ------------------------------------------
+		// ASCII-Grafik: Captain-Deck Übersicht
+		// ------------------------------------------
+		static void DrawCaptainsDeckOverview()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("                ===============================");
+			Console.WriteLine("                |     CAPTAIN-DECK / 47      |");
+			Console.WriteLine("                ===============================");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("   [Lift]----[Flur]----[CAPTAIN'S QUARTERS]");
+			Console.WriteLine("                  |");
+			Console.WriteLine("             [Offiziers-Lounge]");
+			Console.ResetColor();
+		}
+
+		// ------------------------------------------
+		// ASCII-Grafik: Captain-Quartier (luxuriös)
+		// ------------------------------------------
+		static void DrawCaptainsQuarters()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("        ________________________________________________");
+			Console.WriteLine("       |                                                |");
+			Console.WriteLine("       |                PANORAMA-FENSTER                |");
+			Console.WriteLine("       |   _________________________________            |");
+			Console.WriteLine("       |  /                                 \\           |");
+			Console.WriteLine("       | |   Sterne, Trümmer, ferne Lichter  |          |");
+			Console.WriteLine("       |  \\_________________________________/           |");
+			Console.WriteLine("       |                                                |");
+			Console.WriteLine("       |   [Sofa]           [Tisch]          [Konsolen] |");
+			Console.WriteLine("       |     ___              ___                []     |");
+			Console.WriteLine("       |    /   \\            /   \\              [__]    |");
+			Console.WriteLine("       |                                                |");
+			Console.WriteLine("       |     [Schlafbereich]        [Nasszelle]         |");
+			Console.WriteLine("       |        ____                 ______             |");
+			Console.WriteLine("       |       |Bett|               |DUSCHE|            |");
+			Console.WriteLine("       |_______________________________________________ |");
+			Console.ResetColor();
+		}
+		static void Scene_EarthApproach()
+		{
+			Console.Clear();
+			SaveGame("Scene_EarthApproach");
+
+			TypeText("Als ich die Augen öffne, ist das Quartier still.", 12);
+			TypeText("Nur das tiefe Brummen der Reaktoren erinnert daran, dass wir weiterhin unterwegs sind.", 12);
+			TypeText("");
+
+			TypeText("Nach einer kurzen Dusche und einem knappen Frühstück mache ich mich auf den Weg zurück zur Brücke.", 12);
+			TypeText("Die Verantwortung wartet nicht.", 12);
+			Console.WriteLine();
+
+			Console.WriteLine("Drücke eine Taste, um auf der Brücke anzukommen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawEarthOrbitScene();
+			TypeText("");
+			TypeText("Die Erde dominiert den Ausblick. Eine blaue Kugel, halb im Schatten, halb im Licht.", 12);
+			TypeText("Daneben, im weiten Orbit, schwebt die ARGOS schwer, träge und doch bereit, wieder zuzuschlagen.", 12);
+			TypeText("Die GENESIS hält in sicherer Entfernung, ihre Hülle gezeichnet, aber intakt.", 12);
+			TypeText("");
+
+			TypeText("Oduro: Captain auf der Brücke!", 12);
+			TypeText("Ich nicke knapp und trete an die zentrale Konsole.", 12);
+			TypeText("");
+
+			TypeText("Kade: ARGOS meldet stabile Umlaufbahn über der Erdoberfläche.", 12);
+			TypeText("Kade: Noch immer keine endgültige Bestätigung, ob die Atlaner-Superwaffe ausgelöst wurde oder nicht.", 12);
+			TypeText("");
+
+			TypeText("Auf dem zentralen Holo tauchen Datenströme auf – Fragmente, Rauschen, vereinzelte klare Signale.", 12);
+			TypeText("Ich erkenne Teile von Koordinaten, Tarnfrequenzen, Zugangscodes, die ich längst vergessen glaubte.", 12);
+			TypeText("");
+
+			TypeText("Oduro: Sie kennen diese Muster, oder?", 12);
+			TypeText("Ich starre auf die Daten. Zurückversetzt in eine Zeit, in der ich noch kein Captain war.", 12);
+			TypeText("");
+
+			TypeText("Commander: Ich war ein sogenannter optimierter Infanterist, lange bevor ich auf Brücken stand.", 12);
+			TypeText("Commander: Einer von denen, die die Atlanter-Anlage auf der Erde bewachten.", 12);
+			TypeText("Commander: Wir hatten keine Ahnung, was wir da eigentlich schützen.", 12);
+			TypeText("");
+
+			TypeText("Kade: Dann sind Sie der Einzige an Bord, der den Komplex wenigstens teilweise aus eigener Sicht kennt.", 12);
+			TypeText("Oduro: Wenn wir die Waffe verstehen oder neu aktivieren wollen…", 12);
+			TypeText("Commander: ...muss ICH runter.", 12);
+			TypeText("");
+
+			TypeText("Ich blicke erneut zur Erde. Ein Planet voller Toter und vielleicht der Schlüssel zu unserer Rettung.", 12);
+			TypeText("");
+
+			TypeText("Commander: Wir stellen ein Einsatzteam zusammen. Taktisches Personal, Technik, Medizin, klein, aber spezialisiert.", 12);
+			TypeText("Commander: Vorbereitung des Teleporter-Decks. Wir verschwenden keine Zeit.", 12);
+			TypeText("Oduro: Ich erhebe Einspruch. Laut Gesetz darf der ranghöchste Offizier nicht an Ausseneinsätzen teilnehmen.", 12);
+			TypeText("Commander: Zur Kenntnis genommen, Ich werde dennoch gehen.", 12);
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um zum Teleporter-Deck zu wechseln...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawTeleporterPad();
+			TypeText("");
+			TypeText("Das Teleporter-Deck ist hell ausgeleuchtet. Keine Mystik, keine Magie, reine, brutale Technik.", 12);
+			TypeText("Ein großer, gepanzerter Ring markiert das eigentliche Transportfeld.", 12);
+			TypeText("Konsole um Konsole zeigt Statusanzeigen, Vektorberechnungen und Warnungen.", 12);
+			TypeText("");
+
+			TypeText("Techniker: Captain, das Feld ist stabil. Wir können kurze Sprünge in den oberen Atmosphärenbereich wagen.", 12);
+			TypeText("Techniker: Alles darunter wird knifflig – Störungen, Ruinen, Nanokontamination in der Luft.", 12);
+			TypeText("");
+
+			TypeText("Ich trete auf das Podium. Neben mir das Einsatzteam – jede und jeder mit eigenem Schatten in der Vergangenheit.", 12);
+			TypeText("");
+
+			TypeText("Oduro (über Interkom): Brücke an Teleporter-Deck. Alle Systeme im Standby. Wir haben Sie im Fokus, Captain.", 12);
+			TypeText("Kade: Koordinaten der alten Atlanter-Anlage sind in das Gitter geladen. So genau, wie es unsere Sensoren zulassen.", 12);
+			TypeText("");
+
+			TypeText("Ich atme tief durch. Die Erinnerungen kehren zurück: Beton, Stahl, kalte Luft in unterirdischen Schächten.", 12);
+			TypeText("Und die dumpfe Ahnung, dass dort unten etwas liegt, das nie für Menschen gedacht war.", 12);
+			TypeText("");
+
+			TypeText("Commander: Hier spricht Captain der GENESIS.", 12);
+			TypeText("Commander: Erster Bodeneinsatz zur Atlanter-Anlage beginnt.", 12);
+			TypeText("Commander: Egal, was wir dort finden – wir sorgen dafür, dass die Menschheit noch eine Wahl hat.", 12);
+			TypeText("");
+
+			TypeText("Techniker: Feldspannung steigt… 20 Prozent… 40… 60…", 12);
+			TypeText("Ein leises Summen legt sich über das Podium, die Luft beginnt zu flirren.", 12);
+			TypeText("Lichtlinien wandern über den Boden und zeichnen das Transportmuster nach.", 12);
+			TypeText("");
+
+			TypeText("Techniker: 80 Prozent… 90… Feld stabil. Bereit zum Transfer, Captain.", 12);
+			TypeText("");
+
+			TypeText("Ich nicke dem Team zu.", 12);
+			TypeText("Commander: GENESIS, ARGOS… haltet die Position.", 12);
+			TypeText("Commander: Wir kommen zurück.", 12);
+			TypeText("");
+
+			TypeText("Mit einem letzten Blick zur Erde, projiziert auf dem taktischen Display, trete ich in die Mitte des Transportfeldes.", 12);
+			TypeText("Das Licht wird heller, die Konturen verschwimmen.", 12);
+			TypeText("");
+
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			TypeText("   >>> FORTSETZUNG FOLGT – BODENEINSATZ AUF DER ERDE <<<", 8);
+			Console.ResetColor();
+
+			Console.WriteLine("\nDrücke eine Taste, um zum Menü oder zum nächsten Kapitel zurückzukehren...");
+			Console.ReadKey();
+		}
+
+		// ------------------------------------------
+		// ASCII-Grafik: Erde + GENESIS & ARGOS im Orbit
+		// ------------------------------------------
+		static void DrawEarthOrbitScene()
+		{
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.WriteLine("                   .-\"\"\"\"\"\"-.");
+			Console.WriteLine("                .-'   _   _   '-.");
+			Console.WriteLine("              .'    .' `-' `.    '.");
+			Console.WriteLine("             /     /  .---.  \\     \\");
+			Console.WriteLine("            |     |  /     \\  |     |");
+			Console.WriteLine("            |     |  \\_____/  |     |");
+			Console.WriteLine("             \\     \\         /     /");
+			Console.WriteLine("              '.    '.___.'    .'");
+			Console.WriteLine("                '-.         .-'");
+			Console.WriteLine("                    '-.__.-'");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine();
+			Console.WriteLine("   [GENESIS]");
+			Console.WriteLine("    ________________");
+			Console.WriteLine(" __/                \\__");
+			Console.WriteLine("/   ███████████████   \\");
+			Console.WriteLine("\\__                __/");
+			Console.WriteLine("   \\______________/");
+
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine();
+			Console.WriteLine("                                  [ARGOS]");
+			Console.WriteLine("                                   _____________");
+			Console.WriteLine("                                __/           \\__");
+			Console.WriteLine("                               /   ████████    _ \\");
+			Console.WriteLine("                               \\__           __/ /");
+			Console.WriteLine("                                  \\_________/");
+			Console.ResetColor();
+		}
+
+		// ------------------------------------------
+		// ASCII-Grafik: Teleporter-Pad (militärisch / technisch)
+		// ------------------------------------------
+		static void DrawTeleporterPad()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("          =========================================");
+			Console.WriteLine("          |         TACTICAL TRANSPORT DECK       |");
+			Console.WriteLine("          =========================================");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("          Kontrollstationen flankieren das Pad,");
+			Console.WriteLine("          bewaffnete Sicherheitsposten halten Abstand.");
+			Console.WriteLine();
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("                _______________________________");
+			Console.WriteLine("               /                               \\");
+			Console.WriteLine("              /                                 \\");
+			Console.WriteLine("             /   [   TRANSPORT-FELD RING   ]    \\");
+			Console.WriteLine("            /___________________________________\\");
+			Console.WriteLine("            |                                   |");
+			Console.WriteLine("            |      (   O   O   O   O   O   )    |");
+			Console.WriteLine("            |       \\               /          |");
+			Console.WriteLine("            |        \\             /           |");
+			Console.WriteLine("            |         '-----------'            |");
+			Console.WriteLine("            |__________________________________|");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine("            [Konsole A]        [Konsole B]");
+			Console.WriteLine("                [##]              [##]");
+			Console.WriteLine("                [##]              [##]");
+			Console.ResetColor();
 		}
 	}
 }
-
-
 
