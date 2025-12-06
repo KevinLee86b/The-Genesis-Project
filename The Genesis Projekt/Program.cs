@@ -159,6 +159,7 @@ namespace The_Genesis_Projekt
 
 				case "Scene_ZerstoererKampf": Scene_ZerstoererKampf(); break;
 				case "Scene_NachZerstoerer": Scene_NachZerstoerer(); break;
+				case "Scene_AtlanerMission_Start": Scene_AtlanerMission_Start(); break;
 
 				default:
 					Console.WriteLine("Unbekannte Szene im Speicherstand. Zurück zum Hauptmenü.");
@@ -183,7 +184,8 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("6) Nach Helios-Kampf / Atlaner-Entscheidung");
 			Console.WriteLine("7) Zerstörerkampf");
 			Console.WriteLine("8) Blindfeuer-Gefecht im Trümmerfeld");
-			Console.WriteLine("9) Zurück zum Hauptmenü");
+			Console.WriteLine("9) Atlaner-Bodenmission");
+			Console.WriteLine("10) Zurück zum Hauptmenü");
 
 			Console.Write("\nAuswahl: ");
 			string choice = Console.ReadLine();
@@ -222,6 +224,14 @@ namespace The_Genesis_Projekt
 					SaveGame("Scene_NachZerstoerer");
 					Scene_NachZerstoerer();
 					break;
+				case "9":
+					SaveGame("Scene_AtlanerMission_Start");
+					Scene_AtlanerMission_Start();
+					break;
+				case "10":
+					MainMenu();
+					break;
+					
 				default:
 					MainMenu();
 					break;
@@ -2125,10 +2135,7 @@ namespace The_Genesis_Projekt
 			// Übergang zur nächsten Szene
 			Scene_EarthApproach();
 		}
-
-		// ------------------------------------------
 		// ASCII-Grafik: Turbolift-Strecke (lange Route)
-		// ------------------------------------------
 		static void DrawTurboLiftRoute()
 		{
 			Console.ForegroundColor = ConsoleColor.Gray;
@@ -2158,10 +2165,7 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("                 [ CAPTAIN-DECK / DECK 47 ]");
 			Console.ResetColor();
 		}
-
-		// ------------------------------------------
 		// ASCII-Grafik: Captain-Deck Übersicht
-		// ------------------------------------------
 		static void DrawCaptainsDeckOverview()
 		{
 			Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -2177,9 +2181,7 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 		}
 
-		// ------------------------------------------
 		// ASCII-Grafik: Captain-Quartier (luxuriös)
-		// ------------------------------------------
 		static void DrawCaptainsQuarters()
 		{
 			Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -2390,6 +2392,654 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("                [##]              [##]");
 			Console.ResetColor();
 		}
+		static void Scene_AtlanerMission_Start()
+		{
+			Console.Clear();
+			SaveGame("Scene_AtlanerMission_Start");
+
+			TypeText("Orbit über der Erde – GENESIS, Transportersektion.", 10);
+			TypeText("Wir stehen in einer Reihe auf der Transporterplattform, schwere Kampfanzüge schließen sich um unsere Körper.", 10);
+			TypeText("Die Helme verriegeln mit einem Zischen, das HUD flackert auf. Schildstatus: aktiv.", 10);
+			TypeText("");
+			TypeText("Oduro: Captain, die Zielkoordinaten liegen direkt vor dem Haupteingang der Atlanter-Anlage.", 10);
+			TypeText("KADE: Wir können nur einmal sauber runter, der Nano-Virus stört die Musterpuffer jetzt schon.", 10);
+			TypeText("");
+			TypeText("Commander: Alles klar. Trupp, bereit machen zum Sprung. Wir holen uns diese Anlage zurück.", 10);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um den Transport zu starten...");
+			Console.ReadKey();
+
+			Console.Clear();
+			TypeText("Transporter-Techniker: Energietransfer läuft… Muster werden aufgelöst…", 10);
+			Console.Beep(700, 150);
+			Console.Beep(900, 150);
+			Thread.Sleep(400);
+
+			TypeText("Die Welt zerbricht in Licht. Ein Bruchteil einer Sekunde fühlt es sich an, als würde jeder Knochen auseinandergezogen.", 10);
+			Thread.Sleep(600);
+
+			Console.Clear();
+			DrawFacilityEntrance();
+			TypeText("");
+			TypeText("Der Transport löst sich auf und wir stehen im Staub eines verseuchten Planeten. Der Virus schien schon die Athmosphäre zu verändern.", 10);
+			TypeText("Vor uns erhebt sich eine gigantische, schwarze Struktur: der Eingangsblock der Atlanter-Anlage.", 10);
+			TypeText("Überall in der Ferne: Silhouetten von Ruinen, und in der Luft hängt der metallische Geschmack des Todes.", 10);
+			TypeText("");
+
+			TypeText("Squad-Leader: Captain, Türsystem ist tot. Keine Energie.", 10);
+			TypeText("Commander: Dann wecken wir das Biest auf. Zum Eingangs-Terminal.", 10);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um das Hack-Terminal zu öffnen...");
+			Console.ReadKey();
+
+			Scene_AtlanerMission_EingangHack();
+		}
+
+		// -------------------------------------------------------------
+		//  EINGANG: 3-REIHIGES SCHALTKREIS-HACK-PANEL
+		// -------------------------------------------------------------
+		static void Scene_AtlanerMission_EingangHack()
+		{
+			Console.Clear();
+			SaveGame("Scene_AtlanerMission_EingangHack");
+
+			int anzugHuelle = 100;   // einfache Lebensanzeige für den Bodeneinsatz
+
+			TypeText("Wir treten an ein eingelassenes Terminal neben der gewaltigen Tür.", 10);
+			TypeText("Atlantische Glyphen flackern auf, als unsere Systeme versuchen, das Interface zu übersetzen.", 10);
+			TypeText("KADE (über Com): Captain, die Tür ist mit einem dreifachen Schaltkreis gesichert.", 10);
+			TypeText("KADE: Finden Sie in jeder Reihe das fehlerhafte Modul, sonst schickt die Anlage einen Energieimpuls zurück.", 10);
+			TypeText("");
+
+			bool success = true;
+
+			for (int level = 1; level <= 3; level++)
+			{
+				bool ok = DoAtlanerHack(level, ref anzugHuelle);
+				if (!ok)
+				{
+					success = false;
+					break;
+				}
+
+				if (anzugHuelle <= 0)
+				{
+					Console.Clear();
+					DrawInfectedWave();
+					GameOver("Der Rückschlag der Atlanter-Anlage durchschlägt deine Schilde und Rüstung.\n" +
+							 "Das Team bricht zusammen, bevor die Tür überhaupt aufgeht.");
+					return;
+				}
+			}
+
+			if (!success)
+			{
+				Console.Clear();
+				DrawInfectedWave();
+				GameOver("Der letzte Energieimpuls zerstört eure Schutzsysteme.\n" +
+						 "Infizierte strömen heran, als die Dunkelheit über euch hereinbricht.");
+				return;
+			}
+
+			// Hack erfolgreich
+			Console.Clear();
+			Console.Beep(900, 140);
+			Console.Beep(1100, 180);
+			TypeText("Die Glyphen wechseln von tiefem Rot zu kaltem Blau. Der Schaltkreis akzeptiert unsere Eingaben.", 10);
+			TypeText("Massive Verriegelungsbolzen lösen sich in der Tiefe, die Tür beginnt, sich zu öffnen.", 10);
+			Thread.Sleep(600);
+
+			Console.Clear();
+			DrawFacilityEntranceOpen();
+			TypeText("");
+			TypeText("Eine Wolke aus Staub und jahrtausendelang eingeschlossener Luft strömt uns entgegen.", 10);
+			TypeText("Commander: Trupp, rein da. Wir aktivieren die Anlage und das Waffensystem – oder wir sterben hier unten.", 10);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um die Anlage zu betreten...");
+			Console.ReadKey();
+
+			Scene_AtlanerMission_Labyrinth();
+		}
+
+		// Hilfsmethode: einzelnes Hack-Level
+		static bool DoAtlanerHack(int level, ref int anzugHuelle)
+		{
+			Console.Clear();
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine($"=== ATLANTISCHER SCHALTKREIS – EBENE {level} ===");
+			Console.ResetColor();
+			Console.WriteLine();
+
+			string[][] muster;
+
+			if (level == 1)
+			{
+				muster = new string[][]
+				{
+					new [] { "A", "B", "C", "X", "D" },
+					new [] { "C", "D", "X", "B", "A" },
+					new [] { "X", "A", "C", "D", "B" }
+				};
+			}
+			else if (level == 2)
+			{
+				muster = new string[][]
+				{
+					new [] { "A", "X", "B", "C", "D" },
+					new [] { "D", "C", "B", "X", "A" },
+					new [] { "B", "C", "X", "D", "E" }
+				};
+			}
+			else
+			{
+				muster = new string[][]
+				{
+					new [] { "X", "A", "B", "C", "D" },
+					new [] { "A", "B", "C", "D", "X" },
+					new [] { "B", "X", "C", "D", "E" }
+				};
+			}
+
+			// In jeder Reihe ist genau EIN "X" der Fehler
+			for (int row = 0; row < muster.Length; row++)
+			{
+				Console.WriteLine($"Reihe {row + 1}:");
+				Console.ForegroundColor = ConsoleColor.DarkCyan;
+				Console.Write("   ");
+				for (int i = 0; i < muster[row].Length; i++)
+				{
+					Console.Write($"[{muster[row][i]}] ");
+				}
+				Console.ResetColor();
+				Console.WriteLine();
+				Console.Write($"Fehlerhaftes Modul in Reihe {row + 1}? (Position 1–5): ");
+
+				string input = Console.ReadLine();
+				if (!int.TryParse(input, out int pos) || pos < 1 || pos > 5)
+				{
+					TypeText("Der Schaltkreis vibriert leicht, die Anlage scheint unsere Unentschlossenheit nicht zu mögen…", 10);
+					anzugHuelle -= 10;
+					continue;
+				}
+
+				int idx = pos - 1;
+				if (muster[row][idx] == "X")
+				{
+					TypeText("Die Reihe stabilisiert sich, die Symbole werden statisch.", 10);
+				}
+				else
+				{
+					Console.Beep(300, 200);
+					Console.Beep(250, 200);
+					TypeText("Ein Emissionsimpuls schießt durch den Anzug – Schilde verzerren sich.", 10);
+					anzugHuelle -= 15;
+					TypeText($"Anzugintegrität sinkt auf {anzugHuelle}%.", 10);
+
+					if (anzugHuelle <= 0)
+						return false;
+				}
+
+				Console.WriteLine();
+			}
+
+			return true;
+		}
+
+		// -------------------------------------------------------------
+		//  LABYRINTH IN DER ANLAGE (20 x 40) MIT 3 KONSOLEN + AUSGANG
+		// -------------------------------------------------------------
+		static void Scene_AtlanerMission_Labyrinth()
+		{
+			Console.Clear();
+			SaveGame("Scene_AtlanerMission_Labyrinth");
+
+			TypeText("Der Korridor dahinter ist breit, mit glatten, dunklen Wänden, durchzogen von leuchtenden Linien.", 10);
+			TypeText("Die Atlanter hatten nie für Menschen gebaut – alles wirkt zu sauber, zu perfekt, zu tot.", 10);
+			TypeText("Wir müssen zum Reaktorkern, zur Kontrollsektion und zur Waffensteuerung, alles tief im Inneren.", 10);
+			TypeText("");
+
+			// Einfacher Lebens-/Schutzwert für die Bodentruppe
+			int anzugHuelle = 90;
+
+			// Map 20 x 40
+			string[] mapLines = new string[]
+			{
+				"########################################",
+				"#S            #                    1  #",
+				"# ### ####### # ####### # # ######### #",
+				"#   #       #   #     # # #       #   #",
+				"### # ##### ##### ### # # ####### # ###",
+				"#   #     #     #   #   #       # #   #",
+				"# ####### # ### ### ##### ##### # ### #",
+				"#       # #   #   #     # #   # #   # #",
+				"####### # ### ### ##### # # # # ### # #",
+				"#       #       #         # # #   # # #",
+				"# ### # ### # ### ######### # ### # # #",
+				"# #   #   # #   #         # #   # # # #",
+				"# # ##### # ### ######### # ### # # # #",
+				"# #     # #   #   2       #   #   #   #",
+				"# ##### # ### ####### ### ### ##### ###",
+				"#     # #   #       # #   #   #   #   #",
+				"##### # ### ####### # # ### # # # ### #",
+				"#   # #   #   3   #   #   # # # #   # #",
+				"# E       #       #####   #   #     # #",
+				"########################################"
+			};
+
+			int rows = mapLines.Length;
+			int cols = mapLines.Max(line => line.Length);  // längste Zeile als Maßstab
+
+			char[,] map = new char[rows, cols];
+
+			int playerR = 0, playerC = 0;
+
+			for (int r = 0; r < rows; r++)
+			{
+				string line = mapLines[r].PadRight(cols, ' '); // fehlende Zeichen füllen
+
+				for (int c = 0; c < cols; c++)
+				{
+					char ch = line[c];
+					map[r, c] = ch;
+
+					if (ch == 'S')   // Spielerstart
+					{
+						playerR = r;
+						playerC = c;
+					}
+				}
+			}
+
+			bool console1Done = false;
+			bool console2Done = false;
+			bool console3Done = false;
+
+			bool escapeTriggered = false;
+
+			while (!escapeTriggered)
+			{
+				Console.Clear();
+				DrawFacilityMap(map, rows, cols, playerR, playerC);
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("Ziel: Reaktor (1), Kontrollkern (2), Waffensteuerung (3) aktivieren und dann zum Ausgang (E).");
+				Console.ResetColor();
+				Console.WriteLine($"Anzug-Integrität: {anzugHuelle}%");
+				Console.WriteLine($"Konsole 1 (Reaktor): {(console1Done ? "AKTIV" : "OFFLINE")}");
+				Console.WriteLine($"Konsole 2 (Steuerung): {(console2Done ? "AKTIV" : "OFFLINE")}");
+				Console.WriteLine($"Konsole 3 (Waffe): {(console3Done ? "AKTIV" : "OFFLINE")}");
+				Console.WriteLine();
+				Console.WriteLine("Steuerung: W/A/S/D = bewegen, H = Konsole hacken, Q = abbrechen (zurück zur GENESIS ist keine Option 😉).");
+				Console.Write("Eingabe: ");
+				string cmd = Console.ReadLine().Trim().ToUpper();
+
+				if (cmd == "Q")
+				{
+					TypeText("Commander: Negativ. Wir sind hier unten, bis die Anlage läuft.", 10);
+					Thread.Sleep(500);
+					continue;
+				}
+
+				int newR = playerR;
+				int newC = playerC;
+
+				if (cmd == "W") newR--;
+				else if (cmd == "S") newR++;
+				else if (cmd == "A") newC--;
+				else if (cmd == "D") newC++;
+
+				if (cmd == "H")
+				{
+					char tile = map[playerR, playerC];
+					if (tile == '1' && !console1Done)
+					{
+						TypeText("Reaktorkonsole erkannt. Beginne Aktivierungsprozedur…", 10);
+						bool ok = DoAtlanerHack(1, ref anzugHuelle);
+						console1Done = ok;
+					}
+					else if (tile == '2' && !console2Done)
+					{
+						TypeText("Zentrale Steuerkonsole. Zugriff wird aufgebaut…", 10);
+						bool ok = DoAtlanerHack(2, ref anzugHuelle);
+						console2Done = ok;
+					}
+					else if (tile == '3' && !console3Done)
+					{
+						TypeText("Waffensteuerung. Letzter Sicherheitskreis wird geöffnet…", 10);
+						bool ok = DoAtlanerHack(3, ref anzugHuelle);
+						console3Done = ok;
+					}
+					else
+					{
+						TypeText("Keine aktive Konsole an dieser Position.", 10);
+					}
+
+					if (anzugHuelle <= 0)
+					{
+						DrawInfectedWave();
+						GameOver("Die Atlanter-Systeme grillen eure Anzüge – der Trupp bricht in der Dunkelheit zusammen.");
+						return;
+					}
+
+					continue;
+				}
+
+				// Bewegung prüfen
+				if (cmd == "W" || cmd == "A" || cmd == "S" || cmd == "D")
+				{
+					if (newR < 0 || newR >= rows || newC < 0 || newC >= cols)
+						continue;
+
+					if (map[newR, newC] == '#')
+					{
+						TypeText("Solide Atlanter-Struktur. Hier kommen wir nicht durch.", 10);
+						Thread.Sleep(200);
+						continue;
+					}
+
+					playerR = newR;
+					playerC = newC;
+
+					// Chance auf kleine Infiziertenbegegnung in den Korridoren
+					if (map[playerR, playerC] == ' ' || map[playerR, playerC] == '.')
+					{
+						if (new Random().Next(0, 100) < 8) // 8% Chance
+						{
+							KleineInfiziertenBegegnung(ref anzugHuelle);
+							if (anzugHuelle <= 0)
+							{
+								DrawInfectedWave();
+								GameOver("Die Infizierten wälzen sich über das Team und zerreißen die Anzüge.");
+								return;
+							}
+						}
+					}
+
+					// Ausgang erreichen?
+					if (map[playerR, playerC] == 'E')
+					{
+						if (console1Done && console2Done && console3Done)
+						{
+							escapeTriggered = true;
+						}
+						else
+						{
+							TypeText("Oduro: Captain, wir können nicht gehen, bevor alle Systeme aktiv sind!", 10);
+							Thread.Sleep(500);
+						}
+					}
+				}
+			}
+
+			Scene_AtlanerMission_ExitFight();
+		}
+
+		// -------------------------------------------------------------
+		//  ABSCHLUSS: Waffensystem aktiviert – Flucht zum Landungsschiff
+		// -------------------------------------------------------------
+		static void Scene_AtlanerMission_ExitFight()
+		{
+			Console.Clear();
+			SaveGame("Scene_AtlanerMission_ExitFight");
+
+			TypeText("Wir erreichen den inneren Schacht, der direkt zum Sendeturm der Atlanter-Anlage führt.", 10);
+			TypeText("Hinter uns donnern Türen zu – massive Verriegelungen fahren in die Wände.", 10);
+			TypeText("Reaktor: ONLINE. Steuerung: ONLINE. Waffenplattform: BEREIT.", 10);
+			TypeText("");
+
+			TypeText("KADE (über Com): Captain, wir sehen massive Energiespitzen im Untergrund. Die Anlage wacht auf.", 10);
+			TypeText("Oduro: Und die Infizierten merken es auch. Hörst du das…?", 10);
+
+			Console.Beep(300, 200);
+			Console.Beep(250, 180);
+			DrawInfectedWave();
+			TypeText("");
+			TypeText("Hinter uns füllt der Gang sich mit verzerrten Gestalten, verschmolzene Körper, zusätzliche Gliedmaßen, verzogene Münder. Diese schrecklichen Schreie.", 10);
+			TypeText("Sie stolpern, kriechen, rennen und immer wieder platzen diese grauen Pusteln und sprühen nanoglitzernden Staub in die Luft.", 10);
+			TypeText("");
+
+			TypeText("Commander: GENESIS, hier Bodentrupp. Forderung: Landungsschiff an Koordinate Sendeturm – SCHWEBEPOSITION, sofort!", 10);
+			TypeText("Brücke: Anflug bestätigt. Bleibt in Bewegung, Captain!", 10);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um den Aufstieg zum Turm zu beginnen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawTowerClimb();
+			TypeText("");
+			TypeText("Wir sprinten über eine schmale Rampe, die sich wie eine Ader durch das Innere des Turms zieht.", 10);
+			TypeText("Unter uns: der gleißende Kern der Anlage. Über uns: der Ausgang zur Oberfläche.", 10);
+			TypeText("");
+
+			// Kleine Endkampf-Entscheidung
+			TypeText("Die erste Welle Infizierter erreicht die Rampe. Wir haben nur Sekunden.", 10);
+			Console.WriteLine();
+			Console.WriteLine("1) Rückwärts feuern und langsam zurückweichen");
+			Console.WriteLine("2) Granaten werfen und durchbrechen");
+			Console.WriteLine("3) Schilde des Trupps nach vorne verstärken und halten");
+			Console.Write("\nAuswahl: ");
+
+			string choice = Console.ReadLine();
+
+			Console.Clear();
+			DrawInfectedWave();
+			TypeText("");
+
+			if (choice == "1")
+			{
+				TypeText("Wir drehen uns halb um, feuern Salve um Salve in die Woge aus Fleisch und Metall.", 10);
+				TypeText("Einige der Kreaturen stürzen in den Abgrund, andere klettern über ihre Körper hinweg.", 10);
+			}
+			else if (choice == "2")
+			{
+				TypeText("Zwei, drei Granaten rollen zwischen die Beine der vordersten Infizierten.", 10);
+				Console.Beep(700, 140);
+				Console.Beep(900, 180);
+				Console.Beep(400, 220);
+				TypeText("Die Explosionen reißen eine Bresche in die Masse, Gliedmaßen und Metallteile fliegen durch den Schacht.", 10);
+			}
+			else if (choice == "3")
+			{
+				TypeText("Wir schieben die Schilde nach vorne, ein leuchtender Keil aus Energie.", 10);
+				TypeText("Die ersten Kreaturen prallen dagegen, klauen und Zähne schaben darüber, aber wir halten.", 10);
+			}
+			else
+			{
+				TypeText("Ein Moment des Zögerns – und trotzdem reißen wir uns zusammen und feuern.", 10);
+			}
+
+			Thread.Sleep(600);
+
+			Console.Clear();
+			DrawShuttlePickup();
+			TypeText("");
+			TypeText("Ein Schatten fällt über die Turmöffnung, das Landungsschiff der GENESIS schwebt im Staubsturm.", 10);
+			TypeText("Pilot: Los, los, los! Rein da!", 10);
+			TypeText("Wir springen, werden von Greifarmen gepackt und ins Innere gezogen, während unter uns die ersten Infizierten den Rand erreichen.", 10);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um die Aktivierung der Atlaner-Waffe zu sehen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawOrbitalStrike();
+			TypeText("");
+			TypeText("Im Orbit: GENESIS und ARGOS drehen sich aus der direkten Sichtlinie, ihre Sensoren auf die Erde gerichtet.", 10);
+			TypeText("Ein einziger, unfassbar heller Lichtstrahl durchschlägt die Atmosphäre – die Atlanter-Waffe entfesselt ihre Macht.", 10);
+			TypeText("Kontinente glühen auf, Städte vergehen, infizierte Schwärme werden in Licht und Wärme aufgelöst.", 10);
+			TypeText("");
+
+			TypeText("Über Kom: Commander: Wir haben es getan… aber zu welchem Preis.", 10);
+			TypeText("Über Kom: Oduro: Captain… die Erde ist... Aber vielleicht hat die Menschheit jetzt wieder eine Chance.", 10);
+			TypeText("");
+
+			SaveGame("Scene_AtlanerMission_Ende");
+
+			TypeText("Fortsetzung folgt…", 10);
+			Console.ReadKey();
+		}
+
+		// -------------------------------------------------------------
+		//  ASCII / ANZEIGEN FÜR DIE ATLANTER-MISSION
+		// -------------------------------------------------------------
+		static void DrawFacilityEntrance()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("           ________________________________");
+			Console.WriteLine("          /                                \\");
+			Console.WriteLine("         /   MONOLITHISCHER ATLANTER-EINGANG \\");
+			Console.WriteLine("        /____________________________________\\");
+			Console.WriteLine("        |                                    |");
+			Console.WriteLine("        |        ███████████████████        |");
+			Console.WriteLine("        |        █  VERSIEGELTES TOR █      |");
+			Console.WriteLine("        |        ███████████████████        |");
+			Console.WriteLine("        |____________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawFacilityEntranceOpen()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("           ________________________________");
+			Console.WriteLine("          /                                \\");
+			Console.WriteLine("         /   MONOLITHISCHER ATLANTER-EINGANG \\");
+			Console.WriteLine("        /____________________________________\\");
+			Console.WriteLine("        |                                    |");
+			Console.WriteLine("        |   ████          FREIER ZUGANG     |");
+			Console.WriteLine("        |   ████     SCHACHT INS INNERE     |");
+			Console.WriteLine("        |   ████                            |");
+			Console.WriteLine("        |____________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawFacilityMap(char[,] map, int rows, int cols, int playerR, int playerC)
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("============= ATLANTER-INNENANLAGE – TAKTISCHE ANSICHT =============");
+			Console.ResetColor();
+			for (int r = 0; r < rows; r++)
+			{
+				for (int c = 0; c < cols; c++)
+				{
+					if (r == playerR && c == playerC)
+					{
+						Console.ForegroundColor = ConsoleColor.Green;
+						Console.Write('P');
+						Console.ResetColor();
+						continue;
+					}
+
+					char ch = map[r, c];
+					switch (ch)
+					{
+						case '#':
+							Console.ForegroundColor = ConsoleColor.DarkGray;
+							break;
+						case '1':
+						case '2':
+						case '3':
+							Console.ForegroundColor = ConsoleColor.Yellow;
+							break;
+						case 'E':
+							Console.ForegroundColor = ConsoleColor.Cyan;
+							break;
+						case 'S':
+							Console.ForegroundColor = ConsoleColor.White;
+							break;
+						default:
+							Console.ForegroundColor = ConsoleColor.DarkBlue;
+							break;
+					}
+					Console.Write(ch);
+					Console.ResetColor();
+				}
+				Console.WriteLine();
+			}
+		}
+
+		static void DrawInfectedWave()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkRed;
+			Console.WriteLine("   INFIZIERTE WELLE");
+			Console.WriteLine("   =================");
+			Console.WriteLine("      ( )    ( )    ( )");
+			Console.WriteLine("     <|||>  <|||>  <|||>");
+			Console.WriteLine("      / \\    / \\    / \\");
+			Console.WriteLine("   verzerrte Körper, zusätzliche Arme,");
+			Console.WriteLine("   offene Mäuler, aus denen Nanostaub quillt…");
+			Console.ResetColor();
+		}
+
+		static void KleineInfiziertenBegegnung(ref int anzugHuelle)
+		{
+			Console.WriteLine();
+			DrawInfectedWave();
+			TypeText("Aus einem Seitengang stürzen zwei Infizierte, ihre Körper sind grotesk verformt.", 10);
+			Console.Beep(500, 120);
+			Console.Beep(450, 120);
+			TypeText("Wir reißen die Waffen hoch und zerreißen sie in einem Salvenstoß, aber einige Splitter treffen unsere Schilde.", 10);
+			anzugHuelle -= 4;
+			if (anzugHuelle < 0) anzugHuelle = 0;
+			TypeText($"Anzug-Integrität fällt auf {anzugHuelle}%.", 10);
+			Thread.Sleep(400);
+		}
+
+		static void DrawTowerClimb()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("      ||");
+			Console.WriteLine("      ||      STEIGSCHACHT ZUM SENDTURM");
+			Console.WriteLine("      ||");
+			Console.WriteLine("     /==\\");
+			Console.WriteLine("    /====\\");
+			Console.WriteLine("   /======\\");
+			Console.WriteLine("  /========\\");
+			Console.WriteLine(" /==========\\");
+			Console.WriteLine("/============\\   <--- schmale Rampe nach oben");
+			Console.ResetColor();
+		}
+
+		static void DrawShuttlePickup()
+		{
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("             ________");
+			Console.WriteLine("         ___/  __   /____");
+			Console.WriteLine("        /   \\_/  \\_/    /");
+			Console.WriteLine("       /  LANDUNGSSCHIFF /");
+			Console.WriteLine("       \\______________ /");
+			Console.WriteLine("             |  |");
+			Console.WriteLine("             |  |   <--- schwebt über dem Turm");
+			Console.ResetColor();
+		}
+
+		static void DrawOrbitalStrike()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("               GENESIS              ARGOS");
+			Console.WriteLine("          _______/\\_______      _______/\\_______");
+			Console.WriteLine("         /                 \\  /                 \\");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.WriteLine("                    ( ERDE )");
+			Console.WriteLine("                  ___/####\\___");
+			Console.WriteLine("                 /############\\");
+			Console.WriteLine("                 \\############/");
+			Console.WriteLine("                  \\___####___/");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine();
+			Console.WriteLine("                    ||");
+			Console.WriteLine("                    ||   GLEISSENDER ENERGIESTRAHL");
+			Console.WriteLine("                    ||");
+			Console.ResetColor();
+		}
 	}
 }
+
 
