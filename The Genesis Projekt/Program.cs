@@ -185,7 +185,9 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("7) Zerstörerkampf");
 			Console.WriteLine("8) Blindfeuer-Gefecht im Trümmerfeld");
 			Console.WriteLine("9) Atlanter-Bodenmission");
-			Console.WriteLine("10) Zurück zum Hauptmenü");
+			Console.WriteLine("10) Scene Rückkehr vom Einsatz, Beginn");
+			Console.WriteLine("11) Scene Erstkontakt Die Grauen");
+			Console.WriteLine("00) Zurück zum Hauptmenü");
 
 			Console.Write("\nAuswahl: ");
 			string choice = Console.ReadLine();
@@ -229,9 +231,17 @@ namespace The_Genesis_Projekt
 					Scene_AtlanerMission_Start();
 					break;
 				case "10":
+					SaveGame("Scene_RueckkehrVomEinsatz_Begin");
+					Scene_RueckkehrVomEinsatz();
+					break;
+				case "11":
+					SaveGame("Scene_ErstkontaktGraue");
+					Scene_ErstkontaktGraue();
+					break;
+				case "00":
 					MainMenu();
 					break;
-					
+
 				default:
 					MainMenu();
 					break;
@@ -2316,10 +2326,7 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("\nDrücke eine Taste, um zum Menü oder zum nächsten Kapitel zurückzukehren...");
 			Console.ReadKey();
 		}
-
-		// ------------------------------------------
 		// ASCII-Grafik: Erde + GENESIS & ARGOS im Orbit
-		// ------------------------------------------
 		static void DrawEarthOrbitScene()
 		{
 			Console.ForegroundColor = ConsoleColor.Blue;
@@ -2354,10 +2361,7 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("                                  \\_________/");
 			Console.ResetColor();
 		}
-
-		// ------------------------------------------
-		// ASCII-Grafik: Teleporter-Pad (militärisch / technisch)
-		// ------------------------------------------
+		// ASCII-Grafik: Teleporter-Pad 
 		static void DrawTeleporterPad()
 		{
 			Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -2436,10 +2440,7 @@ namespace The_Genesis_Projekt
 
 			Scene_AtlanerMission_EingangHack();
 		}
-
-		// -------------------------------------------------------------
 		//  EINGANG: 3-REIHIGES SCHALTKREIS-HACK-PANEL
-		// -------------------------------------------------------------
 		static void Scene_AtlanerMission_EingangHack()
 		{
 			Console.Clear();
@@ -2587,10 +2588,7 @@ namespace The_Genesis_Projekt
 
 			return true;
 		}
-
-		// -------------------------------------------------------------
 		//  LABYRINTH IN DER ANLAGE (20 x 40) MIT 3 KONSOLEN + AUSGANG
-		// -------------------------------------------------------------
 		static void Scene_AtlanerMission_Labyrinth()
 		{
 			Console.Clear();
@@ -2776,10 +2774,7 @@ namespace The_Genesis_Projekt
 
 			Scene_AtlanerMission_ExitFight();
 		}
-
-		// -------------------------------------------------------------
 		//  ABSCHLUSS: Waffensystem aktiviert – Flucht zum Landungsschiff
-		// -------------------------------------------------------------
 		static void Scene_AtlanerMission_ExitFight()
 		{
 			Console.Clear();
@@ -2883,9 +2878,9 @@ namespace The_Genesis_Projekt
 			Console.ReadKey();
 		}
 
-		// -------------------------------------------------------------
+
 		//  ASCII / ANZEIGEN FÜR DIE ATLANTER-MISSION
-		// -------------------------------------------------------------
+
 		static void DrawFacilityEntrance()
 		{
 			Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -2894,9 +2889,9 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("         /   MONOLITHISCHER ATLANTER-EINGANG \\");
 			Console.WriteLine("        /____________________________________\\");
 			Console.WriteLine("        |                                    |");
-			Console.WriteLine("        |        ███████████████████        |");
-			Console.WriteLine("        |        █  VERSIEGELTES TOR █      |");
-			Console.WriteLine("        |        ███████████████████        |");
+			Console.WriteLine("        |        ███████████████████         |");
+			Console.WriteLine("        |        █  VERSIEGELTES TOR █       |");
+			Console.WriteLine("        |        ███████████████████         |");
 			Console.WriteLine("        |____________________________________|");
 			Console.ResetColor();
 		}
@@ -2909,9 +2904,9 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("         /   MONOLITHISCHER ATLANTER-EINGANG \\");
 			Console.WriteLine("        /____________________________________\\");
 			Console.WriteLine("        |                                    |");
-			Console.WriteLine("        |   ████          FREIER ZUGANG     |");
-			Console.WriteLine("        |   ████     SCHACHT INS INNERE     |");
-			Console.WriteLine("        |   ████                            |");
+			Console.WriteLine("        |   ████          FREIER ZUGANG      |");
+			Console.WriteLine("        |   ████     SCHACHT INS INNERE      |");
+			Console.WriteLine("        |   ████                             |");
 			Console.WriteLine("        |____________________________________|");
 			Console.ResetColor();
 		}
@@ -3038,8 +3033,300 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("                    ||   GLEISSENDER ENERGIESTRAHL");
 			Console.WriteLine("                    ||");
 			Console.ResetColor();
+
+			Scene_RueckkehrVomEinsatz();
+			return;
+		}
+		static void Scene_RueckkehrVomEinsatz()
+		{
+			// Speicherpunkt vor der Szene
+			SaveGame("Scene_RueckkehrVomEinsatz_Begin");
+
+			Console.Clear();
+			DrawPlanetStrikeViewFromShuttle();
+			TypeText("");
+			TypeText("Ich sitze im Landungsschiff, der Körper noch voller Adrenalin.", 10);
+			TypeText("Durch das kleine Sichtfenster sehe ich den letzten Nachhall des Lichtimpulses, der über die Erdoberfläche gerast ist.", 10);
+			TypeText("Die Atlanter-Waffe hat ausgelöst. Ein greller Riss aus Licht über einem toten Planeten.", 10);
+			TypeText("");
+
+			TypeText("Für einen Moment ist alles still im Inneren des Shuttles. Nur das dumpfe Brummen der Triebwerke und unser Atem.", 10);
+			TypeText("");
+
+			Console.WriteLine();
+			TypeText("Ich tippe auf mein Kom-Interface.", 10);
+			TypeText("Commander: GENESIS, hier Landungsschiff. Commander Oduro, kommen Sie.", 10);
+			TypeText("");
+
+			TypeText("Ein kurzes Rauschen, dann ihre Stimme. Ruhig, fokussiert, wie immer.", 10);
+			TypeText("Oduro: „Hier Commander Oduro. Wir empfangen Sie klar und deutlich, Captain.“", 10);
+			TypeText("");
+
+			TypeText("Commander: Statusbericht zur Waffe. Was sehen Sie vom Orbit aus?", 10);
+			TypeText("");
+
+			TypeText("Oduro: „Der Lichtimpuls ist komplett über die Oberfläche gelaufen. Wir registrieren massive Strahlen Signaturen, aber keine aktiven Viren und Infizierte.“", 10);
+			TypeText("Oduro: „Nach allen Sensorwerten zu urteilen: Die Atlanter-Waffe hat funktioniert.“", 10);
+			TypeText("");
+
+			TypeText("Ich lehne mich kurz zurück. Ein Teil von mir hat es nicht glauben wollen, bis sie es ausspricht.", 10);
+			TypeText("");
+
+			TypeText("Oduro: „Und, Captain… eine weitere Meldung. Ihre Frau ist wohlauf. Sie befindet sich sicher an Bord der GENESIS.“", 10);
+			TypeText("");
+
+			TypeText("Der Knoten in meiner Brust löst sich ein Stück. Ich atme langsam aus.", 10);
+			TypeText("Commander: Bestätigt. Danke, Commander.", 10);
+			TypeText("");
+
+			TypeText("Oduro: „Noch etwas: Aufgrund der strukturellen Schäden an der Hülle kann die GENESIS keinen Landeanflug riskieren.“", 10);
+			TypeText("Oduro: „Sie werden auf der ARGOS landen und von dort per Teleporter zur GENESIS übertragen.“", 10);
+			TypeText("");
+
+			TypeText("Commander: Verstanden. Landung auf der ARGOS. Wir sehen uns dann oben.", 10);
+
+			Console.WriteLine("\nDrücke eine Taste, um die Landephase fortzusetzen...");
+			Console.ReadKey();
+
+			// Innenraum-Grafik des Landungsschiffs
+			Console.Clear();
+			DrawLandingShuttleInterior();
+			TypeText("");
+			TypeText("Wir sitzen angeschnallt in den Sitzen entlang der Wand. Metall, Gurte, Gitterboden, kein überflüssiger Komfort.", 10);
+			TypeText("Das Landungsschiff schüttelt sich, als wir die obere Atmosphäre durchbrechen und Kurs auf die ARGOS nehmen.", 10);
+			TypeText("");
+
+			Thread.Sleep(900);
+
+			// Andocken an die ARGOS
+			Console.Clear();
+			DrawArgosDockingPort();
+			TypeText("");
+			TypeText("Ein dumpfer Schlag geht durch die Hülle, als die Andockkrallen der ARGOS zupacken.", 10);
+			TypeText("Pilot: „Andockmanöver abgeschlossen. Druckausgleich läuft.“", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um das Landungsschiff zu verlassen...");
+			Console.ReadKey();
+
+			// Dekontamination auf der ARGOS
+			Console.Clear();
+			DrawDeconChamberArgos();
+			TypeText("");
+			TypeText("Die erste Schleuse führt uns direkt in eine Dekontaminationszone der ARGOS.", 10);
+			TypeText("Lichtfelder scannen unsere Anzüge, feine Sprühnebel legen sich wie kalter Hauch auf die Panzerplatten.", 10);
+			TypeText("Jede Nanospur des Virus wird aus den äußeren Schichten herausgebrannt.", 10);
+			TypeText("");
+
+			TypeText("Medizinischer Offizier: „Captain, wir empfehlen, die Kampfanzüge hier zu lassen. Zu hohes Restrisiko.“", 10);
+			TypeText("");
+
+			TypeText("Commander: Negativ. Ich bleibe im Anzug, bis wir auf der GENESIS sind.", 10);
+			TypeText("Commander: Wir haben zu viel gesehen, um jetzt nachlässig zu werden.", 10);
+			TypeText("");
+
+			TypeText("Der Offizier nickt nur knapp. Man sieht ihm an, dass er widersprechen möchte, aber er lässt es bleiben.", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um zur Teleporter-Plattform der ARGOS zu gehen...");
+			Console.ReadKey();
+
+			// Teleporter-Plattform ARGOS → GENESIS
+			Console.Clear();
+			DrawTeleporterPadArgos();
+			TypeText("");
+			TypeText("Die Teleporter-Plattform der ARGOS sieht der der GENESIS ähnlich, nur beengter, provisorischer.", 10);
+			TypeText("Energiekabel ziehen sich über den Boden, zusätzliche Feldgeneratoren wurden hastig nachgerüstet.", 10);
+			TypeText("");
+
+			TypeText("Techniker ARGOS: „Ziel ist die Haupt-Transportersektion der GENESIS. Dekontaminationsfeld ist dort bereits hochgefahren.“", 10);
+			TypeText("Commander: In Ordnung. Team, auf die Plattform. Wir gehen nach Hause.", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um den Transfer zu starten...");
+			Console.ReadKey();
+
+			Console.Clear();
+			TypeText("Die Feldprojektoren heulen auf. Das Energierauschen kriecht uns unter die Haut.", 10);
+			Console.Beep(700, 140);
+			Console.Beep(900, 140);
+			Thread.Sleep(400);
+			TypeText("Die Welt zerreißt in Lichtsplitter, dann fügt sie sich wieder zusammen.", 10);
+
+			// Ankunft auf der GENESIS – zweite Reinigung, Anzug wird zerstört
+			Console.Clear();
+			DrawTeleporterHubGenesis();
+			TypeText("");
+			TypeText("Wir materialisieren auf der Transporterplattform der GENESIS.", 10);
+			TypeText("Noch bevor ich einen Schritt machen kann, fährt ein zweites Dekontaminationsfeld hoch.", 10);
+			TypeText("");
+
+			TypeText("Sicherheits-Offizier GENESIS: „Captain, verbleibende Kampfanzüge sind als Hochrisiko eingestuft.“", 10);
+			TypeText("Sicherheits-Offizier: „Die Systeme empfehlen vollständige Demontage und anschließende Vernichtung.“", 10);
+			TypeText("");
+
+			TypeText("Ich blicke ein letztes Mal auf meinen Anzug. Er hat uns durch die Hölle getragen.", 10);
+			TypeText("Commander: Bestätigt. Prozedur freigegeben.", 10);
+			TypeText("");
+
+			TypeText("Automatische Systeme lösen die Verriegelungen. Panzerplatten fahren auf, innere Schichten werden abgezogen.", 10);
+			TypeText("In einer Seitenkammer werden die Reste des Anzugs von Energiefeldern erfasst und in glühenden Staub verwandelt.", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um zum Turbolift zu gehen...");
+			Console.ReadKey();
+
+			// Turbolift zur Captain-Ebene (existierende Grafik)
+			Console.Clear();
+			DrawTurboLiftRoute();
+			TypeText("");
+			TypeText("Ich betrete den Turbolift. Die Türen schließen sich hinter mir mit einem sanften Zischen.", 10);
+			TypeText("Der Lift setzt sich in Bewegung, zuerst nach unten, dann quer durch das Schiff, dann wieder nach oben.", 10);
+			TypeText("Jeder Ruck, jeder leise Ton erinnert mich daran, dass ich lebend zurückgekommen bin.", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um auf dem Captain-Deck anzukommen...");
+			Console.ReadKey();
+
+			// Captain-Deck & Quartier (existierende Grafiken)
+			Console.Clear();
+			DrawCaptainsDeckOverview();
+			TypeText("");
+			TypeText("Das Captain-Deck empfängt mich mit gedämpftem Licht und gedämpfter Stille.", 10);
+			TypeText("Hier oben ist nichts vom Lärm der letzten Stunden zu höhren, nur das ruhige Atmen des Schiffes.", 10);
+			TypeText("");
+
+			TypeText("Ich gehe den Korridor entlang. Jeder Schritt fühlt sich schwerer an, je näher ich der Tür komme.", 10);
+			TypeText("Die Beschriftung neben der Tür leuchtet ruhig: [ CAPTAIN'S QUARTERS ]", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um das Quartier zu betreten...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawCaptainsQuarters();
+			TypeText("");
+			TypeText("Die Tür gleitet zur Seite.", 10);
+			TypeText("Und da steht sie.", 10);
+			TypeText("");
+
+			TypeText("Meine Frau. Lebendig. Unversehrt. Mit müden, aber wachen Augen.", 10);
+			TypeText("Für einen Moment bleibt alles stehen, die Geräusche der GENESIS, die Gedanken an die Erde, die Schreie der Infizierten.", 10);
+			TypeText("");
+
+			TypeText("Ich mache einen Schritt nach vorne. Dann noch einen. Und dann bin ich bei ihr.", 10);
+			TypeText("Sie fällt mir in die Arme, als wäre sie nur dafür geschaffen worden, genau hier zu sein.", 10);
+			TypeText("");
+
+			TypeText("Ich halte sie fest. Fester, als es jede Vorschrift erlaubt.", 10);
+			TypeText("Zum ersten Mal seit langer Zeit geht es nicht um Schiff, Mission oder Menschheit.", 10);
+			TypeText("Nur um diesen Moment.", 10);
+			TypeText("");
+
+			TypeText("Irgendwann löst sich die Umarmung. Wir setzen uns. Reden kaum.", 10);
+			TypeText("Es reicht, dass wir beide noch da sind.", 10);
+			TypeText("");
+
+			TypeText("Die Müdigkeit holt mich ein wie eine Welle. Ich weiß, dass der nächste Einsatz kommen wird.", 10);
+			TypeText("Die Erde ist nicht mehr dieselbe. Die Menschheit auch nicht. Und ich schon gar nicht.", 10);
+			TypeText("");
+
+			TypeText("Aber für ein paar Stunden erlaube ich mir, einfach nur zu atmen.", 10);
+			TypeText("Und zu glauben, dass wir vielleicht doch noch eine Chance haben.", 10);
+			TypeText("");
+
+			// Speicherpunkt nach der Szene
+			SaveGame("Scene_RueckkehrVomEinsatz_End");
+		}
+		// ZUSÄTZLICHE ASCII-GRAFIKEN FÜR DIE RÜCKKEHR-SZENE
+		static void DrawPlanetStrikeViewFromShuttle()
+		{
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.WriteLine("        BLICK AUS DEM LANDUNGSSCHIFF – ERDORBIT");
+			Console.WriteLine("   -------------------------------------------------");
+			Console.WriteLine("         .-\"\"\"\"\"-.           greller Lichtbogen");
+			Console.WriteLine("       .'   _   _ '.      ~~~~~~~~~~~~~~~~~~~~~~");
+			Console.WriteLine("      /    (_) (_)  \\");
+			Console.WriteLine("     |   .--------.  |");
+			Console.WriteLine("      \\  '--------'  /");
+			Console.WriteLine("       '.          .'");
+			Console.WriteLine("         '-.____.-'");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("   Ein gleißender Impuls zieht wie ein Feuerband über die Oberfläche.");
+			Console.ResetColor();
+		}
+
+		static void DrawLandingShuttleInterior()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("      [ LANDUNGSSCHIFF – INNENRAUM ]");
+			Console.WriteLine("   --------------------------------------");
+			Console.WriteLine("   | [Sitz]  [Sitz]  [Sitz]  [Sitz]    |");
+			Console.WriteLine("   |                                    |");
+			Console.WriteLine("   | Gitterboden, angeschnallte Soldaten|");
+			Console.WriteLine("   |                                    |");
+			Console.WriteLine("   | [Sitz]  [Sitz]  [Sitz]  [Sitz]    |");
+			Console.WriteLine("   --------------------------------------");
+			Console.ResetColor();
+		}
+
+		static void DrawArgosDockingPort()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("             [ ARGOS – ANDOCKSEKTION ]");
+			Console.WriteLine("      _________________________________________");
+			Console.WriteLine("     |                                         |");
+			Console.WriteLine("     |   <==== LANDUNGSSCHIFF ANDOCKT =====>   |");
+			Console.WriteLine("     |_________________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawDeconChamberArgos()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine("        ====== ARGOS – DEKONTAMINATIONSZONE ======");
+			Console.WriteLine("       |   Ionisationsfelder  |  Sprühdüsen      |");
+			Console.WriteLine("       |   [####]     [####]  |  [ Nebel ]       |");
+			Console.WriteLine("       |_________________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawTeleporterPadArgos()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("        ARGOS – Taktische Teleporter-Plattform");
+			Console.WriteLine("        ======================================");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("             _________________");
+			Console.WriteLine("            /                 \\");
+			Console.WriteLine("           /   [   PAD   ]     \\");
+			Console.WriteLine("          /_____________________\\");
+			Console.WriteLine("          |  Zusatzgeneratoren  |");
+			Console.WriteLine("          |   provisorische     |");
+			Console.WriteLine("          |   Verkabelung       |");
+			Console.WriteLine("          |_____________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawTeleporterHubGenesis()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("           GENESIS – HAUPT-TRANSPORTERSEKTION");
+			Console.WriteLine("          ====================================");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("        Kreisförmige Plattform, eingelassene Energieringe,");
+			Console.WriteLine("        darüber die Projektoren für das Dekontaminationsfeld.");
+			Console.ResetColor();
+
+			Scene_ErstkontaktGraue();
+			return;
 		}
 	}
 }
-
 
