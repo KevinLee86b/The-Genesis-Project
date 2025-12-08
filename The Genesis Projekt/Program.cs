@@ -2150,28 +2150,43 @@ namespace The_Genesis_Projekt
 		{
 			Console.ForegroundColor = ConsoleColor.Gray;
 			Console.WriteLine("                [ BRÜCKE / DECK 1 ]");
-			Console.WriteLine("                         |");
-			Console.WriteLine("                         v");
+			Console.WriteLine("                        /|\\");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                        \\|/");
 			Console.WriteLine("                     [ DECK 12 ]");
-			Console.WriteLine("                         |");
-			Console.WriteLine("                         v");
+			Console.WriteLine("                [ BRÜCKE / DECK 1 ]");
+			Console.WriteLine("                        /|\\");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                        \\|/");
 			Console.WriteLine("                     [ DECK 24 ]");
-			Console.WriteLine("                         |");
-			Console.WriteLine("                         v");
+			Console.WriteLine("                        /|\\");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                        \\|/");
 			Console.WriteLine("                     [ DECK 36 ]");
-			Console.WriteLine("                         |");
-			Console.WriteLine("                         v");
+			Console.WriteLine("                        /|\\");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                        \\|/");
 			Console.WriteLine("                 ====== QUERTRANSIT ======");
 			Console.WriteLine("                         →  →  →");
 			Console.WriteLine("                     [ SEKTION B ]");
-			Console.WriteLine("                         |");
-			Console.WriteLine("                         v");
+			Console.WriteLine("                        /|\\");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                        \\|/");
 			Console.WriteLine("                     [ DECK 41 ]");
-			Console.WriteLine("                         |");
-			Console.WriteLine("                         v");
+			Console.WriteLine("                        /|\\");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                        \\|/");
 			Console.WriteLine("                     [ DECK 45 ]");
-			Console.WriteLine("                         |");
-			Console.WriteLine("                         v");
+			Console.WriteLine("                        /|\\");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                         | ");
+			Console.WriteLine("                        \\|/");
 			Console.WriteLine("                 [ CAPTAIN-DECK / DECK 47 ]");
 			Console.ResetColor();
 		}
@@ -2187,7 +2202,7 @@ namespace The_Genesis_Projekt
 			Console.ForegroundColor = ConsoleColor.Gray;
 			Console.WriteLine("   [Lift]----[Flur]----[CAPTAIN'S QUARTERS]");
 			Console.WriteLine("                  |");
-			Console.WriteLine("             [Offiziers-Lounge]");
+			Console.WriteLine("             [Offiziers-Louge]");
 			Console.ResetColor();
 		}
 
@@ -3326,6 +3341,381 @@ namespace The_Genesis_Projekt
 
 			Scene_ErstkontaktGraue();
 			return;
+		}
+		static void Scene_ErstkontaktGraue()
+		{
+			// Speicherpunkt vor der Szene
+			SaveGame("Scene_ErstkontaktGrauer_Begin");
+
+			Console.Clear();
+			TypeText("Langsam wache ich auf. Zum ersten Mal seit langer Zeit fühlt sich das Quartier nicht kalt und leer an.", 10);
+			TypeText("Neben mir liegt meine Frau, ruhig atmend. Ein kurzer Moment, in dem all das, was außerhalb der GENESIS lauert, weit weg wirkt.", 10);
+			TypeText("");
+
+			TypeText("Ich löse mich vorsichtig aus der Decke, um sie nicht zu wecken, und gehe in die Nasszelle.", 10);
+			TypeText("Das Wasser ist warm, die Müdigkeit spült es nur teilweise von mir runter. Der Rest bleibt – Verantwortung lässt sich nicht abwaschen.", 10);
+			TypeText("");
+
+			TypeText("Nach der Dusche ziehe ich die frische Uniform an.", 10);
+			TypeText("Die neuen Rangabzeichen fühlen sich noch ungewohnt an – Captain.", 10);
+			TypeText("Ein Titel, den ich nie haben wollte. Aber jetzt trage ich ihn.", 10);
+			TypeText("");
+
+			TypeText("Ich werfe einen letzten Blick auf meine Frau. Sie bewegt sich leicht im Schlaf.", 10);
+			TypeText("Dann verlasse ich leise das Quartier. Die Tür gleitet zu.", 10);
+			TypeText("");
+			Console.WriteLine("\n[Weiter mit Taste]");
+			Console.ReadKey();
+
+			// Turbolift-Sequenz zur Brücke (nutzt deine existierende Grafik)
+			Console.Clear();
+			DrawTurboLiftRoute();
+			TypeText("");
+			TypeText("Der Turbolift setzt sich in Bewegung. Hinauf, hinunter, quer durchs Schiff – ein stählernes Labyrinth auf Schienen.", 10);
+			TypeText("Decks ziehen im Statusdisplay vorbei: 47… 36… Sektion B… 12… 5… 3… 1.", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um auf der Brücke anzukommen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawBridgeSilhouette();
+			TypeText("");
+
+			TypeText("KADE: „Captain auf der Brücke!“", 10);
+			TypeText("Die Gespräche verstummen. Augen richten sich auf mich – müde, aber voller Erwartung.", 10);
+			TypeText("");
+
+			TypeText("Ich trete zur zentralen Konsole.", 10);
+			TypeText("Commander: „Statusbericht.“", 10);
+			TypeText("");
+
+			TypeText("KADE: „Alle Hauptsysteme sind wieder einsatzbereit. Schilde stabil, Antrieb im grünen Bereich, Sensoren kalibriert.“", 10);
+			TypeText("KADE: „Die Flotte meldet ebenfalls volle Einsatzbereitschaft. Wir warten auf Ihren Befehl, Captain.“", 10);
+			TypeText("");
+
+			Console.WriteLine("\n[Weiter mit Taste]");
+			Console.ReadKey();
+
+			TypeText("Ich atme tief durch.", 10);
+			TypeText("Commander: „Wir beginnen mit der Suche nach dem zehnten Planeten.“", 10);
+			TypeText("Commander: „Nutzen Sie die vermutlichen Koordinaten aus den Atlaner-Relikten. Kurs setzen. Unterlichttriebwerke auf Maximum.“", 10);
+			TypeText("");
+
+			TypeText("Steuermann: „Aye, Captain. Kurs ist gesetzt. Flotte folgt. Beschleunigung beginnt.“", 10);
+			TypeText("");
+
+			// Flugsequenz
+			Console.Clear();
+			DrawTravelToTenthPlanet();
+			TypeText("");
+			TypeText("Die Sterne ziehen sich zu stillen Linien, während die GENESIS und ihre Begleiter durch die Dunkelheit schneiden.", 10);
+			TypeText("Minuten, Stunden – in einem Schiff wie diesem verschwimmt die Zeit.", 10);
+			TypeText("");
+
+			TypeText("Schließlich verlangsamt der Antrieb. Die Anzeigen gehen auf Normalbetrieb.", 10);
+			TypeText("Steuermann: „Captain, wir haben die berechnete Position erreicht.“", 10);
+			TypeText("");
+
+			Console.Clear();
+			DrawEmptySpaceAtTarget();
+			TypeText("");
+
+			TypeText("Die Frontscheibe zeigt nur eins: Nichts.", 10);
+			TypeText("Kein Planet. Keine Station. Kein Ring. Nur kalte, schwarze Leere.", 10);
+			TypeText("");
+
+			TypeText("Wissenschaftsoffizier: „Captain… ich finde nichts. Keine Masse, keine Signatur, keine Abweichung im Gravitationsfeld.“", 10);
+			TypeText("KADE: „Die Koordinaten stimmen. Aber es ist, als wäre hier einfach nichts.“", 10);
+			TypeText("");
+
+			TypeText("Commander: „Oder jemand will, dass wir glauben, hier sei nichts.“", 10);
+			TypeText("");
+
+			TypeText("Ich beuge mich über die Sensorkonsole.", 10);
+			TypeText("Commander: „Wenn der Planet getarnt ist, dann finden wir ihn über Muster und Störungen.“", 10);
+			TypeText("Commander: „Bringen Sie das erweiterte Sensorscan-Gitter online. Wir suchen nach jeder Anomalie.“", 10);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um das Sensor-Minispiel zu starten...");
+			Console.ReadKey();
+
+			// Minispiel: versteckten Planeten im Sensor-Gitter finden
+			bool planetGefunden = SensorMinigame_FindHiddenPlanet();
+
+			Console.Clear();
+
+			if (!planetGefunden)
+			{
+				// Falls wir später einen Misserfolgspfad wollen, könnten wir hier GameOver einbauen.
+				// Für jetzt: Er zwingt die Crew, weiterzumachen, bis sie es schaffen.
+				TypeText("KADE: „Wir können den Planeten nicht lokalisieren, Captain. Die Daten sind zu diffus.“", 10);
+				TypeText("Commander: „Dann fangen wir von vorne an. Wir hören nicht auf, bevor wir ihn gefunden haben.“", 10);
+				TypeText("");
+				TypeText("Fortsetzung folgt…", 10);
+
+				SaveGame("Scene_ErstkontaktGrauer_End");
+				Console.ReadKey();
+				return;
+			}
+
+			// Erfolg: Planet wird sichtbar
+			DrawHiddenPlanetSilhouette();
+			TypeText("");
+
+			TypeText("Wissenschaftsoffizier: „Da! Das Muster kollabiert, wir haben eine klare Signatur!“", 10);
+			TypeText("KADE: „Masse bestätigt. Atmosphärenwerte im bewohnbaren Bereich. Der Planet war in einem art Tarnfeld eingehüllt.“", 10);
+			TypeText("");
+
+			TypeText("Vor uns beginnt sich die Dunkelheit zu verändern.", 10);
+			TypeText("Etwas Großes schält sich aus dem Schwarz, zuerst nur eine Krümmung, dann eine komplette Kugel und ein riesiger Ring um den Planeten.", 10);
+			TypeText("");
+
+			TypeText("Steuermann: „Kontakt zum Hauptkörper hergestellt. Wir sind in sicherer Distanz.“", 10);
+			TypeText("");
+
+			TypeText("Ich starre auf den Bildschirm. Das muss er sein. Der zehnte Planet.", 10);
+			TypeText("");
+
+			TypeText("Commander: „Alle Systeme auf Bereitschaft. Wir nehmen Kontakt auf.“", 10);
+			TypeText("KADE: „Kommunikationskanäle stehen bereit, Captain.“", 10);
+			TypeText("");
+
+			TypeText("Was auch immer uns hier erwartet, es wird alles verändern.", 10);
+			TypeText("");
+
+			// Speicherpunkt am Ende der Szene
+			SaveGame("Scene_ErstkontaktGrauer_End");
+			TypeText("Fortsetzung folgt…", 10);
+			Console.ReadKey();
+		}
+		// SENSOR-MINISPIEL: VERSTECKTEN PLANETEN IM SCAN-GITTER FINDEN
+		static bool SensorMinigame_FindHiddenPlanet()
+		{
+			Console.Clear();
+			TypeText("KADE: „Erweitertes Sensorscan-Gitter ist online, Captain.“", 10);
+			TypeText("Wissenschaftsoffizier: „Wir sehen nur Rauschen, irgendwo darin muss der Planet versteckt sein.“", 10);
+			TypeText("");
+
+			const int rows = 8;
+			const int cols = 12;
+
+			char[,] grid = new char[rows, cols];
+			bool[,] alreadyScanned = new bool[rows, cols];
+
+			for (int r = 0; r < rows; r++)
+				for (int c = 0; c < cols; c++)
+					grid[r, c] = '.';
+
+			Random rnd = new Random();
+			int planetRow = rnd.Next(0, rows);
+			int planetCol = rnd.Next(0, cols);
+
+			int scans = 0;
+
+			while (true)
+			{
+				Console.Clear();
+				DrawSensorScanGrid(grid, rows, cols);
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("Ziel: Lokalisieren Sie die versteckte Gravitationsanomalie (den Planeten).");
+				Console.ResetColor();
+				Console.WriteLine("Geben Sie eine Koordinate ein (z.B. C7) – oder X zum Abbrechen (keine echte Option 😉).");
+				Console.WriteLine();
+
+				Console.Write("Eingabe: ");
+				string input = Console.ReadLine().Trim().ToUpper();
+
+				if (input == "X")
+				{
+					TypeText("Commander: „Abbrechen ist keine Option. Wir versuchen es weiter.“", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				if (input.Length < 2 || input.Length > 3)
+				{
+					TypeText("KADE: „Ungültiges Format. Buchstabe + Zahl, Captain. (z.B. C7)“", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				char rowChar = input[0];
+				if (rowChar < 'A' || rowChar >= 'A' + rows)
+				{
+					TypeText("Wissenschaftsoffizier: „Diese Zeile liegt außerhalb unseres Scanbereichs.“", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				if (!int.TryParse(input.Substring(1), out int colNum))
+				{
+					TypeText("KADE: „Das ist keine gültige Zahl.“", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				int rIndex = rowChar - 'A';
+				int cIndex = colNum - 1;
+
+				if (cIndex < 0 || cIndex >= cols)
+				{
+					TypeText("Wissenschaftsoffizier: „Spalte außerhalb des Gitterbereichs.“", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				if (alreadyScanned[rIndex, cIndex])
+				{
+					TypeText("KADE: „Diese Koordinate hatten wir schon im Scan, Captain.“", 10);
+					Thread.Sleep(600);
+					continue;
+				}
+
+				scans++;
+				alreadyScanned[rIndex, cIndex] = true;
+
+				Console.WriteLine();
+				TypeText("Sensorimpuls läuft…", 10);
+				Thread.Sleep(500);
+
+				if (rIndex == planetRow && cIndex == planetCol)
+				{
+					grid[rIndex, cIndex] = 'P';
+					Console.Clear();
+					DrawSensorScanGrid(grid, rows, cols);
+					Console.WriteLine();
+					TypeText("Wissenschaftsoffizier: „Volle Resonanz! Das ist er – der getarnte Planet!“", 10);
+					TypeText($"KADE: „Bestätigung. Wir haben ihn nach {scans} Scans gefunden.“", 10);
+					Thread.Sleep(800);
+					return true;
+				}
+				else
+				{
+					// Hinweis über Entfernung
+					int distRow = Math.Abs(planetRow - rIndex);
+					int distCol = Math.Abs(planetCol - cIndex);
+					int dist = distRow + distCol;
+
+					grid[rIndex, cIndex] = 'x';
+
+					if (dist >= 10)
+					{
+						TypeText("Wissenschaftsoffizier: „Kaum messbare Abweichung. Wenn dort etwas ist, ist es sehr weit entfernt von dieser Koordinate.“", 10);
+					}
+					else if (dist >= 6)
+					{
+						TypeText("Wissenschaftsoffizier: „Sehr schwache Gravitationsschwankung. Wir sind weit weg von der Hauptanomalie.“", 10);
+					}
+					else if (dist >= 3)
+					{
+						TypeText("KADE: „Es gibt messbare Abweichungen. Wir kommen näher – aber das ist noch nicht der Kernbereich.“", 10);
+					}
+					else
+					{
+						TypeText("Wissenschaftsoffizier: „Starke Störung im Feld! Wir sind sehr nah an der Hauptanomalie.“", 10);
+					}
+
+					Thread.Sleep(800);
+				}
+			}
+		}
+
+		// ASCII-GRAFIKEN FÜR DIE SZENE & DAS MINISPIEL
+		static void DrawTravelToTenthPlanet()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("GENESIS-FLOTTE AUF DEM WEG ZU DEN KOORDINATEN DES 10. PLANETEN");
+			Console.WriteLine("    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("       >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("          >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			Console.ResetColor();
+		}
+
+		static void DrawEmptySpaceAtTarget()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkBlue;
+			Console.WriteLine("                 ZIELGEBIET – LEERER RAUM");
+			Console.WriteLine("   -------------------------------------------------");
+			Console.WriteLine("                 (keine Planeten sichtbar)");
+			Console.WriteLine("                 (kein Ring, keine Station)");
+			Console.WriteLine("                 nur kalte, stille Dunkelheit");
+			Console.ResetColor();
+		}
+
+		static void DrawSensorScanGrid(char[,] grid, int rows, int cols)
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("============= ERWEITERTES SENSOR-SCAN-GITTER =============");
+			Console.ResetColor();
+
+			Console.Write("      ");
+			for (int c = 1; c <= cols; c++)
+			{
+				Console.Write($"{c,2} ");
+			}
+			Console.WriteLine();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.Write("     +");
+			for (int c = 0; c < cols; c++)
+				Console.Write("--");
+			Console.WriteLine("+");
+			Console.ResetColor();
+
+			for (int r = 0; r < rows; r++)
+			{
+				char rowLabel = (char)('A' + r);
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.Write($"  {rowLabel}  |");
+				Console.ResetColor();
+
+				for (int c = 0; c < cols; c++)
+				{
+					char ch = grid[r, c];
+					switch (ch)
+					{
+						case 'P':
+							Console.ForegroundColor = ConsoleColor.Green;
+							break;
+						case 'x':
+							Console.ForegroundColor = ConsoleColor.DarkGray;
+							break;
+						default:
+							Console.ForegroundColor = ConsoleColor.DarkBlue;
+							break;
+					}
+
+					Console.Write($" {ch}");
+				}
+
+				Console.ResetColor();
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.WriteLine(" |");
+				Console.ResetColor();
+			}
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.Write("     +");
+			for (int c = 0; c < cols; c++)
+				Console.Write("--");
+			Console.WriteLine("+");
+			Console.ResetColor();
+		}
+
+		static void DrawHiddenPlanetSilhouette()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("                 SCHWACHER UMRISS IM SCHWARZEN RAUM");
+			Console.WriteLine("                      .-''''''''''-.");
+			Console.WriteLine("                   .-'              '-.");
+			Console.WriteLine("                  /    dunkle Kugel    \\");
+			Console.WriteLine("                 |    im Tarnfeld       |");
+			Console.WriteLine("                  \\                    /");
+			Console.WriteLine("                   '-.              .-'");
+			Console.WriteLine("                      '-.______.-'");
+			Console.ResetColor();
 		}
 	}
 }
