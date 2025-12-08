@@ -145,23 +145,68 @@ namespace The_Genesis_Projekt
 		{
 			switch (lastScene)
 			{
-				case "Scene_Prolog": ShowProlog(); break;
-				case "Scene_Intro": Scene_Intro(); break;
-				case "Scene_Alarm": Scene_Alarm(); break;
-				case "Scene_Kapitel1": Scene_Kapitel1(); break;
-				case "Scene_HeliosKontakt": Scene_HeliosKontakt(); break;
+				case "Scene_Prolog":
+					ShowProlog();
+					break;
 
-				// Diese Szenen hängen alle an HeliosNachKampf / Entscheidungsmenü
+				case "Scene_Intro":
+					Scene_Intro();
+					break;
+
+				case "Scene_Alarm":
+					Scene_Alarm();
+					break;
+
+				case "Scene_Kapitel1":
+					Scene_Kapitel1();
+					break;
+
+				case "Scene_HeliosKontakt":
+					Scene_HeliosKontakt();
+					break;
+
 				case "Scene_HeliosNachKampf":
-				case "Scene_Entscheidung_Atlaner":
-				case "Scene_WaffeKontakt":
-				case "Scene_RueckkehrZurErde":
 					Scene_HeliosNachKampf();
 					break;
 
-				case "Scene_ZerstoererKampf": Scene_ZerstoererKampf(); break;
-				case "Scene_NachZerstoerer": Scene_NachZerstoerer(); break;
-				case "Scene_AtlanerMission_Start": Scene_AtlanerMission_Start(); break;
+				case "Scene_ZerstoererKampf":
+					Scene_ZerstoererKampf();
+					break;
+
+				case "Scene_NachZerstoerer":
+					Scene_NachZerstoerer();
+					break;
+
+				case "Scene_AtlanerMission_Start":
+					Scene_AtlanerMission_Start();
+					break;
+
+				case "Scene_RueckkehrVomEinsatz_Begin":
+					Scene_RueckkehrVomEinsatz();
+					break;
+
+				case "Scene_DieSuche":
+					Scene_DieSuche();
+					break;
+
+				case "Scene_ErstkontaktGrauer":
+					Scene_ErstkontaktGrauer();
+					break;
+
+				case "Scene_ErstkontaktGrauer_Begin":
+					Scene_ErstkontaktGrauer();
+					break;
+
+				case "Scene_ErstkontaktGrauer_End":
+					Scene_JupiterEuropaKontakt();
+					break;
+
+				case "Scene_JupiterEuropaKontakt":
+					Scene_JupiterEuropaKontakt();
+					break;
+				case "Scene_EuropaKolonie":
+					Scene_EuropaKolonie();
+					break;
 
 				default:
 					Console.WriteLine("Unbekannte Szene im Speicherstand. Zurück zum Hauptmenü.");
@@ -196,6 +241,8 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("  10) --Rückkehr vom Einsatz--");
 			Console.WriteLine("  11) --Die Suche--");
 			Console.WriteLine("  12) --Der 10 Planet/Die Grauen--");
+			Console.WriteLine("  13) --Kolonie Kontakt--");
+			Console.WriteLine("  14) --Kolonie Jupitermonde");
 			Console.WriteLine("  00) <<<Zurück zum Hauptmenü>>>");
 
 			Console.Write("\nAuswahl: ");
@@ -250,6 +297,14 @@ namespace The_Genesis_Projekt
 				case "12":
 					SaveGame("Scene_ErstkontaktGrauer");
 					Scene_ErstkontaktGrauer();
+					break;
+				case "13":
+					SaveGame("Scene_JupiterEuropaKontakt");
+					Scene_JupiterEuropaKontakt();
+					break;
+				case "14":
+					SaveGame("Scene_EuropaKolonie");
+					Scene_EuropaKolonie();
 					break;
 				case "00":
 					MainMenu();
@@ -4006,7 +4061,7 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 
 			Console.ForegroundColor = ConsoleColor.Gray;
-			Console.WriteLine("                |             ____             |");
+			Console.WriteLine("                |             ____         fgtd    |");
 			Console.WriteLine("                |            /    \\           |");
 			Console.WriteLine("                |           /  O O \\          |");
 			Console.WriteLine("                |           |       |           |");
@@ -4048,6 +4103,452 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("   ARGOS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			Console.WriteLine("   Weitere Schiffe >>>>>>>>>>>>>>>>>>>>>>>>>");
 			Console.ResetColor();
+
+			Scene_JupiterEuropaKontakt();
+			return;
+		}
+		static void Scene_JupiterEuropaKontakt()
+		{
+			SaveGame("Scene_JupiterEuropaKontakt");
+			Console.Clear();
+
+			// --- JUPITER ORBIT GRAFIK ---
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("                    .-~~~~~~~~~~-.");
+			Console.WriteLine("               .-~~     JUPITER     ~~-. ");
+			Console.WriteLine("           .-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~-. ");
+			Console.WriteLine("        .-~                                 ~-. ");
+			Console.WriteLine("       (      O    GENESIS – Flotte im Orbit    )");
+			Console.WriteLine("        '-.                                 .-' ");
+			Console.WriteLine("            '-.                         .-'");
+			Console.WriteLine("                '-._______________ .-'");
+			Console.ResetColor();
+
+			TypeText("Wir erreichten den Orbit des gewaltigen Gasriesen Jupiter.", 15);
+			TypeText("Die farbigen Wolkenschichten unter uns wirkten wie lebendige Strudel.", 15);
+			TypeText("Einer der Monde, Europa schwebte still im Vordergrund, hell, kalt, funkelnd.", 15);
+			
+
+			TypeText("Kade: Captain… mehrere massive Energiesignaturen direkt unter Europas Eiskruste.", 15);
+			TypeText("Kade: Und auch Ganymed und Kallisto senden ungewöhnlich starke Impulse.", 15);
+			TypeText("Oduro: Wir sind nicht alleine.", 15);
+		
+
+			// --- ANNÄHERUNGSGRAFIK AN EUROPA ---
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.WriteLine("                     _________ ");
+			Console.WriteLine("                _.-''         ''-._ ");
+			Console.WriteLine("            _.-'   MOND EUROPA     '-._ ");
+			Console.WriteLine("         .-'       *  *  *  *         '-.");
+			Console.WriteLine("        (       GENESIS nähert sich      )");
+			Console.WriteLine("         '-.                             .-'");
+			Console.WriteLine("            '-._______________________.-'");
+			Console.ResetColor();
+
+			TypeText("Ich befehle der Flotte, den Mond näher zu überfliegen.", 15);
+			TypeText("Europa füllte den Hauptschirm,ein makelloser, glatter Eiskörper.", 15);
+			
+
+			// --- SIGNALSTÖRUNG ---
+			Console.Beep(300, 200);
+			Console.Beep(250, 200);
+
+			TypeText("Kommunikation: Captain! Unser Signal wird gestört Quelle unbekannt!", 15);
+			TypeText("Kade: Die Störung wird stärker… jemand blockiert uns absichtlich.", 15);
+			
+
+			TypeText("Commander: ARGOS, verlegen Sie sich hinter Europa.", 15);
+			TypeText("Restliche Flottille: Ringförmige Position einnehmen und Sensornetz verstärken.", 15);
+			
+
+			// --- ENERGIEKONTAKTE ---
+			TypeText("Kade: Captain… neue Energiespuren!", 15);
+			TypeText("Kade: Mehrere Schiffe erheben sich aus der Jupiter-Atmosphäre!", 15);
+
+			// FLUGGRAFIK
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("           >>>   >>>   >>>   >>>");
+			Console.WriteLine("     [UNBEKANNTE SCHIFFE STEIGEN AUF]");
+			Console.ResetColor();
+
+			TypeText("Sensoroffizier: Captain… das sind menschliche Schiffstypen.", 15);
+			TypeText("Sensoroffizier: Das müssen dutzednde, vielleicht hunderte sein.", 15);
+			
+
+			// --- AUDIOKONTAKT (KEIN BILD) ---
+			Console.Beep(500, 300);
+			Console.Beep(450, 200);
+
+			TypeText("Eine harte Stimme ertönte über die Lautsprecher, ohne Bild.", 15);
+
+			TypeText("??? (über Audio): Ihr habt hier nichts verloren.", 15);
+			TypeText("??? (über Audio): Brecht euren Kurs ab und verlasst diesen Planeten.", 15);
+
+			TypeText("Ich war irritiert: Eine menschliche Stimme. Kein militärischer Ton, aber voller Autorität.", 15);
+			
+
+			TypeText("Kade: Captain! Immer mehr Schiffe tauchen auf, die Atmosphäre hat sie verdeckt!", 15);
+
+			// --- ORBIT FLOTTENPOSITION ---
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("     [Flottenformation im Europa-Orbit]");
+			Console.WriteLine();
+			Console.WriteLine("               *    *    *");
+			Console.WriteLine("           *        O        * ");
+			Console.WriteLine("       *     FLOTTE & GENESIS    *");
+			Console.WriteLine("           *                *");
+			Console.WriteLine("               *    *    *");
+			Console.ResetColor();
+
+			TypeText("Oduro: Captain, wir sind umzingelt.", 15);
+			
+			// --- DER FÜHRER SPRICHT ---
+			TypeText("??? (über Audio): Ich bin Oberkommandant Hale von der Jupiter-Kolonie.", 15);
+			TypeText("Hale: Wir kennen eure Signatur. Die Erde ist dank eurem Gesindel gefallen. Ihr seid verseucht.", 15);
+			TypeText("Hale: Wir dulden kein Risiko für unsere Bevölkerung.", 15);
+
+			TypeText("Ich antwortete ruhig, aber entschlossen:", 15);
+			TypeText("Wir sind die letzten Überlebenden. Wir suchen Schutz… und Antworten.‘", 15);
+
+			TypeText("Hale: Das interessiert mich nicht. Ihr habt unsere Heimat zerstört. Ihr kommt uns nicht zu nahe.", 15);
+			Console.WriteLine("\n[Weiter mit Taste...]");
+			Console.ReadKey();
+			Console.Clear();
+
+			//                      ENTSCHEIDUNG
+
+			Console.Clear();
+			TypeText("Oduro: Captain… was sollen wir tun?", 15);
+			TypeText("Ich wusste: Wir haben nur eine Chance.", 15);
+			TypeText("Die Wahrheit offenlegen.", 15);
+
+			Console.WriteLine("\nWie reagieren Sie?");
+			Console.WriteLine("1) Ihm drohen mit der Waffengewalt der Genesis");
+			Console.WriteLine("2) Demütig um Hilfe bitten");
+			Console.WriteLine("3) Offenbaren, dass Sie Atlanter-Technologie aktivieren können");
+
+			Console.Write("\nAuswahl: ");
+			string choice = Console.ReadLine().Trim();
+
+			if (choice == "1")
+			{
+				GameOver("Hale erklärt euch zur Bedrohung. Seine Verteidigungsflotte vernichtet die GENESIS in Sekunden.");
+				return;
+			}
+			else if (choice == "2")
+			{
+				GameOver("Hale beendet die Übertragung. Kurz darauf gehen hunderte Schiffe in Angriffsformation.");
+				return;
+			}
+			else if (choice != "3")
+			{
+				TypeText("Ungültige Eingabe.", 15);
+				Scene_JupiterEuropaKontakt();
+				return;
+			}
+
+			// --- DIE WAHRHEIT ---
+			TypeText("Ich atmete tief ein und sprach klar:", 15);
+			TypeText("Oberkommandant Hale… ich bin einer der wenigen, die die Systeme der Atlanter bedienen können.g", 15);
+			TypeText("Die Atlanter-Anlage auf der Erde funktioniert wieder durch mich.", 15);
+		
+
+			TypeText("Stille. Dann ein hörbares Einatmen über die Verbindung.", 15);
+
+			TypeText("Hale (leise): Ihr… habt die Systeme reaktiviert…?", 15);
+			TypeText("Hale: Nach all den Jahrtausenden…", 15);
+
+			TypeText("Seine Stimme veränderte sich. Härte wich Zweifel. Dann Respekt.", 15);
+
+			TypeText("Hale: Dann seid ihr nicht nur Überlebende.", 15);
+			TypeText("Hale: Ihr seid Schlüsselträger, der Blutsväter aber wisst vermutlich noch nicht warum.", 15);
+			
+
+			TypeText("Hale: Captain… ich gewähre Ihnen Zugang.", 15);
+			TypeText("Hale: Aber nur Ihnen. Die GENESIS bleibt auf Distanz.", 15);
+			TypeText("Hale: Wenn wir alles klären, dann sehen wir weiter.", 15);
+
+			TypeText("Ich nickte entschlossen.", 15);
+			TypeText("Bereiten Sie den Teleporter vor. Ich komme allein.", 15);
+			
+
+			// --- WEITER ZUR TELEPORTER-SZENE ---
+			SaveGame("Scene_EuropaTeleport");
+			Scene_EuropaKolonie();
+			return;
+			
+		}
+		static void Scene_EuropaKolonie()
+		{
+			// Speicherpunkt vor Szene
+			SaveGame("Scene_EuropaKolonie");
+
+			Console.Clear();
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("=== TELEPORTER-SEQUENZ – ANKUNFT AUF EUROPA ===\n");
+			Console.ResetColor();
+
+			DrawTeleporterPlatform();
+			TypeText("Ein greller Lichtblitz, ein Summen – dann spürte ich festen Boden unter meinen Füßen.", 15);
+			TypeText("Der Geruch des Metalls war anders als auf der Genesis. Kälter. Steriler. Fremd.", 15);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um weiterzugehen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawEuropaColonyHall();
+
+			TypeText("Sofort richteten sich mehrere Sicherheitsoffiziere auf mich aus.", 15);
+			TypeText("Schwarze Rüstungen. Keine Abzeichen. Keine Embleme. Nur ernste Blicke.", 15);
+			TypeText("");
+			TypeText("Ein Mann trat hervor – kräftig, älter, mit hartem Gesichtsausdruck.", 15);
+			TypeText("„Willkommen auf Europa. Ich bin Hale.“", 15);
+			TypeText("");
+
+			TypeText("Ohne ein weiteres Wort bedeutete er mir, ihm zu folgen.", 15);
+
+			Console.WriteLine("\nDrücke eine Taste, um mitzugehen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawTurboLiftEuropa();
+
+			TypeText("Der Turbolift rauschte nach oben. Niemand sprach. Nur Hales Blick ruhte auf mir.", 15);
+
+			Console.WriteLine("\nTaste drücken...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawEuropaBriefingHall();
+
+			TypeText("Hale führte mich in einen großen, schlichten Saal. Keine Dekoration. Keine Fenster.", 15);
+			TypeText("Nur er, ich und einige seiner Stabsmitglieder.", 15);
+			TypeText("");
+
+			TypeText("Hale verschränkte die Arme: Sie wollen wissen, wie all das hier zustande kam.", 15);
+			TypeText("Ich nickte nur.", 15);
+			TypeText("");
+
+			// --- HALE BEGINNT SEINE ERKLÄRUNG ---
+			TypeText("Diese Kolonie existiert länger, als Sie vermutlich glauben. Ihre Wurzeln reichen bis ins 20. Jahrhundert, zumindest die Idee.", 15);
+			TypeText("Damals erkannten einige von uns, dass die Regierungen kein Interesse daran hatten, die Menschheit wirklich weiterzubringen.", 15);
+			TypeText("Es bildete sich ein geheimer Bund, ohne Könige, ohne Präsidenten, ohne Religionen. Einfach Menschen, die verstanden hatten, wohin es führte.", 15);
+			TypeText("");
+
+			TypeText("Ja, die elitären Kreise haben die Erde regiert, Politiker waren selten mehr als Marionetten.", 15);
+			TypeText("Das war schon immer so. Kaiser, Könige, Präsidenten… Namen ändern sich, Muster bleiben.", 15);
+			TypeText("Irgendwelche Arschlöcher, die meinen Gott spielen zu können und alles kontrollieren wollen.", 15);
+			TypeText("");
+
+			TypeText("Ich nickte:Das überrascht mich nicht.", 15);
+			TypeText("");
+
+			TypeText("Hale fuhr fort: Wir wussten schon vor Jahrzehnten, Jahrhunderten dass die Erde verloren war. Lange bevor der Virus, dieses Monster gefunden wurde.", 15);
+			TypeText("Und lange bevor ihr ihn ‚Atlaner-Virus‘ genannt habt. Ein falscher Begriff.", 15);
+			TypeText("Es ist kein Virus der Atlanter, es stammt von den Blutsvätern. Unseren genetischen Vorfahren und vermutlich aller anderen Völker in dieser Galaxie.", 15);
+			TypeText("");
+
+			TypeText("Wir hatten längst Kontakt zu den Grauen. Das ist für uns nichts Neues.", 15);
+			TypeText("Wir wussten auch sofort, dass ihr sie besucht habt. Unsere Schiffe registrieren alles.", 15);
+			TypeText("");
+
+			TypeText("Ich schluckte und sagte nichts. Hale beobachtete mich genau.", 15);
+			TypeText("");
+
+			TypeText("Parallel zu eurer Mars-Kolonie bauten wir die wahre Kolonie auf, hier.", 15);
+			TypeText("Auf Europa. Und auf mehreren Jupitermonden.", 15);
+			TypeText("Eine eigene Flotte. Eigene Forschung. Eigene Gesellschaft.", 15);
+			TypeText("");
+
+			TypeText("Wir hatten keine Wahl. Die Erde war verloren, noch bevor die Eliten den Virus modifizierten.", 15);
+			TypeText("Dieser Virus, den die Blutsväter aus einer anderen Galaxie mitgebracht haben… er hatte bereits ganze Galaxien ausgelöscht.", 15);
+			TypeText("");
+
+			TypeText("Die Nanobots haben ihn reaktiviert, aber noch nicht vollständig.", 15);
+			TypeText("Ihr hattet Glück, dass die Grauen euch nicht vernichtet haben. Ihr wart an einem Ort, an den ihr kein Recht habt, laur deren Meinung.", 15);
+			TypeText("");
+
+			TypeText("Ich runzelte die Stirn: Warum nicht?", 15);
+			TypeText("");
+
+			TypeText("Hale trat einen Schritt näher. Weil das kein Planet ist. Was Sie gesehen haben, war eine Einrichtung der Blutsväter.", 15);
+			TypeText("Eine Waffe. Wie auf der Erde nur viel größer. Es soll sechs dieser Systeme in unserer Galaxie angeblich geben.", 15);
+			TypeText("Sie kann verschieden Impulse senden, alle sechs kombiniert um eine Welle zu erzeugen.", 15);
+			TypeText("Dieser Impuls kann eingestellt werden. Entweder wird jede Technologie, jedes Leben zerstört oder die ganze Galaxie.", 15);
+			TypeText("So ist es laut den Übersetzungen. Und nur die direkten Nachfahren können das aktivieren durch Ihre Gene und.....", 15);
+			TypeText("Einen Schlüssel für die galaktischen Waffen. Für die planetaren reichen ihre, unsere Gene.", 15);
+			TypeText("Deswegen lassen uns Die Grauen und die anderen Völker in Ruhe. Sie können diese Systeme nicht aktivieren.", 15);
+			TypeText("Die Blutsväter wussten, wenn diese Seuche, es kann nur aus der Höhle kommen, ausbricht muss man die gesamte Galaxie säubern.", 15);
+			TypeText("Diese Seuche passt sich an alles an. Menschen, Tiere, Pflanzen. Verschmelzt alles zu einem riesigen Dämon, wenn komplett aktiviert.", 15);
+			TypeText("Die Blutsväter brachten es mit. Haben experimentiert. Versuchten es zu zähmen, wollten die Unsterblichkeit erreichen.", 15);
+			TypeText("");
+
+			TypeText("Mir blieb die Stimme weg. Hale wandte sich halb ab.", 15);
+			TypeText("");
+
+			TypeText("„Aber genug davon. Kommen Sie.“", 15);
+			TypeText("„Wir müssen einen Test durchführen.“", 15);
+
+			Console.WriteLine("\nDrücke eine Taste für den Test...");
+			Console.ReadKey();
+
+			// --- GENETISCHER TEST – MINIGAME ---
+			Console.Clear();
+			TypeText("Hale: „Dieser Test zeigt, ob Sie genetische Spuren der Blutsväter tragen.", 15);
+			TypeText("Nur dann konnten Sie die Anlage bedienen.“", 15);
+			TypeText("");
+
+			RunGeneticTestMiniGame(); // Minigame aufrufen
+
+			Console.Clear();
+			TypeText("Hale starrte auf die Ergebnisse. Seine Miene wurde weicher.", 15);
+			TypeText("Wie erwartet… Sie tragen deutliche Anteile der Blutsväter. Natürlich haben wir alle welche in uns. Aber machne, wie Sie mehr.", 15);
+			TypeText("Deshalb konnten Sie die Waffe aktivieren. Und deshalb brauchen wir Sie jetzt.", 15);
+			TypeText("");
+
+			TypeText("Ich atmete langsam aus. Und was genau ist meine Aufgabe?", 15);
+			TypeText("");
+
+			TypeText("Hale: Ihr Schiff, die Genesis, wird repariert. In der Zwischenzeit fliegen Sie mit der Argos.", 15);
+			TypeText("Sie kehren zur Erde zurück.“", 15);
+			TypeText("Denn Sie haben etwas Entscheidendes vergessen.", 15);
+			TypeText("");
+
+			TypeText("Ich runzelte die Stirn: Was denn?", 15);
+			TypeText("");
+
+			TypeText("Hale verschränkte die Arme erneut.", 15);
+			TypeText("Die Waffe neutralisierte das biologische Virus, aber nicht die Naniten.", 15);
+			TypeText("Der zweite Teil des Systems ist speziell dafür gedacht, jegliche technologische Infrastruktur zu löschen.", 15);
+			TypeText("Ihr Auftrag: Die Naniten-Kontrollkerne auf der Erde zerstören.", 15);
+			TypeText("Nur Sie können die Anlage wieder auslösen, zumindest sind Sie der einzige wo gleichzeitig Soldat ist mit hohem Genanteil", 15);
+			TypeText("");
+
+			Console.WriteLine("\nDrücke eine Taste, um zum Teleporter zu gehen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawTeleporterPlatform();
+			TypeText("Zwei Sicherheitskräfte brachten mich zurück zur Plattform.", 15);
+			TypeText("Ein Summen baute sich auf. Licht umhüllte meinen Körper.", 15);
+			TypeText("Europa verschwand. Und die Argos tauchte vor mir auf.", 15);
+
+			// Speicherpunkt nach der Szene
+			SaveGame("Scene_EuropaKolonie_End");
+
+			return;
+		}
+
+		// ASCII-GRAFIKEN (Teleporter, Koloniehalle, Turbolift, Saal)
+
+		static void DrawTeleporterPlatform()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("        ____________________________");
+			Console.WriteLine("       |                            |");
+			Console.WriteLine("       |     ◇  TELEPORTER  ◇       |");
+			Console.WriteLine("       |____________________________|");
+			Console.WriteLine("              |     |     |");
+			Console.WriteLine("            \\ |     |     | /");
+			Console.WriteLine("             \\|     |     |/");
+			Console.WriteLine("              ▼     ▼     ▼");
+			Console.ResetColor();
+		}
+
+		static void DrawEuropaColonyHall()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("    _________________________________________________");
+			Console.WriteLine("   |                                                 |");
+			Console.WriteLine("   |      ███   ███   ███   ███   ███   ███          |");
+			Console.WriteLine("   |                                                 |");
+			Console.WriteLine("   |      [ EUROPA-KOLONIE – ANKUNFTSHALLE ]         |");
+			Console.WriteLine("   |_________________________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawTurboLiftEuropa()
+		{
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("   _________");
+			Console.WriteLine("  |  LIFT  |   ►►►  Steigt auf höhere Ebenen");
+			Console.WriteLine("  |_______|");
+			Console.WriteLine("     ||");
+			Console.WriteLine("     ||");
+			Console.WriteLine("     VV");
+			Console.ResetColor();
+		}
+
+		static void DrawEuropaBriefingHall()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("     _______________________________________________");
+			Console.WriteLine("    |                                               |");
+			Console.WriteLine("    |          ◇  BRIEFING-SAAL EUROPA  ◇           |");
+			Console.WriteLine("    |     (Silhouetten stehen in der Dunkelheit)    |");
+			Console.WriteLine("    |_______________________________________________|");
+			Console.ResetColor();
+		}
+
+		// MINI-GAME – GENETISCHER TEST (X-FINDER)
+
+		static void RunGeneticTestMiniGame()
+		{
+			Random rng = new Random();
+
+			string[] module = { "A", "B", "C", "D", "E" };
+			int pos = rng.Next(0, 5); // Position des X
+			module[pos] = "X";
+
+			bool success = false;
+
+			while (!success)
+			{
+				Console.Clear();
+				Console.ForegroundColor = ConsoleColor.Green;
+				Console.WriteLine("=== GENETISCHER VERIFIKATIONSTEST – BLUTSVÄTER ===\n");
+				Console.ResetColor();
+
+				TypeText("Finden Sie das mutierte Gen-Segment (X).", 15);
+				Console.WriteLine();
+
+				for (int i = 0; i < 5; i++)
+				{
+					Console.Write($"[{module[i]}] ");
+				}
+
+				Console.Write("\n\nPosition eingeben (1–5): ");
+				string input = Console.ReadLine();
+
+				if (int.TryParse(input, out int choice))
+				{
+					choice--;
+
+					if (choice == pos)
+					{
+						TypeText("\nGen-Segment identifiziert…", 15);
+						Console.Beep(700, 200);
+						Thread.Sleep(500);
+						TypeText("DNA-Analyse vollständig. Ergebnis: BLUTSVÄTER-KOMPATIBEL.", 15);
+						success = true;
+					}
+					else
+					{
+						TypeText("\nFalsches Segment. Analyse neu kalibrieren…", 15);
+						Console.Beep(300, 200);
+						Thread.Sleep(800);
+					}
+				}
+				else
+				{
+					TypeText("\nUngültige Eingabe.", 15);
+					Thread.Sleep(500);
+				}
+			}
+
+			Console.WriteLine("\nDrücke eine Taste, um fortzufahren...");
+			Console.ReadKey();
 		}
 	}
 }
