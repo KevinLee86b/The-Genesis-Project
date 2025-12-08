@@ -32,13 +32,15 @@ namespace The_Genesis_Projekt
 		{
 			Console.Clear();
 			Console.ForegroundColor = ConsoleColor.Cyan;
-			Console.WriteLine("==== GENESIS – HAUPTMENÜ ====\n");
+			Console.WriteLine("=================================");
+			Console.WriteLine("====== GENESIS – HAUPTMENÜ ======");
+			Console.WriteLine("=================================\n");
 			Console.ResetColor();
 
-			Console.WriteLine("1) Neues Spiel");
-			Console.WriteLine("2) Weiterspielen (letzter Speicherstand)");
-			Console.WriteLine("3) Kapitel auswählen");
-			Console.WriteLine("4) Beenden");
+			Console.WriteLine("  1) Neues Spiel                            ");
+			Console.WriteLine("  2) Weiterspielen (letzter Speicherstand)  ");
+			Console.WriteLine("  3) Kapitel auswählen                      ");
+			Console.WriteLine("  4) Beenden                                ");
 
 			Console.Write("\nAuswahl: ");
 			string choice = Console.ReadLine();
@@ -174,20 +176,27 @@ namespace The_Genesis_Projekt
 
 		static void ChapterSelectMenu()
 		{
+			
+			Console.BackgroundColor = ConsoleColor.Black;
 			Console.Clear();
-			Console.WriteLine("=== Kapitel auswählen ===\n");
-			Console.WriteLine("1) Prolog");
-			Console.WriteLine("2) Intro");
-			Console.WriteLine("3) Alarm – Transportsphäre");
-			Console.WriteLine("4) Kapitel 1 – Flucht von der Erde");
-			Console.WriteLine("5) Helios-Kontakt");
-			Console.WriteLine("6) Nach Helios-Kampf / Atlanter-Entscheidung");
-			Console.WriteLine("7) Zerstörerkampf");
-			Console.WriteLine("8) Blindfeuer-Gefecht im Trümmerfeld");
-			Console.WriteLine("9) Atlanter-Bodenmission");
-			Console.WriteLine("10) Scene Rückkehr vom Einsatz, Beginn");
-			Console.WriteLine("11) Scene Erstkontakt Die Grauen");
-			Console.WriteLine("00) Zurück zum Hauptmenü");
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("===========================");
+			Console.WriteLine("==== Kapitel auswählen ====");
+			Console.WriteLine("===========================\n");
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.WriteLine("   1) --Prolog--");
+			Console.WriteLine("   2) --Intro--");
+			Console.WriteLine("   3) --Alarm – Transportsphär--");
+			Console.WriteLine("   4) --Kapitel 1 – Flucht von der Erde--");
+			Console.WriteLine("   5) --Helios-Kontakt--");
+			Console.WriteLine("   6) --Nach Helios-Kampf / Atlanter-Entscheidung--");
+			Console.WriteLine("   7) --Zerstörerkampf--");
+			Console.WriteLine("   8) --Blindfeuer-Gefecht im Trümmerfeld--");
+			Console.WriteLine("   9) --Atlanter-Bodenmission--");
+			Console.WriteLine("  10) --Rückkehr vom Einsatz--");
+			Console.WriteLine("  11) --Die Suche--");
+			Console.WriteLine("  12) --Der 10 Planet/Die Grauen--");
+			Console.WriteLine("  00) <<<Zurück zum Hauptmenü>>>");
 
 			Console.Write("\nAuswahl: ");
 			string choice = Console.ReadLine();
@@ -235,8 +244,12 @@ namespace The_Genesis_Projekt
 					Scene_RueckkehrVomEinsatz();
 					break;
 				case "11":
-					SaveGame("Scene_ErstkontaktGraue");
-					Scene_ErstkontaktGraue();
+					SaveGame("Scene_DieSuche");
+					Scene_DieSuche();
+					break;
+				case "12":
+					SaveGame("Scene_ErstkontaktGrauer");
+					Scene_ErstkontaktGrauer();
 					break;
 				case "00":
 					MainMenu();
@@ -3339,13 +3352,13 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("        darüber die Projektoren für das Dekontaminationsfeld.");
 			Console.ResetColor();
 
-			Scene_ErstkontaktGraue();
+			Scene_DieSuche();
 			return;
 		}
-		static void Scene_ErstkontaktGraue()
+		static void Scene_DieSuche()
 		{
 			// Speicherpunkt vor der Szene
-			SaveGame("Scene_ErstkontaktGrauer_Begin");
+			SaveGame("Scene_DieSuche_Begin");
 
 			Console.Clear();
 			TypeText("Langsam wache ich auf. Zum ersten Mal seit langer Zeit fühlt sich das Quartier nicht kalt und leer an.", 10);
@@ -3454,7 +3467,7 @@ namespace The_Genesis_Projekt
 				TypeText("");
 				TypeText("Fortsetzung folgt…", 10);
 
-				SaveGame("Scene_ErstkontaktGrauer_End");
+				SaveGame("Scene_DieSuche_End");
 				Console.ReadKey();
 				return;
 			}
@@ -3485,7 +3498,7 @@ namespace The_Genesis_Projekt
 			TypeText("");
 
 			// Speicherpunkt am Ende der Szene
-			SaveGame("Scene_ErstkontaktGrauer_End");
+			SaveGame("Scene_DieSuche_End");
 			TypeText("Fortsetzung folgt…", 10);
 			Console.ReadKey();
 		}
@@ -3715,6 +3728,325 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("                  \\                    /");
 			Console.WriteLine("                   '-.              .-'");
 			Console.WriteLine("                      '-.______.-'");
+			Console.ResetColor();
+
+
+			SaveGame("Scene_ErstkontaktGrauer_Begin");
+			Scene_ErstkontaktGrauer();
+			return;
+
+		}
+		static void Scene_ErstkontaktGrauer()
+		{
+			// Speicherpunkt vor der Szene
+			SaveGame("Scene_ErstkontaktGrauer_Begin");
+
+			Console.Clear();
+			DrawRingworldView();
+			TypeText("", 15);
+
+			TypeText("Ich starre auf den Hauptschirm.", 15);
+			TypeText("Vor uns schwebt der Planet, eine gewaltige Kugel, in sanftem Dunkelblau und Grau, halb im Schatten, halb im Licht.", 15);
+			TypeText("Doch das ist nicht das, was mich sprachlos macht.", 15);
+			TypeText("", 15);
+
+			TypeText("Ein gigantischer Ring umspannt den Planeten.", 15);
+			TypeText("Er schließt sich wie eine künstliche Krone um die Welt, durchbrochen von Öffnungen und Durchlässen.", 15);
+			TypeText("Auf der Innenseite des Rings erkenne ich Strukturen, Muster… Kontinente?", 15);
+			TypeText("Es sieht aus, als wäre die Innenseite des Rings ebenso bewohnt wie die Oberfläche des Planeten.", 15);
+			TypeText("", 15);
+
+			TypeText("Die Atmosphäre des Planeten und die des Rings scheinen ineinander überzugehen.", 15);
+			TypeText("Als hätte jemand zwei Welten übereinandergelegt, bis sie eine einzige, perfekte Illusion bilden.", 15);
+			TypeText("", 15);
+
+			TypeText("Für einen Moment vergesse ich, dass ich auf einer Brücke stehe.", 15);
+			TypeText("Alles, was bleibt, ist diese unmögliche Konstruktion, mitten in der Dunkelheit.", 15);
+			TypeText("", 15);
+			Console.WriteLine("\n[Weiter mit Taste...]");
+			Console.ReadKey();
+			Console.Clear();
+
+			Console.Beep(500, 180);
+			Console.Beep(550, 180);
+
+			Console.Clear();
+			DrawGreyFleetAroundPlanet();
+			TypeText("", 15);
+
+			TypeText("Ich werde aus meinen Gedanken gerissen, als sich plötzlich dutzende Kontakte vor unserem Bug materialisieren.", 15);
+			TypeText("Schiffe, kleiner als die GENESIS, aber in ihrer Anzahl überwältigend.", 15);
+			TypeText("", 15);
+
+			TypeText("KADE: \"Captain, dutzende Signaturen! Sie kommen direkt aus dem Ringfeld!\"", 15);
+			TypeText("KADE: \"Energiestrukturen fahren hoch, ich sehe, laut Sensoren Schilde und Waffensysteme auf mehreren Frequenzen hochfahren.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Bevor ich antworten kann, ertönt ein Signal über die Brücke.", 15);
+			Console.Beep(700, 200);
+			Console.Beep(650, 200);
+
+			TypeText("KADE: \"Sie rufen uns, Captain.\"", 15);
+			TypeText("", 15);
+			Console.WriteLine("\n[Weiter mit Taste...]");
+			Console.ReadKey();
+			Console.Clear();
+			Console.Clear();
+			DrawGreyTransmissionScreen();
+			TypeText("", 15);
+
+			TypeText("Auf dem Schirm erscheint ein Gesicht.", 15);
+			TypeText("Ein Grauer im Vordergrund, im diffusen Licht, dahinter vier weitere Silhouetten, nur schemenhaft zu erkennen.", 15);
+			TypeText("", 15);
+
+			TypeText("Die Augen sind groß, tiefschwarz und vollkommen reglos.", 15);
+			TypeText("Die Haut ist glatt, grau, ohne sichtbare Haare, ohne Narben.", 15);
+			TypeText("Sie tragen keinerlei Kleidung, keine Rüstung, keine Uniform, nichts, was auf Rang oder Geschlecht schließen ließe.", 15);
+			TypeText("", 15);
+
+			TypeText("Ich muss unwillkürlich schmunzeln, ein kurzer, fehlplatzierter Gedanke:", 15);
+			TypeText("Selbst hier draußen sind wir die einzigen, die sich in Stoff und Metall hüllen.", 15);
+			TypeText("Doch ich schiebe den Gedanken schnell beiseite. Jetzt ist nicht der Moment dafür.", 15);
+			TypeText("", 15);
+
+			TypeText("Der Graue schaut mich direkt an.", 15);
+			TypeText("Seine Lippen bewegen sich nicht, doch eine Stimme erklingt.", 15);
+			TypeText("Sie ist klar, deutlich und erstaunlich kräftig.", 15);
+			TypeText("Ich kann nicht sagen, ob sie über die Lautsprecher kommt… oder direkt in meinem Kopf.", 15);
+			TypeText("", 15);
+
+			TypeText("Grauer: \"Was wollt ihr hier?\"", 15);
+			TypeText("Grauer: \"Ihr habt hier nichts verloren.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Ich spüre, wie mein Herzschlag schneller wird.", 15);
+			TypeText("Trotzdem zwinge ich meine Stimme zur Ruhe.", 15);
+			TypeText("", 15);
+
+			TypeText("Commander: \"Wir sind hier, um Asyl zu suchen.\"", 15);
+			TypeText("Commander: \"Euch ist sicher nicht entgangen, was auf unserem Heimatplaneten geschehen ist.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Der Graue blinzelt nicht. Keine sichtbare Regung.", 15);
+			TypeText("", 15);
+
+			TypeText("Grauer: \"Wir beobachten euch seit langer Zeit.\"", 15);
+			TypeText("Grauer: \"Wir begleiten euch, die angeblich direkten Nachfahren der Blutsväter.\"", 15);
+			TypeText("Grauer: \"Und doch überrascht ihr uns immer wieder damit, wie primitiv ihr seid.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Seine Worte schneiden tiefer, als ich zugeben möchte.", 15);
+			TypeText("", 15);
+
+			TypeText("Grauer: \"Ihr habt eine Seuche entfesselt, die euer Erbe verschlingt.\"", 15);
+			TypeText("Grauer: \"Ihr könnt froh sein, dass wir neutral sind.\"", 15);
+			TypeText("Grauer: \"Andere Nachfahren der Blutsväter… und manche Allianzen… sind es nicht.\"", 15);
+			TypeText("Grauer: \"Im Gegenteil, sie empfinden euch mittlerweile als Gefahr.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Ich atme langsam ein, langsam aus.", 15);
+			TypeText("Commander: \"Wir sind der letzte Rest der Menschheit von diesem Planeten.\"", 15);
+			TypeText("Commander: \"Es bleibt uns nichts anderes übrig.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Zum ersten Mal scheint der Graue einen Moment lang innezuhalten.", 15);
+			TypeText("", 15);
+
+			TypeText("Grauer: \"Ihr seid hier unerwünscht.\"", 15);
+			TypeText("Grauer: \"Es ist besser, wenn ihr jetzt fortgeht.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Commander: \"Und wohin sollen wir gehen?\"", 15);
+			TypeText("", 15);
+
+			TypeText("Ein kaum wahrnehmbares Zucken geht über seine Gesichtszüge, vermutlich eher Einbildung.", 15);
+			TypeText("", 15);
+
+			TypeText("Grauer: \"Ihr habt doch auf einem der Jupiter-Monde eine Siedlung errichtet.\"", 15);
+			TypeText("Grauer: \"Eine Kolonie eurer Art.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Ich starre ihn an.", 15);
+			TypeText("Commander: \"Angesiedelt…?\"", 15);
+			TypeText("", 15);
+
+			TypeText("Grauer: \"Ihr wisst gar nichts davon.\"", 15);
+			TypeText("Grauer: \"Das wundert mich nicht.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Grauer: \"Nun gut. Jetzt habt ihr ein Ziel.\"", 15);
+			TypeText("Grauer: \"Entfernt euch so schnell wie möglich aus dem Orbit und vergesst schnell das ihr hier gewesen seid.\"", 15);
+			TypeText("Grauer: \"Andernfalls müsst ihr mit Konsequenzen rechnen.\"", 15);
+			TypeText("", 15);
+			Console.WriteLine("\n[Weiter mit Taste...]");
+			Console.ReadKey();
+			Console.Clear();
+			Console.Beep(400, 200);
+			Console.Beep(350, 200);
+
+			Console.Clear();
+			DrawTransmissionCut();
+			TypeText("", 15);
+
+			TypeText("Der Bildschirm wird schwarz.", 15);
+			TypeText("Im nächsten Moment schaltet die Ansicht zurück nach außen.", 15);
+			TypeText("", 15);
+			Console.WriteLine("\n[Weiter mit Taste...]");
+			Console.ReadKey();
+			Console.Clear();
+			Console.Clear();
+			DrawGreyFleetAroundPlanet();
+			TypeText("", 15);
+
+			TypeText("Die fremden Schiffe formieren sich vor uns.", 15);
+			TypeText("Sie sind deutlich kleiner als die GENESIS, aber jede einzelne Signatur wirkt wie ein Messer an unserer Kehle.", 15);
+			TypeText("Technologisch liegen sie mit hoher Wahrscheinlichkeit weit über allem, was wir je gebaut haben.", 15);
+			TypeText("", 15);
+
+			TypeText("Oduro: \"Captain… was sollen wir jetzt tun?\"", 15);
+			TypeText("Ihre Stimme ist leiser als sonst. Die sonst so sichere Offizierin klingt zum ersten Mal unsicher.", 15);
+			TypeText("", 15);
+
+			TypeText("Ich sehe noch einmal auf den Schirm, auf den Planeten, den Ring, die Flotte der Grauen.", 15);
+			TypeText("Dann treffe ich die einzige Entscheidung, die uns bleibt.", 15);
+			TypeText("", 15);
+
+			TypeText("Commander: \"Kurs auf Jupiter setzen.\"", 15);
+			TypeText("Commander: \"Ziel: der Mond mit der Kolonie, von der sie gesprochen haben.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Oduro: \"Aye, Captain.\"", 15);
+			TypeText("Oduro: \"Kurs auf den Jupiter. Übergabe an den Steuermann.\"", 15);
+			TypeText("", 15);
+
+			TypeText("Steuermann: \"Neuer Kurs gesetzt. Flotte übernimmt Formation.\"", 15);
+			TypeText("Steuermann: \"Wir verlassen den Orbit des zehnten Planeten.\"", 15);
+			TypeText("", 15);
+			Console.WriteLine("\n[Weiter mit Taste...]");
+			Console.ReadKey();
+			Console.Clear();
+			Console.Clear();
+			DrawFleetCourseToJupiter();
+			TypeText("", 15);
+
+			TypeText("Die GENESIS dreht langsam ab.", 15);
+			TypeText("Die Schiffe der Grauen bleiben auf der Stelle stehen, wie eine Mauer aus Schatten vor der Ringwelt.", 15);
+			TypeText("Dann verschwindet das System aus unserem Sichtfeld.", 15);
+			TypeText("", 15);
+
+			TypeText("Vor uns liegt der Weg zum Jupiter.", 15);
+			TypeText("Und irgendwo dort draußen, eine Kolonie, von der wir nie etwas wussten.", 15);
+			TypeText("", 15);
+
+			// Speicherpunkt nach der Szene
+			SaveGame("Scene_ErstkontaktGrauer_End");
+
+			TypeText("Fortsetzung folgt…", 15);
+			Console.ReadKey();
+		}
+
+		// ASCII-GRAFIKEN FÜR DIE SZENE
+
+		static void DrawRingworldView()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkBlue;
+			Console.WriteLine("                    HAUPTDISPLAY – ZIELWELT");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.WriteLine("                    .-\"\"\"\"\"\"\"\"\"\"-.");
+			Console.WriteLine("                 .-'              '-.");
+			Console.WriteLine("               .'    PLANETENKUGEL   '.");
+			Console.WriteLine("              /                        \\");
+			Console.WriteLine("             |                          |");
+			Console.WriteLine("              \\                        /");
+			Console.WriteLine("               '.                    .'");
+			Console.WriteLine("                 '-.            .-'");
+			Console.WriteLine("                     '--------'");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine();
+			Console.WriteLine("                 ==========================");
+			Console.WriteLine("                /                           \\");
+			Console.WriteLine("               /      KÜNSTLICHER RING       \\");
+			Console.WriteLine("              |  (Durchlässe, Landschaften)   |");
+			Console.WriteLine("               \\                             /");
+			Console.WriteLine("                \\===========================/");
+			Console.ResetColor();
+		}
+
+		static void DrawGreyFleetAroundPlanet()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkBlue;
+			Console.WriteLine("                 RINGWELT MIT ORBITALEN KONTAKTEN");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.WriteLine("                     (   PLANET   )");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine("                 ========[ RING ]=======");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine();
+			Console.WriteLine("      <o>   <o>   <o>   <o>   <o>   <o>   <o>   <o>");
+			Console.WriteLine("          kleine Schiffe der Grauen vor unserem Bug");
+			Console.ResetColor();
+		}
+
+		static void DrawGreyTransmissionScreen()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("                ================================");
+			Console.WriteLine("                |       HAUPTDISPLAY           |");
+			Console.WriteLine("                ================================");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("                |             ____             |");
+			Console.WriteLine("                |            /    \\           |");
+			Console.WriteLine("                |           /  O O \\          |");
+			Console.WriteLine("                |           |       |           |");
+			Console.WriteLine("                |            |  <> |           |");
+			Console.WriteLine("                |            \\____/           |");
+			Console.WriteLine("                |        (Schatten im Hintergrund)");
+			Console.WriteLine("                |______________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawTransmissionCut()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkRed;
+			Console.WriteLine("   [ÜBERTRAGUNG ABGEBROCHEN]");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("   ####################################");
+			Console.WriteLine("   #  SIGNALRAUSCHEN  SIGNALRAUSCHEN  #");
+			Console.WriteLine("   ####################################");
+			Console.ResetColor();
+		}
+
+		static void DrawFleetCourseToJupiter()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkBlue;
+			Console.WriteLine("                   FLUGKURS – JUPITER");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine("   [ZEHNTER PLANET] ----------------------------*");
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.WriteLine("                                                *  (JUPITER)");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine();
+			Console.WriteLine("   GENESIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("   ARGOS   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("   Weitere Schiffe >>>>>>>>>>>>>>>>>>>>>>>>>");
 			Console.ResetColor();
 		}
 	}
