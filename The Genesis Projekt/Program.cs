@@ -4375,9 +4375,11 @@ namespace The_Genesis_Projekt
 			TypeText("Hale trat einen Schritt näher. Weil das kein Planet ist. Was Sie gesehen haben, war eine Einrichtung der Blutsväter.", 15);
 			TypeText("Eine Waffe. Wie auf der Erde nur viel größer. Es soll sechs dieser Systeme in unserer Galaxie angeblich geben.", 15);
 			TypeText("Sie kann verschieden Impulse senden, alle sechs kombiniert um eine Welle zu erzeugen.", 15);
+			TypeText("");
 			TypeText("Dieser Impuls kann eingestellt werden. Entweder wird jede Technologie, jedes Leben zerstört oder die ganze Galaxie.", 15);
 			TypeText("So ist es laut den Übersetzungen. Und nur die direkten Nachfahren können das aktivieren durch Ihre Gene und.....", 15);
 			TypeText("Einen Schlüssel für die galaktischen Waffen. Für die planetaren reichen ihre, unsere Gene.", 15);
+			TypeText("");
 			TypeText("Deswegen lassen uns Die Grauen und die anderen Völker in Ruhe. Sie können diese Systeme nicht aktivieren.", 15);
 			TypeText("Die Blutsväter wussten, wenn diese Seuche, es kann nur aus der Höhle kommen, ausbricht muss man die gesamte Galaxie säubern.", 15);
 			TypeText("Diese Seuche passt sich an alles an. Menschen, Tiere, Pflanzen. Verschmelzt alles zu einem riesigen Dämon, wenn komplett aktiviert.", 15);
@@ -4386,9 +4388,16 @@ namespace The_Genesis_Projekt
 
 			TypeText("Mir blieb die Stimme weg. Hale wandte sich halb ab.", 15);
 			TypeText("");
+			TypeText("Ich versuchte das Gespräch fort zu führen: Was ist mit euren Schiffen? Ich sah baugleiche zur Universum Klasse.", 15);
+			TypeText("Hale drehte sich zu mir: Die Technologie ist unsere, nicht von den Vorfahren. Klar das Wissen half dabei.", 15);
+			TypeText("Die Raumfahrt, die Waffen, Energiequellen und auch Teleportieren. All das haben wir schon länger als sie denken.", 15);
+			TypeText("Wie immer gab es Veräter und Spione und gaben es euch weiter an die Erdbewohner.", 15);
+			TypeText("Ich sagte erstaunt: Dann habt ihr schon öfters das Sonnensystem verlassen. Das bedeutet...", 15);
+			TypeText("Er unterbrach mich...", 15);
 
-			TypeText("„Aber genug davon. Kommen Sie.“", 15);
-			TypeText("„Wir müssen einen Test durchführen.“", 15);
+
+			TypeText("...Genug davon. Kommen Sie.", 15);
+			TypeText("„Wir müssen einen Test durchführen.", 15);
 
 			Console.WriteLine("\nDrücke eine Taste für den Test...");
 			Console.ReadKey();
@@ -4411,7 +4420,7 @@ namespace The_Genesis_Projekt
 			TypeText("");
 
 			TypeText("Hale: Ihr Schiff, die Genesis, wird repariert. In der Zwischenzeit fliegen Sie mit der Argos.", 15);
-			TypeText("Sie kehren zur Erde zurück.“", 15);
+			TypeText("Sie kehren zur Erde zurück.", 15);
 			TypeText("Denn Sie haben etwas Entscheidendes vergessen.", 15);
 			TypeText("");
 
