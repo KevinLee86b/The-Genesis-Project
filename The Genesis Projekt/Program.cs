@@ -207,6 +207,9 @@ namespace The_Genesis_Projekt
 				case "Scene_EuropaKolonie":
 					Scene_EuropaKolonie();
 					break;
+				case "Scene_Blutsvaeter_Entrance":
+					Scene_Blutsvaeter_Entrance();
+					break;
 
 				default:
 					Console.WriteLine("Unbekannte Szene im Speicherstand. Zurück zum Hauptmenü.");
@@ -221,7 +224,7 @@ namespace The_Genesis_Projekt
 
 		static void ChapterSelectMenu()
 		{
-			
+
 			Console.BackgroundColor = ConsoleColor.Black;
 			Console.Clear();
 			Console.ForegroundColor = ConsoleColor.Yellow;
@@ -243,6 +246,7 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("  12) --Der 10 Planet/Die Grauen--");
 			Console.WriteLine("  13) --Kolonie Kontakt--");
 			Console.WriteLine("  14) --Kolonie Jupitermonde");
+			Console.WriteLine("  15) --Zurück zur Erde");
 			Console.WriteLine("  00) <<<Zurück zum Hauptmenü>>>");
 
 			Console.Write("\nAuswahl: ");
@@ -305,6 +309,10 @@ namespace The_Genesis_Projekt
 				case "14":
 					SaveGame("Scene_EuropaKolonie");
 					Scene_EuropaKolonie();
+					break;
+				case "15":
+					SaveGame("Scene_Blutsvaeter_Entrance");
+					Scene_Blutsvaeter_Entrance();
 					break;
 				case "00":
 					MainMenu();
@@ -3259,7 +3267,7 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("Drücke eine Taste, um zum Turbolift zu gehen...");
 			Console.ReadKey();
 
-			// Turbolift zur Captain-Ebene (existierende Grafik)
+			// Turbolift zur Captain-Ebene 
 			Console.Clear();
 			DrawTurboLiftRoute();
 			TypeText("");
@@ -3271,7 +3279,7 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("Drücke eine Taste, um auf dem Captain-Deck anzukommen...");
 			Console.ReadKey();
 
-			// Captain-Deck & Quartier (existierende Grafiken)
+			// Captain-Deck & Quartier 
 			Console.Clear();
 			DrawCaptainsDeckOverview();
 			TypeText("");
@@ -3318,7 +3326,7 @@ namespace The_Genesis_Projekt
 			TypeText("Und zu glauben, dass wir vielleicht doch noch eine Chance haben.", 10);
 			TypeText("");
 
-			// Speicherpunkt nach der Szene
+
 			SaveGame("Scene_RueckkehrVomEinsatz_End");
 		}
 		// ZUSÄTZLICHE ASCII-GRAFIKEN FÜR DIE RÜCKKEHR-SZENE
@@ -4127,12 +4135,12 @@ namespace The_Genesis_Projekt
 			TypeText("Wir erreichten den Orbit des gewaltigen Gasriesen Jupiter.", 15);
 			TypeText("Die farbigen Wolkenschichten unter uns wirkten wie lebendige Strudel.", 15);
 			TypeText("Einer der Monde, Europa schwebte still im Vordergrund, hell, kalt, funkelnd.", 15);
-			
+
 
 			TypeText("Kade: Captain… mehrere massive Energiesignaturen direkt unter Europas Eiskruste.", 15);
 			TypeText("Kade: Und auch Ganymed und Kallisto senden ungewöhnlich starke Impulse.", 15);
 			TypeText("Oduro: Wir sind nicht alleine.", 15);
-		
+
 
 			// --- ANNÄHERUNGSGRAFIK AN EUROPA ---
 			Console.ForegroundColor = ConsoleColor.White;
@@ -4147,7 +4155,7 @@ namespace The_Genesis_Projekt
 
 			TypeText("Ich befehle der Flotte, den Mond näher zu überfliegen.", 15);
 			TypeText("Europa füllte den Hauptschirm,ein makelloser, glatter Eiskörper.", 15);
-			
+
 
 			// --- SIGNALSTÖRUNG ---
 			Console.Beep(300, 200);
@@ -4155,11 +4163,11 @@ namespace The_Genesis_Projekt
 
 			TypeText("Kommunikation: Captain! Unser Signal wird gestört Quelle unbekannt!", 15);
 			TypeText("Kade: Die Störung wird stärker… jemand blockiert uns absichtlich.", 15);
-			
+
 
 			TypeText("Commander: ARGOS, verlegen Sie sich hinter Europa.", 15);
 			TypeText("Restliche Flottille: Ringförmige Position einnehmen und Sensornetz verstärken.", 15);
-			
+
 
 			// --- ENERGIEKONTAKTE ---
 			TypeText("Kade: Captain… neue Energiespuren!", 15);
@@ -4173,7 +4181,7 @@ namespace The_Genesis_Projekt
 
 			TypeText("Sensoroffizier: Captain… das sind menschliche Schiffstypen.", 15);
 			TypeText("Sensoroffizier: Das müssen dutzednde, vielleicht hunderte sein.", 15);
-			
+
 
 			// --- AUDIOKONTAKT (KEIN BILD) ---
 			Console.Beep(500, 300);
@@ -4185,7 +4193,7 @@ namespace The_Genesis_Projekt
 			TypeText("??? (über Audio): Brecht euren Kurs ab und verlasst diesen Planeten.", 15);
 
 			TypeText("Ich war irritiert: Eine menschliche Stimme. Kein militärischer Ton, aber voller Autorität.", 15);
-			
+
 
 			TypeText("Kade: Captain! Immer mehr Schiffe tauchen auf, die Atmosphäre hat sie verdeckt!", 15);
 
@@ -4201,7 +4209,7 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 
 			TypeText("Oduro: Captain, wir sind umzingelt.", 15);
-			
+
 			// --- DER FÜHRER SPRICHT ---
 			TypeText("??? (über Audio): Ich bin Oberkommandant Hale von der Jupiter-Kolonie.", 15);
 			TypeText("Hale: Wir kennen eure Signatur. Die Erde ist dank eurem Gesindel gefallen. Ihr seid verseucht.", 15);
@@ -4251,7 +4259,7 @@ namespace The_Genesis_Projekt
 			TypeText("Ich atmete tief ein und sprach klar:", 15);
 			TypeText("Oberkommandant Hale… ich bin einer der wenigen, die die Systeme der Atlanter bedienen können.g", 15);
 			TypeText("Die Atlanter-Anlage auf der Erde funktioniert wieder durch mich.", 15);
-		
+
 
 			TypeText("Stille. Dann ein hörbares Einatmen über die Verbindung.", 15);
 
@@ -4262,7 +4270,7 @@ namespace The_Genesis_Projekt
 
 			TypeText("Hale: Dann seid ihr nicht nur Überlebende.", 15);
 			TypeText("Hale: Ihr seid Schlüsselträger, der Blutsväter aber wisst vermutlich noch nicht warum.", 15);
-			
+
 
 			TypeText("Hale: Captain… ich gewähre Ihnen Zugang.", 15);
 			TypeText("Hale: Aber nur Ihnen. Die GENESIS bleibt auf Distanz.", 15);
@@ -4270,13 +4278,13 @@ namespace The_Genesis_Projekt
 
 			TypeText("Ich nickte entschlossen.", 15);
 			TypeText("Bereiten Sie den Teleporter vor. Ich komme allein.", 15);
-			
+
 
 			// --- WEITER ZUR TELEPORTER-SZENE ---
 			SaveGame("Scene_EuropaTeleport");
 			Scene_EuropaKolonie();
 			return;
-			
+
 		}
 		static void Scene_EuropaKolonie()
 		{
@@ -4420,7 +4428,7 @@ namespace The_Genesis_Projekt
 			TypeText("");
 
 			TypeText("Hale: Ihr Schiff, die Genesis, wird repariert. In der Zwischenzeit fliegen Sie mit der Argos.", 15);
-			TypeText("Sie kehren zur Erde zurück.", 15);
+			TypeText("Sie kehren zur Erde zurück.se", 15);
 			TypeText("Denn Sie haben etwas Entscheidendes vergessen.", 15);
 			TypeText("");
 
@@ -4558,7 +4566,677 @@ namespace The_Genesis_Projekt
 
 			Console.WriteLine("\nDrücke eine Taste, um fortzufahren...");
 			Console.ReadKey();
+
+			Scene_Blutsvaeter_Entrance();
+			return;
+		}
+		static void Scene_Blutsvaeter_Entrance()
+		{
+			Console.Clear();
+			SaveGame("Scene_Blutsvaeter_Entrance");
+
+			TypeText("ARGOS – Orbit über der vernarbten Erde.", 12);
+			TypeText("Das Schiff schneidet ruhig durch den Orbit, während an dem Landungsschiff Wolken entlang gleiten.", 12);
+			TypeText("Ich stehe in der Landungsbucht, Kampfanzug verriegelt, Schilde hochgefahren.", 12);
+			TypeText("");
+
+			TypeText("Ren (über Interkom): Captain, wir halten stabile Umlaufbahn über der alten Blutsväter-Anlage.", 12);
+			TypeText("Ren: Teleporterfelder sind immer noch gestört – Reststrahlung der Waffe. Sie müssen mit dem Landungsschiff runter.", 12);
+			TypeText("");
+
+			TypeText("Ich nickte, obwohl Ren mich nicht sehen konnte.", 12);
+			TypeText("Commander: Landungsschiff klar machen. Zielkoordinaten: Blutsväter-Komplex Alpha.", 12);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um den Abstieg zur Oberfläche zu starten...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawDropshipDescent();
+			TypeText("");
+			TypeText("Das Landungsschiff durchbricht die Atmosphäre, Turbulenzen rütteln an der Hülle.", 12);
+			TypeText("Unter uns breitet sich ein totes Land aus – verbrannte Städte, verkrümmte Ruinen, schimmernde Nanonebel.", 12);
+			TypeText("");
+
+			TypeText("Pilot: Ziel in Sicht, Captain. Alte Einsatzzone. Die Anlage steht noch.", 12);
+			TypeText("Commander: Setzen Sie uns direkt vor dem Haupteingang ab.", 12);
+			TypeText("");
+
+			Console.WriteLine("Drücke eine Taste, um vor dem Blutsväter-Tor zu landen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawBlutsvaeterGateClosed();
+			TypeText("");
+			TypeText("Wir treten aus dem Dropship. Der Wind trägt verbrannten Staub und das ferne Echo vergangener Schlachten.", 12);
+			TypeText("Vor uns ragt der monolithische Eingang der Blutsväter-Anlage empor. Die Tür ist verriegelt, ein bläuliches Feld flackert in der Spalte.", 12);
+			TypeText("");
+
+			TypeText("KI (über Anzug): „Identifikation erforderlich. Primäre Tests aktiviert.“", 12);
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste für den ersten Test (Tic-Tac-Toe)...");
+			Console.ReadKey();
+
+			// TEST 1 – TIC TAC TOE (Minigame aus deiner Minigames-Klasse)
+			Console.Clear();
+			TypeText("KI: „Primärtest: Logikanalyse.“", 12);
+
+			// Erster Versuch
+			bool passed = Minigames.TicTacToe.Play();
+
+			if (!passed)
+			{
+				TypeText("KI: „Logiktest gescheitert. Wiederholung wird erzwungen.“", 12);
+				Console.WriteLine("Drücke eine Taste, um den Test zu wiederholen...");
+				Console.ReadKey();
+
+				// Zweiter Versuch – hier kannst du später auch GameOver draus machen, wenn du willst
+				passed = Minigames.TicTacToe.Play();
+			}
+
+			TypeText("KI: „Primärtest bestanden. Sekundärer Muster-Test wird vorbereitet…“", 12);
+			Console.ReadKey();
+			// TEST 2 – X-FINDER 
+			RunBlutsvaeterXFinderTest();
+
+			Console.Clear();
+			DrawBlutsvaeterGateOpen();
+			TypeText("");
+			TypeText("Die Tür glitt lautlos zur Seite. Ein kalter Luftzug strich uns entgegen.", 12);
+			TypeText("KI: „Genetische Struktur bestätigt. Abkömmling der Blutsväter-Linie erkannt. Zugang wird gewährt…“", 12);
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um die Anlage zu betreten...");
+			Console.ReadKey();
+			// LABYRINTH – BLUTSVÄTER-KOMPLEX MIT ANDROIDEN
+			RunBlutsvaeterLabyrinth();
+			// FINALE FLUCHT & NANITEN
+			Scene_Blutsvaeter_Finale();
+		}
+		//   TEST 2 – X-FINDER: GENETISCHE MUSTERERKENNUNG
+		static void RunBlutsvaeterXFinderTest()
+		{
+			Console.Clear();
+			TypeText("KI: „Identifikation fortsetzen. Finden Sie das markierte Modul in jeder Reihe.“", 12);
+			TypeText("KI: „Nur bei korrekter Auswahl wird der volle Zugang freigegeben.“", 12);
+			TypeText("");
+
+			// Drei Reihen, jeweils genau ein 'X'
+			string[][] muster = new string[][]
+			{
+		new [] { "A", "B", "C", "X", "D" },
+		new [] { "C", "D", "X", "B", "A" },
+		new [] { "X", "A", "C", "D", "B" }
+			};
+
+			for (int row = 0; row < muster.Length; row++)
+			{
+				bool correct = false;
+
+				while (!correct)
+				{
+					Console.Clear();
+					Console.ForegroundColor = ConsoleColor.Green;
+					Console.WriteLine("=== BLUTSVÄTER-MUSTERERKENNUNG ===\n");
+					Console.ResetColor();
+
+					Console.WriteLine($"Reihe {row + 1}:");
+					Console.ForegroundColor = ConsoleColor.Cyan;
+					Console.Write("   ");
+					for (int i = 0; i < muster[row].Length; i++)
+					{
+						Console.Write($"[{muster[row][i]}] ");
+					}
+					Console.ResetColor();
+					Console.WriteLine();
+					Console.Write("Position des markierten Moduls (1–5): ");
+
+					string input = Console.ReadLine();
+					if (!int.TryParse(input, out int pos) || pos < 1 || pos > 5)
+					{
+						TypeText("KI: „Eingabe ungültig. Wiederholen.“", 12);
+						Thread.Sleep(600);
+						continue;
+					}
+
+					int idx = pos - 1;
+					if (muster[row][idx] == "X")
+					{
+						TypeText("Die Reihe stabilisiert sich, die Symbole leuchten in einem tiefen Blau.", 12);
+						correct = true;
+					}
+					else
+					{
+						Console.Beep(300, 180);
+						Console.Beep(250, 200);
+						TypeText("KI: „Fehler im Muster. Korrektur erforderlich.“", 12);
+						Thread.Sleep(700);
+					}
+				}
+			}
+
+			Console.WriteLine();
+			TypeText("KI: „Genetische Muster erkannt. Sekundärtest bestanden.“", 12);
+			Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+			Console.ReadKey();
+		}
+		//   LABYRINTH – BLUTSVÄTER-ANLAGE MIT ANDROIDEN
+		static void RunBlutsvaeterLabyrinth()
+		{
+			Console.Clear();
+			SaveGame("Scene_Blutsvaeter_Labyrinth");
+
+			TypeText("Der Korridor dahinter ist breit, mit glatten, dunklen Wänden, durchzogen von leuchtenden Linien.", 12);
+			TypeText("Die Blutsväter hatten nie für Menschen gebaut – alles wirkt zu sauber, zu perfekt, zu tot.", 12);
+			TypeText("Wir müssen zum Reaktorkern, zur Kontrollsektion und zur Waffensteuerung, alles tief im Inneren.", 12);
+			TypeText("");
+
+			int anzugHuelle = 100;  // Lebens-/Schutzwert
+
+			string[] mapLines = new string[]
+			{
+		"########################################",
+		"#S            #                    1  #",
+		"# ### ####### # ####### # # ######### #",
+		"#   #       #   #     # # #       #   #",
+		"### # ##### ##### ### # # ####### # ###",
+		"#   #     #     #   #   #       # #   #",
+		"# ####### # ### ### ##### ##### # ### #",
+		"#       # #   #   #     # #   # #   # #",
+		"####### # ### ### ##### # # # # ### # #",
+		"#       #       #         # # #   # # #",
+		"# ### # ### # ### ######### # ### # # #",
+		"# #   #   # #   #         # #   # # # #",
+		"# # ##### # ### ######### # ### # # # #",
+		"# #     # #   #   2       #   #   #   #",
+		"# ##### # ### ####### ### ### ##### ###",
+		"#     # #   #       # #   #   #   #   #",
+		"##### # ### ####### # # ### # # # ### #",
+		"#   # #   #   3   #   #   # # # #   # #",
+		"# E       #       #####   #   #     # #",
+		"########################################"
+			};
+
+			int rows = mapLines.Length;
+			int cols = mapLines.Max(line => line.Length);
+
+			char[,] map = new char[rows, cols];
+
+			int playerR = 0, playerC = 0;
+
+			for (int r = 0; r < rows; r++)
+			{
+				string line = mapLines[r].PadRight(cols, ' ');
+
+				for (int c = 0; c < cols; c++)
+				{
+					char ch = line[c];
+					map[r, c] = ch;
+
+					if (ch == 'S')
+					{
+						playerR = r;
+						playerC = c;
+					}
+				}
+			}
+
+			bool console1Done = false;
+			bool console2Done = false;
+			bool console3Done = false;
+
+			bool escapeTriggered = false;
+
+			while (!escapeTriggered)
+			{
+				Console.Clear();
+				DrawBlutsvaeterMap(map, rows, cols, playerR, playerC);
+
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("Ziel: Reaktor (1), Kontrollkern (2), Waffensteuerung (3) aktivieren und dann zum Ausgang (E).");
+				Console.ResetColor();
+				Console.WriteLine($"Anzug-Integrität: {anzugHuelle}%");
+				Console.WriteLine($"Konsole 1 (Reaktor):     {(console1Done ? "AKTIV" : "OFFLINE")}");
+				Console.WriteLine($"Konsole 2 (Steuerung):   {(console2Done ? "AKTIV" : "OFFLINE")}");
+				Console.WriteLine($"Konsole 3 (Waffe):       {(console3Done ? "AKTIV" : "OFFLINE")}");
+				Console.WriteLine();
+				Console.WriteLine("Steuerung: W/A/S/D = bewegen, H = Konsole hacken, Q = abbrechen (keine Option 😉).");
+				Console.Write("Eingabe: ");
+
+				string cmd = Console.ReadLine().Trim().ToUpper();
+
+				if (cmd == "Q")
+				{
+					TypeText("Commander: Negativ. Wir sind hier unten, bis die Anlage läuft.", 12);
+					Thread.Sleep(500);
+					continue;
+				}
+
+				int newR = playerR;
+				int newC = playerC;
+
+				if (cmd == "W") newR--;
+				else if (cmd == "S") newR++;
+				else if (cmd == "A") newC--;
+				else if (cmd == "D") newC++;
+
+				// Konsole benutzen
+				if (cmd == "H")
+				{
+					char tile = map[playerR, playerC];
+					if (tile == '1' && !console1Done)
+					{
+						TypeText("Reaktorkonsole erkannt. Beginne Aktivierungsprozedur…", 12);
+						RunBlutsvaeterConsoleHack(1, ref anzugHuelle);
+						console1Done = true;
+					}
+					else if (tile == '2' && !console2Done)
+					{
+						TypeText("Zentrale Steuerkonsole. Zugriff wird aufgebaut…", 12);
+						RunBlutsvaeterConsoleHack(2, ref anzugHuelle);
+						console2Done = true;
+					}
+					else if (tile == '3' && !console3Done)
+					{
+						TypeText("Waffensteuerung. Letzter Sicherheitskreis wird geöffnet…", 12);
+						RunBlutsvaeterConsoleHack(3, ref anzugHuelle);
+						console3Done = true;
+					}
+					else
+					{
+						TypeText("Keine aktive Konsole an dieser Position.", 12);
+					}
+
+					if (anzugHuelle <= 0)
+					{
+						DrawAndroidWave();
+						GameOver("Die Androiden drängen euch zurück und zerreißen die Anzüge. Der Trupp bricht in der Finsternis zusammen.");
+						return;
+					}
+
+					continue;
+				}
+
+				// Bewegung
+				if (cmd == "W" || cmd == "A" || cmd == "S" || cmd == "D")
+				{
+					if (newR < 0 || newR >= rows || newC < 0 || newC >= cols)
+						continue;
+
+					if (map[newR, newC] == '#')
+					{
+						TypeText("Solide Blutsväter-Struktur. Hier kommen wir nicht durch.", 12);
+						Thread.Sleep(200);
+						continue;
+					}
+
+					playerR = newR;
+					playerC = newC;
+
+					// Zufalls-Androidenbegegnung
+					if (map[playerR, playerC] == ' ' || map[playerR, playerC] == '.')
+					{
+						if (new Random().Next(0, 100) < 4)  // 4% Chance
+						{
+							KleineAndroidenBegegnung(ref anzugHuelle);
+							if (anzugHuelle <= 0)
+							{
+								DrawAndroidWave();
+								GameOver("Die Androiden überrennen das Team. Der letzte Funke menschlicher Präsenz verlischt in der Anlage.");
+								return;
+							}
+						}
+					}
+
+					// Ausgang?
+					if (map[playerR, playerC] == 'E')
+					{
+						if (console1Done && console2Done && console3Done)
+						{
+							escapeTriggered = true;
+						}
+						else
+						{
+							TypeText("Oduro (über Funk): Captain, wir können nicht gehen, bevor alle Systeme aktiv sind!", 12);
+							Thread.Sleep(500);
+						}
+					}
+				}
+			}
+		}
+
+
+		// Hack an den Konsolen – Du kannst ihn leicht ändern, wenn du willst
+		static void RunBlutsvaeterConsoleHack(int level, ref int anzugHuelle)
+		{
+			// Wir benutzen hier einfach dein X-Finder-Pattern nochmal, aber mit Schaden bei Fehlern
+			string[][] muster;
+
+			if (level == 1)
+			{
+				muster = new string[][]
+				{
+			new [] { "A", "B", "C", "X", "D" }
+				};
+			}
+			else if (level == 2)
+			{
+				muster = new string[][]
+				{
+			new [] { "D", "X", "B", "C", "A" }
+				};
+			}
+			else
+			{
+				muster = new string[][]
+				{
+			new [] { "B", "C", "X", "D", "E" }
+				};
+			}
+
+			foreach (var rowArr in muster)
+			{
+				bool done = false;
+
+				while (!done)
+				{
+					Console.Clear();
+					Console.ForegroundColor = ConsoleColor.Green;
+					Console.WriteLine("=== BLUTSVÄTER-SCHALTKREIS ===\n");
+					Console.ResetColor();
+
+					Console.WriteLine("Reihe:");
+					Console.ForegroundColor = ConsoleColor.Cyan;
+					Console.Write("   ");
+					for (int i = 0; i < rowArr.Length; i++)
+						Console.Write($"[{rowArr[i]}] ");
+					Console.ResetColor();
+					Console.WriteLine();
+					Console.Write("Fehlerhaftes Modul (Position 1–5): ");
+
+					string input = Console.ReadLine();
+					if (!int.TryParse(input, out int pos) || pos < 1 || pos > 5)
+					{
+						TypeText("Die Schaltung glimmt warnend. Die Anlage akzeptiert die Eingabe nicht.", 12);
+						Thread.Sleep(600);
+						continue;
+					}
+
+					int idx = pos - 1;
+					if (rowArr[idx] == "X")
+					{
+						TypeText("Die Symbole stabilisieren sich, Energielinien pulsen durch den Schaltkreis.", 12);
+						done = true;
+					}
+					else
+					{
+						Console.Beep(300, 200);
+						Console.Beep(250, 200);
+						TypeText("Ein kurzer Energieimpuls fährt durch den Anzug. Die Schilde flackern.", 12);
+						anzugHuelle -= 10;
+						TypeText($"Anzug-Integrität: {anzugHuelle}%.", 12);
+
+						if (anzugHuelle <= 0)
+							return;
+
+						Thread.Sleep(700);
+					}
+				}
+			}
+		}
+
+
+		// Androiden-Zwischenkampf
+		static void KleineAndroidenBegegnung(ref int anzugHuelle)
+		{
+			Console.WriteLine();
+			DrawAndroidWave();
+			TypeText("Zwei humanoide Androiden stürmen aus einem Nebengang, ihre Augen leuchten kaltblau.", 12);
+			Console.Beep(600, 120);
+			Console.Beep(550, 120);
+			TypeText("Wir reißen die Waffen hoch und feuern, Metall splittert, doch einige Treffer schlagen auf unsere Schilde durch.", 12);
+
+			anzugHuelle -= 6;
+			if (anzugHuelle < 0) anzugHuelle = 0;
+
+			TypeText($"Anzug-Integrität sinkt auf {anzugHuelle}%.", 12);
+			Thread.Sleep(400);
+		}
+		//   FINALE FLUCHT & NANITEN
+		static void Scene_Blutsvaeter_Finale()
+		{
+			Console.Clear();
+			SaveGame("Scene_Blutsvaeter_Finale");
+
+			TypeText("Wir erreichen den inneren Schacht, der direkt zum Sendeturm der Blutsväter-Anlage führt.", 12);
+			TypeText("Hinter uns verriegeln sich die Türen, metallische Schritte hallen in der Tiefe – Androiden, noch mehr.", 12);
+			TypeText("Reaktor: ONLINE. Steuerung: ONLINE. Naniten-Purge-Waffenplattform: BEREIT.", 12);
+			TypeText("");
+
+			TypeText("Oduro (über Funk): Captain, im Orbit registrieren wir massive Energiespitzen. Die Anlage lädt den zweiten Puls.", 12);
+			TypeText("Ren: Wenn Sie das auslösen, löscht es jede aktive Nanite-Struktur auf dem Planeten – inklusive aller infizierten Maschinen.", 12);
+			TypeText("");
+
+			Console.Beep(300, 200);
+			Console.Beep(250, 180);
+			DrawAndroidWave();
+			TypeText("");
+			TypeText("Hinter uns füllt der Gang sich mit laufenden, kletternden Androiden. Metallische Körper, durchzogen von flüssigen Naniten.", 12);
+			TypeText("Sie rennen, springen, krallen sich an Wänden fest – wie eine Flut aus Stahl und Licht.", 12);
+			TypeText("");
+
+			TypeText("Commander: ARGOS, hier Bodentrupp. Forderung: Landungsschiff an Koordinate Sendeturm – Schwebeposition, sofort!", 12);
+			TypeText("Ren: Anflug bestätigt. Bleiben Sie am Leben, Captain.", 12);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um den Aufstieg zum Turm zu beginnen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawBlutsvaeterTower();
+			TypeText("");
+			TypeText("Wir sprinten über eine schmale Rampe, die sich wie eine Spirale durch den Sendeturm zieht.", 12);
+			TypeText("Unter uns: der gleißende Kern der Anlage. Über uns: der Ausgang zur Oberfläche und das wartende Schiff.", 12);
+			TypeText("");
+
+			TypeText("Die erste Welle Androiden erreicht die Rampe. Wir haben nur Sekunden.", 12);
+			Console.WriteLine();
+			Console.WriteLine("1) Rückwärts feuern und langsam zurückweichen");
+			Console.WriteLine("2) Granaten werfen und durchbrechen");
+			Console.WriteLine("3) Schilde des Trupps nach vorne verstärken und halten");
+			Console.Write("\nAuswahl: ");
+
+			string choice = Console.ReadLine();
+
+			Console.Clear();
+			DrawAndroidWave();
+			TypeText("");
+
+			if (choice == "1")
+			{
+				TypeText("Wir drehen uns halb um, feuern Salve um Salve in die Woge aus Metall und Naniten.", 12);
+				TypeText("Einige Androiden stürzen in den Abgrund, andere klettern kalt und unerbittlich über ihre Wracks hinweg.", 12);
+			}
+			else if (choice == "2")
+			{
+				TypeText("Zwei, drei Granaten rollen zwischen die Beine der vordersten Androiden.", 12);
+				Console.Beep(700, 140);
+				Console.Beep(900, 180);
+				Console.Beep(400, 220);
+				TypeText("Die Explosionen reißen eine Bresche in die Metallfront. Gliedmaßen und Komponenten fliegen durch den Schacht.", 12);
+			}
+			else if (choice == "3")
+			{
+				TypeText("Wir schieben die Schilde nach vorne, ein leuchtender Keil aus Energie.", 12);
+				TypeText("Die ersten Androiden prallen dagegen, Funken sprühen, Nanitenstaub glitzert in der Luft – aber wir halten.", 12);
+			}
+			else
+			{
+				TypeText("Ein Moment des Zögerns – doch Instinkt und Training reißen uns herum, die Waffen sprechen.", 12);
+			}
+
+			Thread.Sleep(600);
+
+			Console.Clear();
+			DrawBlutsvaeterShuttlePickup();
+			TypeText("");
+			TypeText("Ein Schatten fällt über die Turmöffnung, das Landungsschiff der ARGOS schwebt im Staubsturm.", 12);
+			TypeText("Pilot: Rein da! Wir haben nur ein Fenster von ein paar Sekunden!", 12);
+			TypeText("Wir springen, Greifarme packen uns und ziehen uns ins Innere, während unter uns die Androiden den Rand erreichen.", 12);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um die Naniten-Reinigung zu sehen...");
+			Console.ReadKey();
+
+			Console.Clear();
+			// Falls du schon DrawOrbitalStrike hast, kannst du es hier nutzen:
+			DrawOrbitalStrike();
+			TypeText("");
+			TypeText("Im Orbit: ARGOS und die übrigen Schiffe drehen sich aus der direkten Sichtlinie, ihre Sensoren auf die Erde gerichtet.", 12);
+			TypeText("Ein weiterer, diesmal fokussierter Lichtstrahl schießt vom Sendeturm in den Himmel – der Naniten-Purge-Puls.", 12);
+			TypeText("Über die Oberfläche hinweg verlaufen Wellen aus unsichtbarer Energie, Maschinen verstummen, infizierte Systeme brechen zusammen.", 12);
+			TypeText("");
+
+			TypeText("Ren (über Kom): Captain… alle Naniten-Signaturen brechen ein. Das planetare Netzwerk ist tot.", 12);
+			TypeText("Oduro: Die Erde ist verwundet, verbrannt – aber der Parasit ist weg. Vielleicht… haben wir ihr wirklich eine zweite Chance gegeben.", 12);
+			TypeText("");
+
+			SaveGame("Scene_Blutsvaeter_Ende");
+
+			TypeText("Fortsetzung folgt…", 12);
+			Console.ReadKey();
+		}
+		//   ASCII-HILFSMETHODEN FÜR DIE BLUTSVÄTER-MISSION
+		static void DrawDropshipDescent()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("        _________");
+			Console.WriteLine("    ___/  __   /_______");
+			Console.WriteLine("   /   \\_/  \\_/       /");
+			Console.WriteLine("  /  LANDUNGSSCHIFF  /");
+			Console.WriteLine("  \\_________________/ ");
+			Console.WriteLine("        |      |");
+			Console.WriteLine("        |      |  <--- Eintritt in die Atmosphäre");
+			Console.ResetColor();
+		}
+
+		static void DrawBlutsvaeterGateClosed()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("           ________________________________");
+			Console.WriteLine("          /                                \\");
+			Console.WriteLine("         /   MONOLITHISCHER BLUTSVÄTER-EINGANG \\");
+			Console.WriteLine("        /____________________________________\\");
+			Console.WriteLine("        |                                    |");
+			Console.WriteLine("        |        ███████████████████         |");
+			Console.WriteLine("        |        █  VERSIEGELTES TOR █       |");
+			Console.WriteLine("        |        ███████████████████         |");
+			Console.WriteLine("        |____________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawBlutsvaeterGateOpen()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("           ________________________________");
+			Console.WriteLine("          /                                \\");
+			Console.WriteLine("         /   MONOLITHISCHER BLUTSVÄTER-EINGANG \\");
+			Console.WriteLine("        /____________________________________\\");
+			Console.WriteLine("        |                                    |");
+			Console.WriteLine("        |   ████          FREIER ZUGANG      |");
+			Console.WriteLine("        |   ████     SCHACHT INS INNERE      |");
+			Console.WriteLine("        |   ████                             |");
+			Console.WriteLine("        |____________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawBlutsvaeterMap(char[,] map, int rows, int cols, int playerR, int playerC)
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("============= BLUTSVÄTER-INNENANLAGE – TAKTISCHE ANSICHT =============");
+			Console.ResetColor();
+
+			for (int r = 0; r < rows; r++)
+			{
+				for (int c = 0; c < cols; c++)
+				{
+					if (r == playerR && c == playerC)
+					{
+						Console.ForegroundColor = ConsoleColor.Green;
+						Console.Write('P');
+						Console.ResetColor();
+						continue;
+					}
+
+					char ch = map[r, c];
+					switch (ch)
+					{
+						case '#':
+							Console.ForegroundColor = ConsoleColor.DarkGray;
+							break;
+						case '1':
+						case '2':
+						case '3':
+							Console.ForegroundColor = ConsoleColor.Yellow;
+							break;
+						case 'E':
+							Console.ForegroundColor = ConsoleColor.Cyan;
+							break;
+						case 'S':
+							Console.ForegroundColor = ConsoleColor.White;
+							break;
+						default:
+							Console.ForegroundColor = ConsoleColor.DarkBlue;
+							break;
+					}
+					Console.Write(ch);
+					Console.ResetColor();
+				}
+				Console.WriteLine();
+			}
+		}
+
+		static void DrawAndroidWave()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkRed;
+			Console.WriteLine("   ANDROIDEN-WELLE");
+			Console.WriteLine("   ===============");
+			Console.WriteLine("      [=]    [=]    [=]");
+			Console.WriteLine("     /||\\   /||\\   /||\\");
+			Console.WriteLine("      /\\     /\\     /\\");
+			Console.WriteLine("   metallische Schritte, kaltes Licht,");
+			Console.WriteLine("   Naniten glimmen in den Gelenken…");
+			Console.ResetColor();
+		}
+
+		static void DrawBlutsvaeterTower()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("      ||");
+			Console.WriteLine("      ||      STEIGSCHACHT ZUM SENDTURM");
+			Console.WriteLine("      ||");
+			Console.WriteLine("     /==\\");
+			Console.WriteLine("    /====\\");
+			Console.WriteLine("   /======\\");
+			Console.WriteLine("  /========\\");
+			Console.WriteLine(" /==========\\");
+			Console.WriteLine("/============\\   <--- schmale Rampe nach oben");
+			Console.ResetColor();
+		}
+
+		static void DrawBlutsvaeterShuttlePickup()
+		{
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("             ________");
+			Console.WriteLine("         ___/  __   /____");
+			Console.WriteLine("        /   \\_/  \\_/    /");
+			Console.WriteLine("       /  ARGOS-SHUTTLE /");
+			Console.WriteLine("       \\______________ /");
+			Console.WriteLine("             |  |");
+			Console.WriteLine("             |  |   <--- schwebt über dem Turm");
+			Console.ResetColor();
 		}
 	}
 }
 
+		
