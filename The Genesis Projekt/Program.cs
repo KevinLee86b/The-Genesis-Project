@@ -6600,7 +6600,8 @@ namespace The_Genesis_Projekt
 			TypeText("Ich atme tief durch und blicke auf die taktische Projektion. Überlappende Schilde, dichte Energieknoten.", 10);
 			TypeText("Ich: Wenn wir ihre Schilde nicht alleine knacken können, dann bündeln wir unsere Waffen.", 10);
 			TypeText("", 10);
-
+			Console.WriteLine("\n Taste drücken...");
+			Console.ReadKey();
 			TypeText("Ich öffne den Flotten-Komkanal.", 10);
 			TypeText("Ich: An alle Schiffe des Verbandes EINS: hier der Captain der GENESIS.", 10);
 			TypeText("Ich: Wir gehen auf koordinierte Zielschüsse über. Fokusfeuer auf ihre Schildsysteme.", 10);
@@ -6617,7 +6618,8 @@ namespace The_Genesis_Projekt
 			TypeText("Ich: Übertragen Sie die Koordinaten an alle Schiffe. Live-Feed auf die Zielcomputer.", 10);
 			TypeText("Sensoroffizier: Koordinaten werden an den Verband gesendet, Captain.", 10);
 			TypeText("", 10);
-
+			Console.WriteLine("\n Taste drücken...");
+			Console.ReadKey();
 			TypeText("Ich: Waffenoffizier, haben Sie die Zielpunkte?", 10);
 			TypeText("Waffenoffizier: Bestätigt, Captain. Die Energieknoten sind markiert. Alle Strahlenwaffen können synchronisieren.", 10);
 			TypeText("", 10);
@@ -6639,7 +6641,8 @@ namespace The_Genesis_Projekt
 			TypeText("Ich: Dann los.", 10);
 			TypeText("Ich: An alle Schiffe – Feuer!", 10);
 			TypeText("", 10);
-
+			Console.WriteLine("\n Taste drücken...");
+			Console.ReadKey();
 			// Kleines Fokus-Strahlenfeuer als Zwischencinematic
 			ShowFocusedVolleyCinematic();
 
@@ -6662,7 +6665,8 @@ namespace The_Genesis_Projekt
 			TypeText("Oduro: Dreadnought neutralisiert! Die Flotte meldet mehrere Folgetreffer auf Sekundärziele.", 10);
 			TypeText("Kate: Die Methode funktioniert. Wenn wir ihre Schildknoten überladen, kollabiert das gesamte System.", 10);
 			TypeText("", 10);
-
+			Console.WriteLine("\n Taste drücken...");
+			Console.ReadKey();
 			TypeText("Hale erscheint auf dem Schirm, Schweiß auf der Stirn, doch ein hartes Funkeln in den Augen.", 10);
 			TypeText("Hale: Hier Verband ZWEI. Ihre Taktik scheint aufzugehen, Captain.", 10);
 			TypeText("Hale: Wir übernehmen das Fokusfeuer-Muster und drücken ihre Linie von der Flanke her auf.", 10);
@@ -6683,7 +6687,8 @@ namespace The_Genesis_Projekt
 			TypeText("Hale: Die Einrichtung war für sie nur ein Außenposten um uns zu beobachten und die Technologie der Blutsväter zu schützen.", 10);
 			TypeText("Hale: Aber jetzt schließen sie sich unserem Flottenverband an und helfen bei der Verteidigung der Erde.", 10);
 			TypeText("", 10);
-
+			Console.WriteLine("\n Taste drücken...");
+			Console.ReadKey();
 			TypeText("Oduro: Die Grauen auf unserer Seite. Das verschiebt das Kräfteverhältnis deutlich.", 10);
 			TypeText("", 10);
 
@@ -6709,7 +6714,7 @@ namespace The_Genesis_Projekt
 			TypeText("Hale: Ich sende Ihnen eine neue Konfiguration für Ihre Sensoren.", 10);
 			TypeText("Hale: Damit kann die GENESIS den Riss im Raum orten, dem die ARGUS erzeugt hat.", 10);
 			TypeText("", 10);
-
+			
 			TypeText("Ich spüre eine Gänsehaut. Das Ziel lag plötzlich nicht mehr im Dunkeln.", 10);
 			TypeText("", 10);
 
@@ -6724,7 +6729,7 @@ namespace The_Genesis_Projekt
 
 			TypeText("Der Schirm wird schwarz. Nur die Sterne bleiben, während die letzten Explosionen im Hintergrund verklingen.", 10);
 			TypeText("", 10);
-
+			
 			// Vorbereitung auf den Sprung
 			TypeText("Ich: Steuermann, bringen Sie uns an den Rand des Sonnensystems. Maximalgeschwindigkeit unter Licht Triebwerke.", 10);
 			TypeText("Steuermann: Kurs gesetzt, Captain. Beschleunigung läuft.", 10);
@@ -6749,7 +6754,8 @@ namespace The_Genesis_Projekt
 			TypeText("Maschinenraum: Sprungfenster steht. Alle Systeme im grünen Bereich.", 10);
 			TypeText("Ich: Dann los. Leiten Sie die Sequenz ein.", 10);
 			TypeText("", 10);
-
+			Console.WriteLine("\n Taste drücken...");
+			Console.ReadKey();
 			// kleiner Sprung-Cinematic
 			ShowJumpCinematic();
 
