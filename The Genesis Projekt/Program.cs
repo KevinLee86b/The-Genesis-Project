@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Runtime.CompilerServices;
 
 namespace The_Genesis_Projekt
 {
@@ -210,6 +211,15 @@ namespace The_Genesis_Projekt
 				case "Scene_Blutsvaeter_Entrance":
 					Scene_Blutsvaeter_Entrance();
 					break;
+				case "Scene_Return_From_Bloodsfather_Mission":
+					Scene_Return_From_Bloodsfather_Mission();
+					break;
+				case "Scene_AllianzAlarmUndFlottenstart":
+					Scene_AllianzAlarmUndFlottenstart();
+					break;
+				case "Scene_AllianzFlottenschlacht<":
+					Scene_AllianzFlottenschlacht();
+					break;
 
 				default:
 					Console.WriteLine("Unbekannte Szene im Speicherstand. Zurück zum Hauptmenü.");
@@ -246,7 +256,10 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("  12) --Der 10 Planet/Die Grauen--");
 			Console.WriteLine("  13) --Kolonie Kontakt--");
 			Console.WriteLine("  14) --Kolonie Jupitermonde");
-			Console.WriteLine("  15) --Zurück zur Erde");
+			Console.WriteLine("  15) --Zurück zur Erde--");
+			Console.WriteLine("  16) --Rücker zum Jupiter--");
+			Console.WriteLine("  17) --Allianz greift die Erde an--");
+			Console.WriteLine("  18) --Finale Schlacht bei der Erde--");
 			Console.WriteLine("  00) <<<Zurück zum Hauptmenü>>>");
 
 			Console.Write("\nAuswahl: ");
@@ -313,6 +326,21 @@ namespace The_Genesis_Projekt
 				case "15":
 					SaveGame("Scene_Blutsvaeter_Entrance");
 					Scene_Blutsvaeter_Entrance();
+					break;
+				case "16":
+					SaveGame("Scene_Return_From_Bloodsfather_Mission");
+					Scene_Return_From_Bloodsfather_Mission();
+					break;
+				case "17":
+					SaveGame("Scene_AllianzAlarmUndFlottenstart");
+					Scene_AllianzAlarmUndFlottenstart();
+					break;
+				case "18":
+					SaveGame("Scene_AllianzFlottenschlacht");
+					Scene_AllianzFlottenschlacht();
+					break;
+				case "19":
+					SaveGame("Scene_AllianzKapitel1_Abschluss_Start");
 					break;
 				case "00":
 					MainMenu();
@@ -4876,7 +4904,7 @@ namespace The_Genesis_Projekt
 					// Zufalls-Androidenbegegnung
 					if (map[playerR, playerC] == ' ' || map[playerR, playerC] == '.')
 					{
-						if (new Random().Next(0, 100) < 4)  // 4% Chance
+						if (new Random().Next(0, 100) < 6)  // 6% Chance
 						{
 							KleineAndroidenBegegnung(ref anzugHuelle);
 							if (anzugHuelle <= 0)
@@ -5089,16 +5117,13 @@ namespace The_Genesis_Projekt
 			Console.ReadKey();
 
 			Console.Clear();
-			// Falls du schon DrawOrbitalStrike hast, kannst du es hier nutzen:
-			DrawOrbitalStrike();
 			TypeText("");
-			TypeText("Im Orbit: ARGOS und die übrigen Schiffe drehen sich aus der direkten Sichtlinie, ihre Sensoren auf die Erde gerichtet.", 12);
-			TypeText("Ein weiterer, diesmal fokussierter Lichtstrahl schießt vom Sendeturm in den Himmel – der Naniten-Purge-Puls.", 12);
+			TypeText("Im Orbit: ARGOS und die übrigen Hilfsschiffe drehen sich aus der direkten Sichtlinie, ihre Sensoren auf die Erde gerichtet.", 12);
+			TypeText("Ein weiterer, diesmal fokussierter Lichtstrahl schießt vom Sendeturm in den Himmel, der elektromagnetische Impuls.", 12);
 			TypeText("Über die Oberfläche hinweg verlaufen Wellen aus unsichtbarer Energie, Maschinen verstummen, infizierte Systeme brechen zusammen.", 12);
 			TypeText("");
 
-			TypeText("Ren (über Kom): Captain… alle Naniten-Signaturen brechen ein. Das planetare Netzwerk ist tot.", 12);
-			TypeText("Oduro: Die Erde ist verwundet, verbrannt – aber der Parasit ist weg. Vielleicht… haben wir ihr wirklich eine zweite Chance gegeben.", 12);
+			TypeText("Ren (über Kom): Captain… alle Nano-Signaturen brechen ein. Das planetare Netzwerk ist tot.", 12);
 			TypeText("");
 
 			SaveGame("Scene_Blutsvaeter_Ende");
@@ -5235,8 +5260,1622 @@ namespace The_Genesis_Projekt
 			Console.WriteLine("             |  |");
 			Console.WriteLine("             |  |   <--- schwebt über dem Turm");
 			Console.ResetColor();
+
+			Scene_Return_From_Bloodsfather_Mission();
+			return;
+		}
+		static void Scene_Return_From_Bloodsfather_Mission()
+		{
+			Console.Clear();
+			SaveGame("Scene_Return_From_Bloodsfather_Mission");
+
+			DrawShuttleInterior();
+			TypeText("Das Landungsschiff erzittert leicht, als die ARGOS uns im Hangar aufnimmt.", 15);
+			TypeText("Doch niemand von uns bewegt sich. Wir bleiben sitzen, erschöpft aber lebendig.", 15);
+			TypeText("Die Mission war erfolgreich. Die Erde hat wieder eine Zukunft.", 15);
+			TypeText("Schon bald kann man die Erde neu bewohnen. Die Städte müssten weitestgehend in Tackt sein.", 15);
+			Console.WriteLine("\nDrücke eine Taste, um fortzufahren...");
+			Console.ReadKey();
+
+			Console.Clear();
+			DrawShuttleOrbitView();
+			TypeText("Ich starre durch die Sichtfenster des Landungsschiffs.", 15);
+			TypeText("Europa, Jupiter. Die GENESIS, vollständig repariert. Sie strahlt, als wäre sie neu.", 15);
+			TypeText("Ein Schiff, gebaut dachte ich als letzte Hoffnung. Aber laut Hale schon längst bestehende Technologie.", 15);
+			Console.WriteLine("\nWeiter mit beliebiger Taste...");
+			Console.ReadKey();
+
+			Console.Clear();
+			TypeText("Über Kom: Kurs auf Jupiter eingeleitet.'", 15);
+			TypeText("Ich lehne mich zurück. Die Müdigkeit sitzt tief… aber wir haben überlebt.", 15);
+			Console.WriteLine("\nWeiter...");
+			Console.ReadKey();
+
+			// ANKUNFT JUPITER
+			Console.Clear();
+			DrawArgosApproachJupiter();
+			TypeText("Die ARGOS tritt in den Orbit des Gasriesen ein.", 15);
+			TypeText("Ein goldenes Leuchten umgibt das Schiff, während die Triebwerke herunterfahren.", 15);
+			TypeText("Mein Team steht langsam auf. Wir bewegen uns wie Menschen, die endlich Frieden spüren.", 15);
+			Console.WriteLine("\nTaste drücken...");
+			Console.ReadKey();
+
+			// ZUM TELEPORTER
+			Console.Clear();
+			DrawTeleporterRoomArgos();
+			TypeText("Techniker: Captain, der Teleporter ist vorbereitet. Zusätzliche Neutralisationssequenz aktiv.", 15);
+			TypeText("Ich nicke nur. Worte fallen mir gerade schwer.", 15);
+			TypeText("Wir stellen uns in Position. Energiefäden tanzen über unsere Rüstungen.", 15);
+			Console.WriteLine("\nTeleport starten...");
+			Console.ReadKey();
+
+			// GENESIS – ANKUNFT
+			Console.Clear();
+			DrawTeleporterArrivalGenesis();
+			TypeText("Das Licht fällt in sich zusammen und wir stehen im Teleporterraum der GENESIS.", 15);
+			TypeText("Sauber. Hell. Warm. Ich atme endlich wieder frei.", 15);
+			Console.WriteLine("\nTaste drücken...");
+			Console.ReadKey();
+
+			// ANZUG ABLEGEN
+			Console.Clear();
+			DrawArmorRoom();
+			TypeText("Ich löse die Verriegelungen meines Kampfanzugs.", 15);
+			TypeText("Die Serviceroboter nehmen jede Komponente vorsichtig entgegen.", 15);
+			TypeText("Zum ersten Mal seit Stunden fühle ich mich wieder wie ein Mensch.", 15);
+			Console.WriteLine("\nWeiter...");
+			Console.ReadKey();
+
+			// TURBOLIFT
+			Console.Clear();
+			DrawTurboLift();
+			TypeText("Ich betrete den Turbolift. Die Türen schließen sich sanft.", 15);
+			TypeText("'Deck für Deck, bis zu den: Wohnquartiere, meldet die Schiffsstimme.", 15);
+			TypeText("Für einen Moment bin ich allein mit meinen Gedanken.", 15);
+			Console.WriteLine("\nWeiter...");
+			Console.ReadKey();
+
+			// QUARTIER – WIEDERSEHEN
+			Console.Clear();
+			DrawCrewQuarters();
+			TypeText("Vor meinem Quartier wartet sie bereits, meine Frau.", 15);
+			TypeText("Die Wissenschaftlerin, die mir mehr bedeutet als jedes Schiff, jede Mission.", 15);
+			TypeText("Sie lächelt müde. Ich ebenfalls.", 15);
+
+			TypeText("Wir treten aufeinander zu. Keine Worte. Nur eine lange Umarmung.", 12);
+			TypeText("Eine Umarmung die sich nach Zuhause anfülltöl. Nach Leben. Nach Zukunft.", 12);
+
+			TypeText("Ich erzähle ihr von der Mission. Von den Androiden. Vom Labyrinth.", 15);
+			TypeText("Sie hört zu, ohne mich zu unterbrechen, wärmt meine Hände mit ihren.", 15);
+
+			TypeText("Als ich geendet habe, sagt sie nur leise:", 15);
+			TypeText("'Du bist zurück. Das ist alles, was zählt.'", 12);
+
+			TypeText("Ich nicke, lasse mich von ihr in das Quartier führen… und endlich finde ich Ruhe.", 15);
+
+			SaveGame("Scene_Return_From_Bloodsfather_Mission_End");
+
+			Console.WriteLine("\nFORTSETZUNG FOLGT...");
+			Console.ReadKey();
+		}
+		//  ASCII–GRAFIKEN FÜR DIE SZENE 
+		static void DrawShuttleInterior()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("   ___________________________________________");
+			Console.WriteLine("  |                                           |");
+			Console.WriteLine("  |      [ LANDUNGSSCHIFF – INNENANSICHT ]    |");
+			Console.WriteLine("  |   Sitzreihen | Flackernde Anzeigen | Crew |");
+			Console.WriteLine("  |___________________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawShuttleOrbitView()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("              .      .      .");
+			Console.WriteLine("        .           JUPITER            .");
+			Console.WriteLine("       .     o                        .");
+			Console.WriteLine("          .       EUROPA           .");
+			Console.WriteLine("   [SCHIFF]---- schwebt im Orbit ----[ARGOS]");
+			Console.ResetColor();
+		}
+
+		static void DrawArgosApproachJupiter()
+		{
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.WriteLine("                    ___");
+			Console.WriteLine("           ________/   \\_______");
+			Console.WriteLine("         _/                   \\_");
+			Console.WriteLine("       _/       ARGOS           \\_");
+			Console.WriteLine("       \\__        → Jupiter     __/");
+			Console.WriteLine("          \\____________________/");
+			Console.ResetColor();
+		}
+
+		static void DrawTeleporterRoomArgos()
+		{
+			Console.ForegroundColor = ConsoleColor.Magenta;
+			Console.WriteLine("     _________________________________");
+			Console.WriteLine("    |   ARGOS – TELEPORTERRAUM       |");
+			Console.WriteLine("    |  [ O O O ] Energiefelder       |");
+			Console.WriteLine("    |________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawTeleporterArrivalGenesis()
+		{
+			Console.ForegroundColor = ConsoleColor.Magenta;
+			Console.WriteLine("     _________________________________");
+			Console.WriteLine("    |   GENESIS – TELEPORTERRAUM     |");
+			Console.WriteLine("    |  <Materialisationsnebel löst sich>|");
+			Console.WriteLine("    |________________________________|");
+			Console.ResetColor();
+		}
+
+		static void DrawArmorRoom()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine("   [KAMPFANZUG-KAMMER]");
+			Console.WriteLine("   Serviceroboter ▶ ▶ ▶ nehmen Teile entgegen");
+			Console.ResetColor();
+		}
+
+		static void DrawTurboLift()
+		{
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine("   ┌──────────────────────┐");
+			Console.WriteLine("   │     TURBOLIFT        │");
+			Console.WriteLine("   │  |  |  |  |  |  |     │");
+			Console.WriteLine("   │  Fahrstuhl steigt…   │");
+			Console.WriteLine("   └──────────────────────┘");
+			Console.ResetColor();
+		}
+
+		static void DrawCrewQuarters()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("   _____________________________");
+			Console.WriteLine("  |       WOHNQUARTIER         |");
+			Console.WriteLine("  |   Eine warme, sanfte Tür   |");
+			Console.WriteLine("  |_____________________________|");
+			Console.ResetColor();
+
+			Scene_AllianzAlarmUndFlottenstart();
+			return;
+		}
+
+
+		static void Scene_AllianzAlarmUndFlottenstart()
+		{
+			Console.Clear();
+			SaveGame("Scene_AllianzAlarmUndFlottenstart");
+
+			// --- Roter Alarm mit Sound ---
+			PlayAllianceRedAlert();
+
+			Console.ForegroundColor = ConsoleColor.White;
+			TypeText("Ich wurde vom Roten Alarm aus dem Schlaf gerissen.", 12);
+			TypeText("Das grelle Licht flutete meine riesige Kabine, alles war in tiefes Rot getaucht.", 12);
+			TypeText("Der Alarm schrillte durch jede Wand, durch jede Faser meines Körpers.", 12);
+			TypeText("");
+
+			TypeText("Über Kom ertönte Oduros Stimme: „Captain, sofort auf die Brücke!“", 12);
+			TypeText("Noch halb im Schlaf stolperte ich aus dem Bett, griff nach meiner Uniform.", 12);
+			TypeText("Die Bewegungen wurden routiniert, Unterhemd, Hose, Jacke, Rangabzeichen.", 12);
+			TypeText("Ein Spritzer kaltes Wasser ins Gesicht brachte die letzten Reste Müdigkeit zum Schweigen.", 12);
+			TypeText("Keine Zeit mich von meiner Frau zu verabschieden.", 12);
+			TypeText("");
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um zum Turbolift zu rennen...");
+			Console.ReadKey();
+
+			// --- Turbolift zur Brücke ---
+			Console.Clear();
+			DrawTurboliftShortRoute();
+			TypeText("");
+			TypeText("Ich hetzte in den Korridor, noch während die Türen sich öffneten, und sprang in den Turbolift.", 12);
+			TypeText("„Brücke – Deck 1“, knurrte ich. Der Lift setzte sich sofort in Bewegung.", 12);
+			TypeText("Stockwerk um Stockwerk flog an mir vorbei, das Summen der Magnetfelder wie ein fernes Donnern.", 12);
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um auf der Brücke anzukommen...");
+			Console.ReadKey();
+
+			// --- Brücken-Szene, Hale erklärt die Lage ---
+			Console.Clear();
+			DrawBridgeViewRedAlert();
+			TypeText("");
+			TypeText("Die Brücke war im Notlicht getaucht. Rote Streifen zogen sich über die Anzeigen und Konsolen.", 12);
+			TypeText("Offiziere arbeiteten schnell, konzentriert, niemand verschwendete eine Bewegung.", 12);
+			TypeText("Auf dem Hauptschirm erschien bereits Hale, sein Gesicht hart und angespannt.", 12);
+			TypeText("");
+
+			TypeText("Ich: Was ist los?", 12);
+			TypeText("Hale: Mehrere Energiesignaturen im Hyperraum. Subraum-Echoes, sehr stark.", 12);
+			TypeText("Hale: Es sind Dutzende Schiffe. Eine Allianz von Nachfahren der Blutsväter, mehrere Völker dieser Galaxie, die eine Allianz miteinander haben", 12);
+			TypeText("");
+
+			TypeText("Hale: Sie wissen vom Blutsväter-Virus. Von eurem Einsatz. Von den Nanobots, die es reaktiviert haben.", 12);
+			TypeText("Hale: Sie haben lange zugesehen, geschützt vom Schatten das wir die direkten Nachfahren sind.", 12);
+			TypeText("Hale: Aber jetzt reicht es ihnen. Sie sehen uns als Risiko für die gesamte Galaxie.", 12);
+			TypeText("");
+
+			TypeText("Mir wurde kalt. Der Gedanke, dass die Menschheit als Gefahr eingestuft wurde, fraß sich tief in meinen Magen.", 12);
+			TypeText("");
+
+			TypeText("Hale: Alle Schiffe auf Gefechtsstation. Wir nehmen Kurs auf die Erde. Wir werden sie schützen, solange wir atmen.", 12);
+			TypeText("Hale: Sie bekommen das Kommando über den ersten Kampfverband. Sie haben sich schon mal bwiesen.", 12);
+			TypeText("Hale: Ich übernehme den zweiten. Wir müssen sie abwehren, bevor sie die Erde erreichen.", 12);
+			TypeText("Hale: Unsere letzte Hoffnung sind die Grauen. Wir senden umgehend ein Hilfsersuchen.", 12);
+			TypeText("");
+
+			TypeText("Ich schluckte schwer. Aus dem Schlaf in eine drohende Galaxien-Schlacht, mein Kopf pulsierte.", 12);
+			TypeText("Trotzdem nickte ich nur: Verstanden, Sir. Ich übernehme den Verband.", 12);
+			TypeText("");
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um den Kampfverband zu formieren...");
+			Console.ReadKey();
+
+			// --- Flottenverband formiert sich ---
+			Console.Clear();
+			DrawFleetFormUp();
+			TypeText("");
+			TypeText("Nach wenigen Minuten lagen die Befehlsdaten vor mir, Schiffscodes, Staffeln, Formationen.", 12);
+			TypeText("Mein Kampfverband war gewaltig: Neben der ARGOS noch vier weitere Trägerschiffe der Universum-Klasse.", 12);
+			TypeText("Dutzende Kreuzer, Fregatten, Eskortschiffe, dazu Jägergeschwader, die ich noch nie zuvor gesehen hatte.", 12);
+			TypeText("");
+
+			TypeText("Ich: Kommunikation – gesamte Flotte: Kurs Erde. Synchronisieren, Unterlichttriebwerke auf Maximum.", 12);
+			TypeText("Oduro: Aye, Captain. Kursdaten werden verteilt. Verband geht in Formation.", 12);
+			TypeText("");
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um den Kurs zur Erde zu setzen...");
+			Console.ReadKey();
+
+			// --- Kurs Erde & Problem mit der ARGOS ---
+			Console.Clear();
+			DrawFleetEnRouteToEarth();
+			TypeText("");
+			TypeText("Die GENESIS führte den Verband an. Die Anzeigen flimmerten, als die Triebwerke hochfuhren.", 12);
+			TypeText("Doch nach einigen Minuten meldete sich der Sensoroffizier, die Stirn in Falten gelegt.", 12);
+			TypeText("");
+
+			TypeText("Sensoroffizier: Captain... die ARGOS hält den Kurs nicht.", 12);
+			TypeText("Ich: Wie meinen Sie das?", 12);
+			TypeText("Sensoroffizier: „Sie nimmt nicht Kurs auf die Erde, sondern auf Koordinaten außerhalb des Systems.“", 12);
+			TypeText("");
+
+			TypeText("Kommunikation: Wir versuchen, sie zu rufen, keine Antwort. Kanal ist offen, aber...", 12);
+			TypeText("Ein Rauschen lag auf der Leitung. Verzerrte, unverständliche Geräusche, als würde jemand sprechen, der längst keiner mehr war.", 12);
+			TypeText("");
+
+			TypeText("Ich presste die Lippen zusammen: Stellen Sie Hale durch.", 12);
+			TypeText("");
+
+			TypeText("Hale (über Kom): Was ist mit der ARGOS?", 12);
+			TypeText("Ich: Sie verlässt das Sonnensystem. Kein Kontakt, nur Störgeräusche.", 12);
+			TypeText("");
+
+			TypeText("Hale schwieg einen Moment, dann senkte er den Blick.", 12);
+			TypeText("Hale: Wurden Ihre Anzüge und das Landungsschiff nach der Rückkehr dekontaminiert?", 12);
+			TypeText("Ich: So gründlich, wie es möglich war. Schilde, Dekontamination, alles nach Vorschrift. Aber bei dem Landungsschiff...", 12);
+			TypeText("");
+
+			TypeText("Hale: Dann rechne ich mit dem Schlimmsten.", 12);
+			TypeText("Hale: Die Nanobots könnten trotzdem an der Hülle oder in Spalten überlebt haben.", 12);
+			TypeText("Hale: Wenn sie die Bordsysteme der ARGOS infiltriert haben, dann kontrollieren sie jetzt die KI und auch die Crew.", 12);
+			TypeText("Die Bots können Zellen umprogrammieren, das diese das die fremde Struktur annimt und Viren herstellt.");
+			TypeText("");
+
+
+			TypeText("Mein Magen krampfte. Ein Schiff dieser Klasse, verseucht und unberechenbar, irgendwo in der Galaxie...", 12);
+			TypeText("");
+
+			TypeText("Ich: Sollen wir Abfangkurs setzen?", 12);
+			TypeText("Hale: Negativ. Wir brauchen jedes Schiff, um die Allianz abzufangen.", 12);
+			TypeText("Hale: Wenn die Grauen unsere Anfrage positiv bestätigen, werden sie sich um die ARGOS kümmern.", 12);
+			TypeText("Hale: Unsere Aufgabe ist jetzt die Verteidigung der Erde.", 12);
+			TypeText("");
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um den Sprung der ARGOS zu sehen...");
+			Console.ReadKey();
+
+			// --- ARGOS verlässt das System ---
+			Console.Clear();
+			DrawArgosJumpAway();
+			TypeText("");
+			TypeText("Auf einem Nebendisplay wurde die ARGOS vergrößert eingeblendet.", 12);
+			TypeText("Energiepeaks stiegen steil an, die Sprungtriebwerke wurden aktiviert.", 12);
+			TypeText("Ein gleißender Riss öffnete sich im Raum, verzerrte Sterne, verzogene Konturen.", 12);
+			TypeText("Dann war die ARGOS verschwunden und mit ihr jede Möglichkeit, sie im Moment zu verfolgen.", 12);
+			TypeText("");
+
+			TypeText("Sensoroffizier: Kontakt verloren. Keine Subraumspur mehr im gültigen Bereich, Captain.", 12);
+			TypeText("Hale: Wir können sie orten, keine Sorge. Später können wir sie nachverfolgen. Wenn wir den heutigen Tag überleben.", 12);
+			TypeText("");
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um die Allianz-Flotte erscheinen zu lassen...");
+			Console.ReadKey();
+
+			// --- Allianz-Flotte erscheint in der Nähe der Erde 
+			Console.Clear();
+			TypeText("");
+			TypeText("Vor uns lag die Erde – vernarbt, aber lebendig.", 12);
+			TypeText("Darüber spannten sich bereits die ersten Schiffe des zweiten Kampfverbandes.", 12);
+			TypeText("");
+
+			TypeText("Sensoroffizier: Hyperraum-Signaturen im Anflug! Mehrfach. Sie kommen aus allen Winkeln des Raums.", 12);
+			TypeText("Oduro: Captain, die Allianzflotte tritt ein!", 12);
+			TypeText("");
+
+			TypeText("Ich atmete tief durch. Jetzt gab es kein Zurück mehr.", 12);
+			TypeText("Ich: Alle Verbände auf Gefechtsstation. Jäger starten, Schutzformation um die Erde aufbauen.", 12);
+			TypeText("Ich: Das hier wird unser schwerster Kampf.", 12);
+			TypeText("");
+
+			TypeText("In meinem Hinterkopf blieb nur ein Gedanke: Wenn wir das überstehen, müssen wir die ARGOS finden egal, wohin sie geflohen ist.", 12);
+			TypeText("");
+
+			SaveGame("Scene_AllianzAlarm_Ende");
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um die Flottenschlacht zu beginnen...");
+			Console.ReadKey();
+
+			Scene_AllianzFlottenschlacht();
+			return;
+
+
+		}
+		//  HILFSMETHODEN FÜR DIE SZENE
+		static void PlayAllianceRedAlert()
+		{
+			Console.Clear();
+			Console.ForegroundColor = ConsoleColor.Red;
+
+			for (int i = 0; i < 3; i++)
+			{
+				Console.WriteLine("=== R O T E R   A L A R M ===");
+				Console.Beep(900, 250);
+				Thread.Sleep(150);
+				Console.Beep(700, 250);
+				Thread.Sleep(150);
+				Console.Clear();
+			}
+
+			Console.ResetColor();
+		}
+
+		static void DrawTurboliftShortRoute()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("========== TURBOLIFT ==========");
+			Console.WriteLine("  [ KAPITÄNSDECK ]");
+			Console.WriteLine("        ||");
+			Console.WriteLine("        ||");
+			Console.WriteLine("        \\\\");
+			Console.WriteLine("         \\\\");
+			Console.WriteLine("          \\\\");
+			Console.WriteLine("           \\\\");
+			Console.WriteLine("            ||");
+			Console.WriteLine("            ||");
+			Console.WriteLine("        [ BRÜCKE / DECK 1 ]");
+			Console.WriteLine("================================");
+			Console.ResetColor();
+		}
+
+		static void DrawBridgeViewRedAlert()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkRed;
+			Console.WriteLine("=============== BRÜCKE – ROTER ALARM ===============");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.WriteLine("   Konsolen blinken, rote Warnanzeigen pulsieren...");
+			Console.WriteLine();
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("                [ HAUPTDISPLAY ]");
+			Console.WriteLine("  +------------------------------------------------+");
+			Console.WriteLine("  |                                                |");
+			Console.WriteLine("  |                    JUPITER                     |");
+			Console.WriteLine("  |                                                |");
+			Console.WriteLine("  |                                                |");
+			Console.WriteLine("  +------------------------------------------------+");
+			Console.ResetColor();
+		}
+
+		static void DrawFleetFormUp()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("============= FLOTTE FORMATIERT SICH =============");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("        [ GENESIS ]         [ ARGOS ]      [ TRÄGER-03 ]");
+			Console.WriteLine("             |                   |              |");
+			Console.WriteLine("      <>=====|====<>      <>=====|====<>  <>====|====<>");
+			Console.WriteLine("        /  \\                 /  \\            /  \\");
+			Console.WriteLine("   [Kreuzer] [Fregatten] [Eskorten]   [Jägerstaffeln]");
+			Console.ResetColor();
+		}
+
+		static void DrawFleetEnRouteToEarth()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkBlue;
+			Console.WriteLine("                 R A U M – K U R S  E R D E");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("GENESIS  >>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("ARGOS    >>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("TRÄGER   >>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("KREUZER  >>>>>>>>>>>>>>>>>>>>>>>");
+			Console.WriteLine("FREGATTEN >>>>>>>>>>>>>>>>>>>>>>");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
+			Console.WriteLine("\n   .   .   .   .   .   .   .   .   .   .   (Sterne ziehen vorbei)");
+			Console.ResetColor();
+		}
+
+		static void DrawArgosJumpAway()
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("                    ARGOS – SPRUNGSEQUENZ");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("                 ________________________");
+			Console.WriteLine("                /                        \\");
+			Console.WriteLine("      ARGOS   <    ==============        >");
+			Console.WriteLine("                \\________________________/");
+			Console.ResetColor();
+
+			Console.ForegroundColor = ConsoleColor.Magenta;
+			Console.WriteLine();
+			Console.WriteLine("           <<< Raum krümmt sich, Licht verzerrt sich >>>");
+			Console.WriteLine("                     < < < S P R U N G > > >");
+			Console.ResetColor();
+		}
+		class FleetShipAllianz
+		{
+			public string Name;
+			public string Typ;
+			public bool IstSpieler;
+			public bool IstFlaggschiff; // GENESIS darf NICHT zerstört werden
+			public int MaxSchild;
+			public int Schild;
+			public int MaxHuelle;
+			public int Huelle;
+			public int TorpedoSchaden;
+			public int StrahlenSchaden;
+
+			public bool Zerstoert => Huelle <= 0;
+
+			public FleetShipAllianz(string name, string typ, bool istSpieler, bool istFlaggschiff,
+				int maxSchild, int maxHuelle, int torpedo, int strahl)
+			{
+				Name = name;
+				Typ = typ;
+				IstSpieler = istSpieler;
+				IstFlaggschiff = istFlaggschiff;
+				MaxSchild = maxSchild;
+				Schild = maxSchild;
+				MaxHuelle = maxHuelle;
+				Huelle = maxHuelle;
+				TorpedoSchaden = torpedo;
+				StrahlenSchaden = strahl;
+			}
+
+			public void SchadenErleiden(int damage)
+			{
+				if (damage <= 0) return;
+
+				int rest = damage;
+
+				if (Schild > 0)
+				{
+					int schildTreffer = Math.Min(Schild, rest);
+					Schild -= schildTreffer;
+					rest -= schildTreffer;
+				}
+
+				if (rest > 0)
+				{
+					Huelle -= rest;
+					if (Huelle < 0) Huelle = 0;
+				}
+			}
+		}
+
+		static void Scene_AllianzFlottenschlacht()
+		{
+			Console.Clear();
+			SaveGame("Scene_AllianzFlottenschlacht");
+
+			// Kurze Einleitung
+			TypeText("Alarmstufe ROT. Die Allianz der Nachfahren der Blutsväter springt in unser System.", 10);
+			TypeText("Dutzende Energiesignaturen tauchen im Subraum auf – Kriegsschiffe, Trägerschiffe, Eskorten.", 10);
+			TypeText("Hale: Wir teilen die Flotte auf. Sie übernehmen Verband EINS mit der GENESIS.", 10);
+			TypeText("Hale: Ich führe Verband ZWEI. Unsere einzige Chance ist, die erste Angriffswelle zu brechen.", 10);
+			TypeText("");
+			TypeText("Ich atme tief durch. Wenn die GENESIS fällt, war alles vergebens.", 10);
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um die Allianz-Flottenschlacht zu beginnen...");
+			Console.ReadKey(true);
+
+			RunAllianzFlottenschlacht();
+		}
+		static void RunAllianzFlottenschlacht()
+		{
+			Console.Clear();
+			Random rng = new Random();
+
+			// Spielerflotte (5 Schiffe)
+			List<FleetShipAllianz> spieler = new List<FleetShipAllianz>
+	{
+        // GENESIS – Universum-Klasse, Flaggschiff
+        new FleetShipAllianz("GENESIS", "UNIVERSUM-KLASSE", true, true, 200, 200, 55, 45),
+
+        // Weitere Universum-/Kreuzer-/Fregatten-Kombination
+        new FleetShipAllianz("AURORA",  "UNIVERSUM-KLASSE", true, false, 200, 200, 45, 40),
+		new FleetShipAllianz("VALKYRIE","KREUZER",          true, false, 150, 150, 35, 30),
+		new FleetShipAllianz("HORIZON", "KREUZER",          true, false, 140, 140, 30, 28),
+		new FleetShipAllianz("LANCER",  "FREGATTE",         true, false, 110, 110, 22, 18)
+	};
+
+			// Allianzflotte (5 Schiffe)
+			List<FleetShipAllianz> allianz = new List<FleetShipAllianz>
+	{
+		new FleetShipAllianz("A-DREAD-1",   "DREADNOUGHT",      false, false, 350, 250, 45, 40),
+		new FleetShipAllianz("A-DREAD-2",   "DREADNOUGHT",      false, false, 350, 250, 45, 40),
+		new FleetShipAllianz("A-CRUISER-1", "SCHWERER KREUZER", false, false, 200, 180, 34, 30),
+		new FleetShipAllianz("A-CRUISER-2", "KREUZER",          false, false, 160, 160, 30, 26),
+		new FleetShipAllianz("A-FRIG-1",    "FREGATTE",         false, false, 150, 130, 22, 20)
+	};
+
+			FleetShipAllianz genesis = spieler.First(s => s.IstFlaggschiff);
+			FleetShipAllianz genesisSchutzSchiff = null; // Schiff, das für einen Zug die GENESIS deckt
+
+			string kampfInfo = "Die Flotten stoßen frontal aufeinander.";
+			bool kampfLaeuft = true;
+
+			while (kampfLaeuft)
+			{
+				Console.Clear();
+				DrawAllianceBattlefield(spieler, allianz, kampfInfo);
+
+				// Verlustbedingungen
+				if (!spieler.Any(s => !s.Zerstoert))
+				{
+					GameOver("Alle Schiffe Ihres Verbandes wurden zerstört. Die Allianz durchbricht die Linie.");
+					return;
+				}
+
+				if (genesis.Zerstoert)
+				{
+					GameOver("Die GENESIS explodiert in einem Meer aus Licht. Ohne Flaggschiff bricht die Verteidigung zusammen.");
+					return;
+				}
+
+				// Siegbedingung
+				if (!allianz.Any(s => !s.Zerstoert))
+				{
+					Console.Clear();
+					DrawAllianceBattlefield(spieler, allianz, "Die letzten Allianz-Schiffe verglühen im All...");
+
+					TypeText("Hale: Verband ZWEI meldet: Feindliche Angriffswelle gebrochen!", 10);
+					TypeText("Oduro: Captain, wir haben es geschafft – die Allianz zieht sich zurück!", 10);
+					TypeText("Die Brücke der GENESIS bebt noch immer nach dem feindlichen Beschuss. Doch die Schilde halten.", 10);
+
+					Console.WriteLine();
+					Console.WriteLine("Drücke eine Taste, um fortzufahren...");
+					Console.ReadKey(true);
+
+					// SPEICHERPUNKT direkt nach der Schlacht
+					SaveGame("Scene_AllianzKapitel1_Abschluss_Start");
+
+					// Abschlusssequenz starten
+					RunAllianzSiegCinematic(spieler,allianz,genesis);
+
+					return;
+				}
+
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine();
+				Console.WriteLine("=== IHR ZUG ===");
+				Console.ResetColor();
+				Console.WriteLine("1) Torpedoangriff");
+				Console.WriteLine("2) Strahlenangriff");
+				Console.WriteLine("3) Fokus-Strahlenfeuer (alle Schiffe auf ein Ziel)");
+				Console.WriteLine("4) Schutzmanöver: Ein Schiff deckt die GENESIS für diese Runde");
+				Console.Write("Auswahl: ");
+				string ausw = Console.ReadLine().Trim();
+
+				if (ausw == "1" || ausw == "2")
+				{
+					// Angreifer wählen
+					var aktiveSpieler = spieler.Where(s => !s.Zerstoert).ToList();
+					Console.WriteLine();
+					Console.WriteLine("Eigenes Schiff wählen:");
+					for (int i = 0; i < aktiveSpieler.Count; i++)
+					{
+						Console.WriteLine($"{i + 1}) {aktiveSpieler[i].Name} ({aktiveSpieler[i].Typ})");
+					}
+					Console.Write("Nummer: ");
+					if (!int.TryParse(Console.ReadLine(), out int idxAngreifer) ||
+						idxAngreifer < 1 || idxAngreifer > aktiveSpieler.Count)
+					{
+						kampfInfo = "Ungültige Eingabe – Ihre Schiffe zögern.";
+					}
+					else
+					{
+						var angreifer = aktiveSpieler[idxAngreifer - 1];
+
+						// Ziel wählen
+						var aktiveAllianz = allianz.Where(s => !s.Zerstoert).ToList();
+						Console.WriteLine();
+						Console.WriteLine("Zielschiff der Allianz wählen:");
+						for (int i = 0; i < aktiveAllianz.Count; i++)
+						{
+							Console.WriteLine($"{i + 1}) {aktiveAllianz[i].Name} ({aktiveAllianz[i].Typ})");
+						}
+						Console.Write("Nummer: ");
+						if (!int.TryParse(Console.ReadLine(), out int idxZiel) ||
+							idxZiel < 1 || idxZiel > aktiveAllianz.Count)
+						{
+							kampfInfo = "Ihr Zielsystem braucht zu lange – keine koordinierte Salve.";
+						}
+						else
+						{
+							var ziel = aktiveAllianz[idxZiel - 1];
+
+							if (ausw == "1")
+							{
+								int dmg = angreifer.TorpedoSchaden + rng.Next(-5, 6);
+								if (dmg < 5) dmg = 5;
+								AnimateTorpedoStrike(true);
+								ziel.SchadenErleiden(dmg);
+								kampfInfo = $"{angreifer.Name} feuert Torpedosalven auf {ziel.Name} (Schaden: {dmg}).";
+								if (ziel.Zerstoert)
+								{
+									AnimateExplosion(false);
+									kampfInfo += $" {ziel.Name} explodiert in einem grellen Feuerball!";
+								}
+							}
+							else
+							{
+								int dmg = angreifer.StrahlenSchaden + rng.Next(-4, 5);
+								if (dmg < 4) dmg = 4;
+								AnimateBeamStrike(true);
+								ziel.SchadenErleiden(dmg);
+								kampfInfo = $"{angreifer.Name} entfesselt einen Partikelstrahl auf {ziel.Name} (Schaden: {dmg}).";
+								if (ziel.Zerstoert)
+								{
+									AnimateExplosion(false);
+									kampfInfo += $" {ziel.Name} wird von innen heraus aufgerissen!";
+								}
+							}
+						}
+					}
+				}
+				else if (ausw == "3")
+				{
+					// Fokus-Strahlenfeuer (doch unbegrenzt nutzbar, habe dafür stärkere Allianzschilde)
+					var aktiveAllianz = allianz.Where(s => !s.Zerstoert).ToList();
+					Console.WriteLine();
+					Console.WriteLine("Fokus-Ziel der Allianz wählen:");
+					for (int i = 0; i < aktiveAllianz.Count; i++)
+					{
+						Console.WriteLine($"{i + 1}) {aktiveAllianz[i].Name} ({aktiveAllianz[i].Typ})");
+					}
+					Console.Write("Nummer: ");
+					if (!int.TryParse(Console.ReadLine(), out int idxZiel) ||
+						idxZiel < 1 || idxZiel > aktiveAllianz.Count)
+					{
+						kampfInfo = "Die Flotte kann sich nicht auf ein gemeinsames Ziel einigen.";
+					}
+					else
+					{
+						var ziel = aktiveAllianz[idxZiel - 1];
+						int gesamtSchaden = 0;
+
+						AnimateFocusBeam();
+						foreach (var s in spieler.Where(s => !s.Zerstoert))
+						{
+							int dmg = s.StrahlenSchaden + rng.Next(-3, 4);
+							if (dmg < 3) dmg = 3;
+							gesamtSchaden += dmg;
+						}
+						ziel.SchadenErleiden(gesamtSchaden);
+						kampfInfo = $"Alle Schiffe bündeln ihre Strahlen auf {ziel.Name}! Gesamtschaden: {gesamtSchaden}.";
+						if (ziel.Zerstoert)
+						{
+							AnimateExplosion(false);
+							kampfInfo += $" {ziel.Name} wird praktisch verdampft.";
+						}
+					}
+				}
+				else if (ausw == "4")
+				{
+					// Schutzmanöver
+					var schutzKandidaten = spieler.Where(s => !s.Zerstoert && !s.IstFlaggschiff).ToList();
+					if (!schutzKandidaten.Any())
+					{
+						kampfInfo = "Kein Schiff ist in der Lage, die GENESIS zu decken.";
+					}
+					else
+					{
+						Console.WriteLine();
+						Console.WriteLine("Welches Schiff soll die GENESIS decken?");
+						for (int i = 0; i < schutzKandidaten.Count; i++)
+						{
+							Console.WriteLine($"{i + 1}) {schutzKandidaten[i].Name} ({schutzKandidaten[i].Typ})");
+						}
+						Console.Write("Nummer: ");
+						if (!int.TryParse(Console.ReadLine(), out int idxSchutz) ||
+							idxSchutz < 1 || idxSchutz > schutzKandidaten.Count)
+						{
+							kampfInfo = "Das Schutzmanöver kommt nicht zustande.";
+						}
+						else
+						{
+							genesisSchutzSchiff = schutzKandidaten[idxSchutz - 1];
+							kampfInfo = $"{genesisSchutzSchiff.Name} wechselt Position und deckt die GENESIS.";
+						}
+					}
+				}
+				else
+				{
+					kampfInfo = "Ihre Befehle sind unklar – die Flotte verharrt.";
+				}
+
+				// Allianz schon weg?
+				if (!allianz.Any(s => !s.Zerstoert))
+					continue;
+
+				// Gegner-Zug
+				
+				Thread.Sleep(400);
+				Console.Clear();
+				DrawAllianceBattlefield(spieler, allianz, "Die Allianz bereitet eine Gegenoffensive vor...");
+				Thread.Sleep(500);
+
+				var aktiveAllianz2 = allianz.Where(s => !s.Zerstoert).ToList();
+				var aktiveSpieler2 = spieler.Where(s => !s.Zerstoert).ToList();
+				if (!aktiveAllianz2.Any() || !aktiveSpieler2.Any()) continue;
+
+				// Gegner wählt Angreifer & Ziel
+				var gegnerAngreifer = aktiveAllianz2[rng.Next(aktiveAllianz2.Count)];
+
+				// Ziel: bevorzugt GENESIS, sonst zufällig
+				FleetShipAllianz gegnerZiel;
+				if (!genesis.Zerstoert && rng.NextDouble() < 0.6)
+				{
+					gegnerZiel = genesis;
+				}
+				else
+				{
+					gegnerZiel = aktiveSpieler2[rng.Next(aktiveSpieler2.Count)];
+				}
+
+				// Schutzmanöver aktiv? Dann ersten Treffer auf das Schutz-Schiff umlenken
+				if (genesisSchutzSchiff != null && gegnerZiel == genesis && !genesisSchutzSchiff.Zerstoert)
+				{
+					gegnerZiel = genesisSchutzSchiff;
+				}
+
+				bool gegnerNutzenTorpedo = rng.NextDouble() < 0.5;
+				if (gegnerNutzenTorpedo)
+				{
+					int dmg = gegnerAngreifer.TorpedoSchaden + rng.Next(-5, 6);
+					if (dmg < 5) dmg = 5;
+					AnimateTorpedoStrike(false);
+					gegnerZiel.SchadenErleiden(dmg);
+					kampfInfo = $"Allianz-Schiff {gegnerAngreifer.Name} feuert Torpedos auf {gegnerZiel.Name} (Schaden: {dmg}).";
+				}
+				else
+				{
+					int dmg = gegnerAngreifer.StrahlenSchaden + rng.Next(-4, 5);
+					if (dmg < 4) dmg = 4;
+					AnimateBeamStrike(false);
+					gegnerZiel.SchadenErleiden(dmg);
+					kampfInfo = $"Allianz-Schiff {gegnerAngreifer.Name} trifft {gegnerZiel.Name} mit einem Strahl (Schaden: {dmg}).";
+				}
+
+				if (gegnerZiel.Zerstoert)
+				{
+					AnimateExplosion(gegnerZiel.IstSpieler); // Spieler-Schiff links, Allianz rechts
+					kampfInfo += $" {gegnerZiel.Name} zerbricht in einem Meer aus Trümmern.";
+				}
+
+				// Schutzmanöver verbraucht sich nach einer Runde
+				genesisSchutzSchiff = null;
+			}
+		}
+
+		static void DrawAllianceBattlefield(List<FleetShipAllianz> spieler, List<FleetShipAllianz> allianz, string infoZeile)
+		{
+			Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("=============== ALLIANZ-FLOTTENSCHLACHT – TAKTISCHE ANSICHT ===============");
+			Console.ResetColor();
+
+			// --- STATUS ANZEIGE ---
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("Eigene Flotte:");
+			Console.ResetColor();
+			foreach (var s in spieler)
+				DrawShipStatusLine(s);
+
+			Console.WriteLine();
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("Allianz-Flotte:");
+			Console.ResetColor();
+			foreach (var e in allianz)
+				DrawShipStatusLine(e);
+
+			Console.WriteLine();
+			Console.WriteLine("---------------------------------------------------------------------------");
+			Console.WriteLine(infoZeile);
+			Console.WriteLine("---------------------------------------------------------------------------");
+			Console.WriteLine();
+
+			// --- ASCII SCHLACHTANSICHT ---
+			// Wir bauen für jede Seite einen großen "Bildschirm" aus allen Schiffen untereinander
+			List<string> leftLines = new List<string>();
+			foreach (var s in spieler)
+			{
+				string[] ascii = GetShipAscii(s);
+				leftLines.AddRange(ascii);
+				leftLines.Add(""); // Leerzeile zwischen Schiffen
+			}
+
+			List<string> rightLines = new List<string>();
+			foreach (var s in allianz)
+			{
+				string[] ascii = GetShipAscii(s);
+				rightLines.AddRange(ascii);
+				rightLines.Add("");
+			}
+
+			int totalRows = Math.Max(leftLines.Count, rightLines.Count);
+
+			for (int i = 0; i < totalRows; i++)
+			{
+				string l = (i < leftLines.Count) ? leftLines[i] : "";
+				string r = (i < rightLines.Count) ? rightLines[i] : "";
+
+				// Farbe für linke Seite bestimmen (Spieler)
+				bool leftIsWreck = spieler.Any(s => s.Zerstoert && GetShipAscii(s).Contains(l));
+				Console.ForegroundColor = leftIsWreck ? ConsoleColor.DarkGray : ConsoleColor.Cyan;
+				Console.Write(l.PadRight(74));
+				Console.ResetColor();
+
+				Console.Write("   ");
+
+				// Farbe für rechte Seite bestimmen (Allianz)
+				bool rightIsWreck = allianz.Any(s => s.Zerstoert && GetShipAscii(s).Contains(r));
+				Console.ForegroundColor = rightIsWreck ? ConsoleColor.DarkGray : ConsoleColor.Red;
+				Console.WriteLine(r);
+				Console.ResetColor();
+			}
+		}
+
+		static void DrawShipStatusLine(FleetShipAllianz s)
+		{
+			if (s.Zerstoert)
+				Console.ForegroundColor = ConsoleColor.DarkGray;
+			else if (s.IstSpieler)
+				Console.ForegroundColor = ConsoleColor.Cyan;
+			else
+				Console.ForegroundColor = ConsoleColor.Red;
+
+			string flag = s.IstFlaggschiff ? " [FLAGGSCHIFF]" : "";
+			Console.WriteLine($"{s.Name,-12} ({s.Typ,-16}) | Schild: {s.Schild,3}/{s.MaxSchild,-3} | Hülle: {s.Huelle,3}/{s.MaxHuelle,-3}{flag}");
+			Console.ResetColor();
+		}
+
+		static string[] GetShipAscii(FleetShipAllianz s)
+		{
+			
+			// SPIELER-SEITE (links)
+			
+			if (s.IstSpieler)
+			{
+				// WRACK-VARIANTEN FÜR SPIELER
+				if (s.Zerstoert)
+				{
+					if (s.Typ == "UNIVERSUM-KLASSE")
+					{
+						return new[]
+						{
+					"                          _______   SCHIFFSWRACK   _______",
+					"                   _____/    UNIVERSUM-Klasse (zerstört)  \\__",
+					"                __/           Risse, Bruchstellen           \\__",
+					"             __/       __   __x___     __x__    __           \\",
+					"           _/        x/  \\_/     \\__x_/    \\__x/  \\_         \\",
+					"          |      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓__       |",
+					"          |   __/   Trümmer, offene Sektionen, Funken  \\__x  |",
+					"          | _/__x__  Struktur bricht auseinander     ___\\__  |",
+					"           \\___x_________ lose Module treiben davon ______\\_|"
+				};
+					}
+					else if (s.Typ == "KREUZER")
+					{
+						return new[]
+						{
+					"      ___====x===___",
+					"   __/___RUMPFSCHADEN_\\__",
+					" <_____  KREUZER-WRACK  __x>",
+					"   ¯¯\\_____aufgerissen_/¯¯"
+				};
+					}
+					else if (s.Typ == "SCHWERER KREUZER")
+					{
+						return new[]
+						{
+					"     ___========x===___",
+					"  __/___SCHWERER KREUZER-WRACK_\\__",
+					" <__Struktur gebrochen, Decks offen__>",
+					"   ¯¯\\_________Trümmerfeld_______/¯¯"
+				};
+					}
+					else if (s.Typ == "FREGATTE")
+					{
+						return new[]
+						{
+					"    __==x__",
+					" <__FREGATTE-WRACK__>",
+					"    ¯¯==__¯¯"
+				};
+					}
+					else
+					{
+						return new[]
+						{
+					"   ___xx___",
+					" <__WRACK__>",
+					"   ¯¯xx¯¯"
+				};
+					}
+				}
+
+				if (s.Typ == "UNIVERSUM-KLASSE")
+				{
+					return new[]
+					{
+				"                          _________________________________",
+				"                   _____/         UNIVERSUM-Klasse          \\__",
+				"                __/                                          \\__",
+				"             __/                                              \\",
+				"           _/                                                  \\",
+				"          |                 ██████████████████████████___      |",
+				"          |            ____/                             \\____ |",
+				"          |       ____/                                     \\__|",
+				"           \\____/                                            \\_|"
+			};
+				}
+				else if (s.Typ == "KREUZER")
+				{
+					return new[]
+					{
+				"      ___========___",
+				"   __/______________\\__",
+				" <_____   KREUZER   ____>",
+				"   ¯¯\\______________/¯¯"
+			};
+				}
+				else if (s.Typ == "SCHWERER KREUZER")
+				{
+					return new[]
+					{
+				"     ___============___",
+				"  __/__________________\\__",
+				" <__SCHWERER  KREUZER__>",
+				"   ¯¯\\________________/¯¯"
+			};
+				}
+				else if (s.Typ == "FREGATTE")
+				{
+					return new[]
+					{
+				"    __====__",
+				" <__FREGATTE__>",
+				"    ¯¯====¯¯"
+			};
+				}
+				else
+				{
+					return new[]
+					{
+				"   ___==___",
+				" <__SCHIFF__>",
+				"   ¯¯==¯¯"
+			};
+				}
+			}
+			else
+			{
+				// ALLIANZ-SEITE (rechts)
+				if (s.Zerstoert)
+				{
+					if (s.Typ == "DREADNOUGHT")
+					{
+						return new[]
+						{
+					"       /====\\====ZERSTÖRTER=================/====\\",
+					"       ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███",
+					"   ___|    ALLIANZ-DREADNOUGHT – WRACK        |__x",
+					"  /====\\====aufgebrochene Sektionen========= /====\\",
+					" <______\\\\==Trümmer, brennende Module==//____x__>",
+					"  \\_____/=====Struktur teilweise kollabiert==\\__/",
+					"       \\___/          x          x            \\_/ ",
+					"      ███▓▓   glühende Bruchstellen   ▓▓███      ",
+					"      \\_____/====Trümmer treiben im All====\\____/"
+				};
+					}
+					else if (s.Typ == "SCHWERER KREUZER")
+					{
+						return new[]
+						{
+					"		  /========WRACK==========\\",
+					"         ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███",
+					"    ___/ ALLIANZ-SCHWERER KREUZER (zerst.) \\___",
+					" __/====Rumpf aufgerissen, Systeme offline===\\__",
+					"<__x_x_x_x_x_x_x_Trümmer & Rauch_x_x_x_x_x_x__>",
+					"  ¯¯\\========================================/¯¯",
+					"	      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███",
+					"		  \\========WRACK=========/"
+				};
+					}
+					else if (s.Typ == "KREUZER")
+					{
+						return new[]
+						{
+					"        /========WRACK======\\",
+					"       ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███",
+					"   ___/ ALLIANZ-KREUZER (zerstört) \\___",
+					" _/====Decks offen, Glutnester========\\_",
+					"<__x_x_x_x_x_Trümmerwolke_x_x_x_x_x__>",
+					"  ¯¯\\==============================/¯¯",
+					"       ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███",
+					"	    \\========WRACK=====/"
+				};
+					}
+					else if (s.Typ == "FREGATTE")
+					{
+						return new[]
+						{
+					"      ███▓▓▓▓▓▓",
+					"  __/ ALLIANZ-FREG-WRACK \\__",
+					"<__x_x_x_Trümmerteile_x_x__>",
+					"   ¯¯\\_____aufgebrochen_/¯¯",
+					"	   ███▓▓▓▓▓▓"
+				};
+					}
+					else
+					{
+						return new[]
+						{
+					"   ___xx___",
+					" <__A-WRACK__>",
+					"   ¯¯xx¯¯"
+				};
+					}
+				}
+
+				// ALLIANZ-SCHIFFE
+				if (s.Typ == "DREADNOUGHT")
+				{
+					return new[]
+					{
+				"       /====\\=============================/====\\",
+				"       ███████████████████████████████████████████",
+				"   ___|          ALLIANZ-DREADNOUGHT         |___",
+				"  /====\\====================================/====\\",
+				" <______\\\\====<><><><><><><><><><><>====//______>",
+				"  \\_____/================================\\_____/",
+				"       \\___/                               \\___/",
+				"      ███████████████████████████████████████████",
+				"      \\_____/============================\\_____/"
+			};
+				}
+				else if (s.Typ == "SCHWERER KREUZER")
+				{
+					return new[]
+					{
+				"		  /======================\\",
+				"         █████████████████████████",
+				"    ___/  ALLIANZ-SCHWERER KREUZER \\___",
+				" __/=================================\\__",
+				"<__><><><><><><><><><><><><><><><><>__>",
+				"  ¯¯\\================================/¯¯",
+				"	      █████████████████████████",
+				"		  \\======================/"
+			};
+				}
+				else if (s.Typ == "KREUZER")
+				{
+					return new[]
+					{
+				"        /===============\\",
+				"       ███████████████████",
+				"   ___/ ALLIANZ-KREUZER  \\___",
+				" _/=========================\\_",
+				"<__><><><><><><><><><><><>__>",
+				"  ¯¯\\=====================/¯¯",
+				"       ███████████████████",
+				"	    \\================/"
+			};
+				}
+				else if (s.Typ == "FREGATTE")
+				{
+					return new[]
+					{
+				"      ██████████",
+				"  __/ ALLIANZ-FREG \\__",
+				"<__><><><><><><>__>",
+				"   ¯¯\\_________/¯¯",
+				"	   ██████████"
+			};
+				}
+				else
+				{
+					return new[]
+					{
+				"   ___==___",
+				" <__A-SCHIFF__>",
+				"   ¯¯==¯¯"
+			};
+				}
+			}
+		}
+		//  ANIMATIONEN: STRAHL, TORPEDO, EXPLOSION
+		static void AnimateBeamStrike(bool fromPlayerSide)
+		{
+			// Strahlenwaffe – hoher, pulsierender Ton
+			for (int frame = 0; frame < 4; frame++)
+			{
+				Console.Clear();
+				Console.ForegroundColor = ConsoleColor.Magenta;
+
+				if (fromPlayerSide)
+					Console.WriteLine("GENESIS:  |||||||||||||||||||||||||||>>>>>>>>>>>>");
+				else
+					Console.WriteLine("ALLIANZ: <<<<<<<<<<<<|||||||||||||||||||||||||||");
+
+				Console.ResetColor();
+
+				// futuristischer Strahl-Sound
+				Console.Beep(950 + frame * 30, 40);
+				Thread.Sleep(50);
+			}
+
+			Console.Beep(1200, 80); // finaler Treffer
+		}
+
+		static void AnimateTorpedoStrike(bool fromPlayerSide)
+		{
+			// dumpfer Torpedosound
+			Console.Beep(220, 120);
+			Console.Beep(180, 80);
+
+			for (int frame = 0; frame < 4; frame++)
+			{
+				Console.Clear();
+				Console.ForegroundColor = ConsoleColor.Yellow;
+
+				if (fromPlayerSide)
+					Console.WriteLine("Flotte:   >>>===>   >>>===>   >>>===>");
+				else
+					Console.WriteLine("Allianz:  <===<<<   <===<<<   <===<<<");
+
+				Console.ResetColor();
+				Thread.Sleep(70);
+
+				// steigender Pfeifton
+				Console.Beep(300 + frame * 60, 60);
+			}
+		}
+
+		static void AnimateFocusBeam()
+		{
+			// Ladeimpuls – tief und bedrohlich
+			Console.Beep(160, 150);
+			Console.Beep(190, 150);
+
+			// 4 Frames Animation für "Aufladen" + "Feuern"
+			for (int frame = 0; frame < 4; frame++)
+			{
+				Console.Clear();
+				Console.ForegroundColor = ConsoleColor.Cyan;
+
+				// Breites 5-Strahlen-System
+				Console.WriteLine("ALLE SCHIFFE BÜNDELN IHRE ENERGIE →");
+				Console.WriteLine();
+				Console.WriteLine("   |||||||||||||||||||||||||||||||||||||||||||||||>>>>>>>>>>>>>");
+				Console.WriteLine("   |||||||||||||||||||||||||||||||||||||||||||||||>>>>>>>>>>>>>");
+				Console.WriteLine("   |||||||||||||||||||||||||||||||||||||||||||||||>>>>>>>>>>>>>");
+				Console.WriteLine("   |||||||||||||||||||||||||||||||||||||||||||||||>>>>>>>>>>>>>");
+				Console.WriteLine("   |||||||||||||||||||||||||||||||||||||||||||||||>>>>>>>>>>>>>");
+
+				Console.ResetColor();
+
+				// 5 verschiedene Frequenzen → 5 Strahlen
+				Console.Beep(700 + frame * 40, 40);
+				Console.Beep(820 + frame * 40, 40);
+				Console.Beep(940 + frame * 40, 40);
+				Console.Beep(1060 + frame * 40, 40);
+				Console.Beep(1180 + frame * 40, 40);
+
+				Thread.Sleep(80);
+			}
+
+			// Finaler Treffer-Impuls
+			Console.Beep(1500, 150);
+		}
+
+		static void AnimateExplosion(bool leftSide)
+		{
+			int[] indents = leftSide
+				? new[] { 2, 4, 6, 4, 2 }
+				: new[] { 40, 42, 44, 42, 40 };
+
+			// dumpfer Einschlag
+			Console.Beep(180, 200);
+
+			// Haupt-Explosion
+			for (int i = 0; i < indents.Length; i++)
+			{
+				Console.Clear();
+				Console.ForegroundColor = ConsoleColor.Red;
+
+				Console.WriteLine(new string(' ', indents[i]) + "        * * * * * * * *");
+				Console.WriteLine(new string(' ', indents[i]) + "      * *   B O O M   * *");
+				Console.WriteLine(new string(' ', indents[i]) + "        * * * * * * * *");
+
+				Console.ResetColor();
+
+				// Explosion Soundeffekt – schnell, hart, abfallend
+				Console.Beep(600 - i * 80, 120);
+
+				Thread.Sleep(80);
+			}
+
+			// Trümmerteile fliegen kurz auseinander
+			for (int frame = 0; frame < 4; frame++)
+			{
+				Console.Clear();
+				Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+				int baseIndent = leftSide ? 2 + frame * 2 : 40 - frame * 2;
+
+				Console.WriteLine(new string(' ', baseIndent) + ".   .      .  *   .");
+				Console.WriteLine(new string(' ', baseIndent + 6) + "x     .   x    .");
+				Console.WriteLine(new string(' ', baseIndent + 3) + ".   *    .    x   .");
+
+				Console.ResetColor();
+				Console.Beep(200 - frame * 20, 60);
+				Thread.Sleep(70);
+			}
+
+			// Nachhall der Explosion
+			Console.Beep(120, 200);
+		}
+		static void RunAllianzSiegCinematic(List<FleetShipAllianz> spieler,
+									List<FleetShipAllianz> allianz,
+									FleetShipAllianz genesis)
+		{
+			// Erst ein kleines Cinematic mit bewegten Schiffen / Explosionen
+			ShowFinalBattleCinematic();
+
+			// Dann wechseln wir auf die Brücke der GENESIS
+			Console.Clear();
+			Console.WriteLine("=== BRÜCKE DER GENESIS – NACH DER SCHLACHT ===");
+			Console.WriteLine();
+			Thread.Sleep(400);
+
+			// Typewriter-Story, KEINE Anführungszeichen in den Dialogen
+			TypeText("Die Brücke der GENESIS ist in rotes Licht getaucht. Rauch hängt in der Luft, Konsolen flackern.", 10);
+			TypeText("Crewmitglieder arbeiten an überhitzten Stationen, irgendwo knistert eine beschädigte Leitung.", 10);
+			TypeText("", 10);
+
+			TypeText("Kate: Captain, ich habe die Schilde der Allianz-Schiffe analysiert.", 10);
+			TypeText("Kate: Ihre Schutzfelder sind unseren weit überlegen, aber ihre übrigen Systeme wirken erstaunlich vertraut.", 10);
+			TypeText("Kate: Ich vermute, ihre Technik basiert auf ähnlichen Grundlagen wie unsere aber doch fortschrittlicher.", 10);
+			TypeText("", 10);
+
+			TypeText("Oduro: Man merkt,sie haben wenig Kampferfahrung. Ihre Formationen sind zu eng, ihre Salven unkoordiniert.", 10);
+			TypeText("Oduro: Sie verlassen sich zu sehr auf ihre Schilde. Wenn wir sie brechen können, ist der Rest verwundbar.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich atme tief durch und blicke auf die taktische Projektion. Überlappende Schilde, dichte Energieknoten.", 10);
+			TypeText("Ich: Wenn wir ihre Schilde nicht alleine knacken können, dann bündeln wir unsere Waffen.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich öffne den Flotten-Komkanal.", 10);
+			TypeText("Ich: An alle Schiffe des Verbandes EINS: hier der Captain der GENESIS.", 10);
+			TypeText("Ich: Wir gehen auf koordinierte Zielschüsse über. Fokusfeuer auf ihre Schildsysteme.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich werfe Kate einen Blick zu.", 10);
+			TypeText("Ich: Wo liegen die Hauptenergiezentren der Allianz-Schiffe?", 10);
+			TypeText("", 10);
+
+			TypeText("Sensoroffizier: Captain, laut Auswertung konzentrieren sich ihre Reaktorkerne in drei Zonen.", 10);
+			TypeText("Sensoroffizier: Eine im vorderen Rumpfsegment, eine unter der zentralen Struktur, eine nahe der Triebwerkssektion.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Übertragen Sie die Koordinaten an alle Schiffe. Live-Feed auf die Zielcomputer.", 10);
+			TypeText("Sensoroffizier: Koordinaten werden an den Verband gesendet, Captain.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Waffenoffizier, haben Sie die Zielpunkte?", 10);
+			TypeText("Waffenoffizier: Bestätigt, Captain. Die Energieknoten sind markiert. Alle Strahlenwaffen können synchronisieren.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Gut. Kom-Kanal offen halten.", 10);
+			TypeText("Ich: An die Flotte; auf mein Zeichen bündeln wir alle Strahlenwaffen auf die übertragene Zielzone.", 10);
+			TypeText("Ich: Nicht feuern, bevor alle Systeme bereit sind. Wir feuern gleichzeitig.", 10);
+			TypeText("", 10);
+
+			TypeText("Oduro: Das wird ein Feuerwerk.", 10);
+			TypeText("Ich: Genau das ist der Plan.", 10);
+			TypeText("", 10);
+
+			TypeText("Ein Summen geht durch die Brücke, als die GENESIS und die übrigen Schiffe Energie in ihre Strahllanzen pumpen.", 10);
+			TypeText("Warnanzeigen leuchten, die Reaktoren arbeiten an der Grenze.", 10);
+			TypeText("", 10);
+
+			TypeText("Waffenoffizier: Alle Batterien geladen. Flotte meldet Feuerbereitschaft.", 10);
+			TypeText("Ich: Dann los.", 10);
+			TypeText("Ich: An alle Schiffe – Feuer!", 10);
+			TypeText("", 10);
+
+			// Kleines Fokus-Strahlenfeuer als Zwischencinematic
+			ShowFocusedVolleyCinematic();
+
+			TypeText("Der Hauptschirm wird zu einem Sturm aus Licht. Fünf Strahlenlanzen schießen von jedem unserer Schiffe zugleich.", 10);
+			TypeText("Sie treffen dieselbe Stelle auf dem Allianz-Dreadnought. Die Schilde flackern, verzerren, reißen auf.", 10);
+			TypeText("Die gebündelte Energie frisst sich durch den Schild und in die gewaltige Hülle.", 10);
+			TypeText("", 10);
+
+			TypeText("Die äußere Panzerung glüht weiß, dann bricht sie auf. Etwas im Inneren des Schiffes kollabiert.", 10);
+			TypeText("Ein einzelner, gleißender Blitz, dann reißt eine Explosion den Dreadnought in Stücke.", 10);
+
+			// Noch einmal Explosion-Animation auf der Allianz-Seite
+			AnimateExplosion(false);
+
+			TypeText("", 10);
+			TypeText("Ein Schub aus Trümmern und Plasma rollt auf unsere Formation zu und lässt die Schiffe erzittern.", 10);
+			TypeText("Auf der Brücke bricht Jubel aus. Für einen Moment übertönt der Lärm jede Warnanzeige.", 10);
+			TypeText("", 10);
+
+			TypeText("Oduro: Dreadnought neutralisiert! Die Flotte meldet mehrere Folgetreffer auf Sekundärziele.", 10);
+			TypeText("Kate: Die Methode funktioniert. Wenn wir ihre Schildknoten überladen, kollabiert das gesamte System.", 10);
+			TypeText("", 10);
+
+			TypeText("Hale erscheint auf dem Schirm, Schweiß auf der Stirn, doch ein hartes Funkeln in den Augen.", 10);
+			TypeText("Hale: Hier Verband ZWEI. Ihre Taktik scheint aufzugehen, Captain.", 10);
+			TypeText("Hale: Wir übernehmen das Fokusfeuer-Muster und drücken ihre Linie von der Flanke her auf.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Verstanden, Hale. Halten Sie den Druck aufrecht. Wir kümmern uns um jeden, der durchbricht.", 10);
+			TypeText("", 10);
+
+			TypeText("Hale: Es gibt noch etwas, Captain. Die Allianz hat die Einrichtung der Blutsväter schwer angegriffen, die Grauen.", 10);
+			TypeText("Hale: Die Grauen ziehen sich zurück. Es war ein Außenposten für Sie.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich runzle die Stirn.", 10);
+			TypeText("Ich: Die Grauen verlassen die Einrichtung?", 10);
+			TypeText("", 10);
+
+			TypeText("Hale: Bestätigt. Sie lösen ihre Präsenz dort auf. Es war nie ihr Zuhause.", 10);
+			TypeText("Hale: Die Einrichtung war für sie nur ein Außenposten um uns zu beobachten und die Technologie der Blutsväter zu schützen.", 10);
+			TypeText("Hale: Aber jetzt schließen sie sich unserem Flottenverband an und helfen bei der Verteidigung der Erde.", 10);
+			TypeText("", 10);
+
+			TypeText("Oduro: Die Grauen auf unserer Seite. Das verschiebt das Kräfteverhältnis deutlich.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Dann haben wir endlich eine echte Chance.", 10);
+			TypeText("", 10);
+
+			TypeText("Stunden vergehen im Feuer der Schlacht. Explosionen wie Sternenblitze, Trümmerstücke, die an der GENESIS vorbeiziehen.", 10);
+			TypeText("Trotz ihrer Überzahl verlieren die Allianz-Schiffe ein Schiff nach dem anderen.", 10);
+			TypeText("Ihre Schilde sind mächtig, aber ihre Taktik veraltet und unsere Strahlenwaffen unerbittlich.", 10);
+			TypeText("", 10);
+
+			TypeText("Hale meldet sich erneut.", 10);
+			TypeText("Hale: Captain, die Allianz-Flotte ist auf dem Rückzug. Die Grauen halten die äußeren Linien.", 10);
+			TypeText("Hale: Jetzt ist der Zeitpunkt gekommen, die ARGUS zu verfolgen.", 10);
+			TypeText("", 10);
+
+			TypeText("Mein Herz schlägt schneller.", 10);
+			TypeText("Ich: Konnten Sie ihren Sprungvektor rekonstruieren?", 10);
+			TypeText("", 10);
+
+			TypeText("Hale nickt knapp.", 10);
+			TypeText("Hale: Wir haben ihre Signatur nachverfolgt.", 10);
+			TypeText("Hale: Ich sende Ihnen eine neue Konfiguration für Ihre Sensoren.", 10);
+			TypeText("Hale: Damit kann die GENESIS den Riss im Raum orten, dem die ARGUS erzeugt hat.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich spüre eine Gänsehaut. Das Ziel lag plötzlich nicht mehr im Dunkeln.", 10);
+			TypeText("", 10);
+
+			TypeText("Hale: Ihre oberste Priorität ist klar, Captain.", 10);
+			TypeText("Hale: Sie müssen die ARGUS finden und vernichten, bevor sie den Ursprung des Virus erreicht.", 10);
+			TypeText("Hale: Wenn ihre Erbauer die Sprungtechnologie der Blutsväter mit dem Virus verbinden, ist keine Galaxie mehr sicher.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Verstanden.", 10);
+			TypeText("Ich: Wir werden sie aufhalten, was immer es kostet.", 10);
+			TypeText("", 10);
+
+			TypeText("Der Schirm wird schwarz. Nur die Sterne bleiben, während die letzten Explosionen im Hintergrund verklingen.", 10);
+			TypeText("", 10);
+
+			// Vorbereitung auf den Sprung
+			TypeText("Ich: Steuermann, bringen Sie uns an den Rand des Sonnensystems. Maximalgeschwindigkeit unter Licht Triebwerke.", 10);
+			TypeText("Steuermann: Kurs gesetzt, Captain. Beschleunigung läuft.", 10);
+			TypeText("", 10);
+
+			TypeText("Die GENESIS beschleunigt. Die Sonne schrumpft hinter uns zu einem gleißenden Punkt.", 10);
+			TypeText("Vor uns öffnet sich die Leere, nur gefüllt mit dem Nachleuchten der Schlacht.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Maschinenraum, Status des Sprungkerns?", 10);
+			TypeText("Maschinenraum: Sprungkern stabil. Energiekammern aufgeladen. Wir sind bereit, Captain.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Steuermann, haben Sie die von Hale übermittelten Koordinaten?", 10);
+			TypeText("Steuermann: Koordinaten liegen an. Sprungfenster wird berechnet.", 10);
+			TypeText("", 10);
+
+			TypeText("Die Sprunggondeln der GENESIS laden sich auf. Gewaltige Energieströme fließen durch das Schiff.", 10);
+			TypeText("Außerhalb biegt sich der Raum, als würde etwas Unsichtbares an den Sternen ziehen.", 10);
+			TypeText("", 10);
+
+			TypeText("Maschinenraum: Sprungfenster steht. Alle Systeme im grünen Bereich.", 10);
+			TypeText("Ich: Dann los. Leiten Sie die Sequenz ein.", 10);
+			TypeText("", 10);
+
+			// kleiner Sprung-Cinematic
+			ShowJumpCinematic();
+
+			TypeText("Für einen Moment scheint alles zu verstummen. Die Sterne verschwinden, als würde jemand das Universum auslöschen.", 10);
+			TypeText("Nur der Puls meines eigenen Herzens ist noch zu hören.", 10);
+			TypeText("", 10);
+
+			TypeText("Ich: Die Suche hat begonnen.", 10);
+			TypeText("Ich: Kapitel eins endet hier aber unsere Jagd nach der ARGUS hat gerade erst begonnen.", 10);
+			TypeText("", 15);
+
+			// Speicherpunkt nach der Schlacht
+			SaveGame("Scene_AllianzFlottenschlacht_Ende");
+
+			Console.WriteLine();
+			Console.WriteLine("Drücke eine Taste, um Kapitel 1 abzuschließen...");
+			Console.ReadKey(true);
+		}
+		// KURZES CINEMATIC: FLUG DER SCHIFFE + EXPLOSIONEN
+		static void ShowFinalBattleCinematic()
+		{
+			for (int frame = 0; frame < 4; frame++)
+			{
+				Console.Clear();
+
+				// Spielerflotte links
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("  GENESIS        AURORA        VALKYRIE        HORIZON        LANCER");
+				Console.WriteLine();
+
+				string indentPlayer = new string(' ', frame * 2);
+				Console.WriteLine(indentPlayer + "  [=====\\____   [====\\____   [===\\___   [==\\___   [=\\__");
+				Console.WriteLine(indentPlayer + "  ======>>>>>   =====>>>>   ====>>>    ===>>     ==>");
+				Console.ResetColor();
+
+				Console.WriteLine();
+				Console.WriteLine();
+
+				// Allianzflotte rechts
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("                              A-DREAD-1    A-DREAD-2    A-CRUISER-1    A-CRUISER-2    A-FRIG-1");
+				Console.WriteLine();
+
+				string indentEnemy = new string(' ', Math.Max(0, 30 - frame * 2));
+				Console.WriteLine(indentEnemy + "/====\\=============================\\====/");
+				Console.WriteLine(indentEnemy + "██████████████████████████████████████████");
+				Console.WriteLine(indentEnemy + "\\====/=============================\\====/");
+				Console.ResetColor();
+
+				// Kleine Explosionen zwischen den Linien
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine();
+				Console.WriteLine(new string(' ', 25) + "*   *   *");
+				Console.WriteLine(new string(' ', 23 + frame) + "  *  x  *");
+				Console.WriteLine(new string(' ', 27 - frame) + "*   *   *");
+				Console.ResetColor();
+
+				Console.Beep(400 + frame * 80, 100);
+				Thread.Sleep(220);
+			}
+
+			// Abschließende große Explosion rechts
+			AnimateExplosion(false);
+		}
+		// KURZES CINEMATIC: GEBÜNDELTE STRAHLEN
+		static void ShowFocusedVolleyCinematic()
+		{
+			for (int frame = 0; frame < 3; frame++)
+			{
+				Console.Clear();
+
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("Flotte: Bündelung aller Strahlenwaffen...");
+				Console.WriteLine();
+				Console.WriteLine("    ||      ||      ||      ||      ||");
+				Console.WriteLine("    ||      ||      ||      ||      ||");
+				Console.WriteLine("    ||      ||      ||      ||      ||");
+				Console.ResetColor();
+
+				Console.WriteLine();
+
+				Console.ForegroundColor = ConsoleColor.Magenta;
+				string beam = new string('>', 10 + frame * 5);
+				Console.WriteLine("    ||=======" + beam);
+				Console.WriteLine("    ||=======" + beam);
+				Console.WriteLine("    ||=======" + beam);
+				Console.WriteLine("    ||=======" + beam);
+				Console.WriteLine("    ||=======" + beam);
+				Console.ResetColor();
+
+				Console.Beep(900 + frame * 80, 120);
+				Thread.Sleep(200);
+			}
+		}
+		// KURZES CINEMATIC: SPRUNG DER GENESIS
+		static void ShowJumpCinematic()
+		{
+			for (int frame = 0; frame < 4; frame++)
+			{
+				Console.Clear();
+
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.WriteLine("GENESIS: Sprungvorbereitung läuft...");
+				Console.WriteLine();
+
+				string indent = new string(' ', frame * 4);
+				Console.WriteLine(indent + "          _________________________________");
+				Console.WriteLine(indent + "     ____/        GENESIS – SPRUNGKERn       \\__");
+				Console.WriteLine(indent + "  __/   Raum krümmt sich, Licht verzerrt      \\__");
+				Console.WriteLine(indent + " /______________________________________________\\");
+				Console.ResetColor();
+
+				Console.ForegroundColor = ConsoleColor.Blue;
+				Console.WriteLine();
+				Console.WriteLine(indent + "        ((((((( Raumriss baut sich auf )))))))");
+				Console.ResetColor();
+
+				Console.Beep(300 + frame * 150, 150);
+				Thread.Sleep(250);
+			}
+
+			// letzter Frame – kurzer „Stromausfall“
+			Console.Clear();
+			Console.Beep(120, 300);
+			Thread.Sleep(300);
 		}
 	}
 }
-
 		
