@@ -228,8 +228,6 @@ namespace The_Genesis_Projekt
 					break;
 			}
 		}
-
-
 		// KAPITEL-MENü
 
 		static void ChapterSelectMenu()
@@ -244,7 +242,7 @@ namespace The_Genesis_Projekt
 			Console.ForegroundColor = ConsoleColor.White;
 			Console.WriteLine("   1) --Prolog--");
 			Console.WriteLine("   2) --Intro--");
-			Console.WriteLine("   3) --Alarm – Transportsphär--");
+			Console.WriteLine("   3) --Alarm – Transportsphäre--");
 			Console.WriteLine("   4) --Kapitel 1 – Flucht von der Erde--");
 			Console.WriteLine("   5) --Helios-Kontakt--");
 			Console.WriteLine("   6) --Nach Helios-Kampf / Atlanter-Entscheidung--");
