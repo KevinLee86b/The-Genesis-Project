@@ -387,15 +387,15 @@ namespace The_Genesis_Projekt
 			Console.ResetColor();
 
 			TypeText("In einer nicht allzu fernen Zukunft wurde die Menschheit über Generationen in Unwissenheit gehalten.");
-			TypeText("Verschwiegen wurde, dass sie von einer uralten Zivilisation abstammt, den Atlanern.");
+			TypeText("Verschwiegen wurde, dass sie von einer uralten Zivilisation abstammt, den Atlantern.");
 			TypeText("");
 
-			TypeText("Die Atlaner beherrschten Hyperraumtechnologie, Genumformung und planetare Superwaffen.");
+			TypeText("Die Atlanter beherrschten Hyperraumtechnologie, Genumformung und planetare Superwaffen.");
 			TypeText("Ihr Versuch, Unsterblichkeit zu erreichen, erschuf ein Genvírus, das außer Kontrolle geriet.");
 			TypeText("Um seine Ausbreitung zu stoppen, vernichteten sie ihre eigene Welt.");
 			TypeText("");
 
-			TypeText("In der Gegenwart fanden menschliche Machthaber die Eliten, Relikte der Atlaner…");
+			TypeText("In der Gegenwart fanden menschliche Machthaber die Eliten, Relikte der Atlanter…");
 			TypeText("Sie kombinierten das alte Genvírus mit Nanotechnologie und schufen etwas weitaus Schlimmeres.");
 			TypeText("Ihr Plan: Totale Kontrolle über die Menschheit zu erlangen, doch sie scheiterten");
 			TypeText("Der Genvirus und die Nanobots mutierten und entwickelten sich zu einem eigenen Organismus");
@@ -1276,7 +1276,7 @@ namespace The_Genesis_Projekt
 
 			TypeText("Oduro: Captain… unsere Schilde sind schwer beschädigt.");
 			TypeText("Oduro: Die Hülle weist deutliche strukturelle Verluste auf, aber alle Kernsysteme funktionieren stabil.");
-			TypeText("Oduro: Wir können weiterkämpfen – aber nicht unbegrenzt.");
+			TypeText("Oduro: Wir können weiterkämpfen aber nicht unbegrenzt.");
 			TypeText("");
 
 			Console.Beep(500, 300);
@@ -1302,7 +1302,7 @@ namespace The_Genesis_Projekt
 			Thread.Sleep(300);
 
 			TypeText("KADE: Durch die Explosion der HELIOS und die massive Druckwelle…");
-			TypeText("KADE: ...ist unser Kontakt zur Atlaner-Superwaffe auf der Erdoberfläche abgerissen!");
+			TypeText("KADE: ...ist unser Kontakt zur Atlanter-Superwaffe auf der Erdoberfläche abgerissen!");
 			TypeText("");
 
 			TypeText("Commander: Was ist mit dem Countdown?");
@@ -1324,7 +1324,7 @@ namespace The_Genesis_Projekt
 			TypeText("Commander: Optionen?");
 			Thread.Sleep(300);
 
-			Console.WriteLine("1) Verbindung zur Atlaner-Waffe erneut aufbauen");
+			Console.WriteLine("1) Verbindung zur Atlanter-Waffe erneut aufbauen");
 			Console.WriteLine("2) Rückkehr zur Erde, Risiko einer Kontamination");
 			Console.WriteLine("3) Sofortiger Aufbruch zum geplanten Fluchtpunkt");
 			Console.Write("\nAuswahl: ");
@@ -1344,7 +1344,7 @@ namespace The_Genesis_Projekt
 
 				case "3":
 					GameOver(
-						"Der sofortige Aufbruch verhindert, dass die Atlaner-Superwaffe aktiviert wird.\n" +
+						"Der sofortige Aufbruch verhindert, dass die Atlanter-Superwaffe aktiviert wird.\n" +
 						"Der Nanovirus breitet sich ungehindert aus und zerstört jede Zukunft der Menschheit."
 					);
 					return;
@@ -1361,7 +1361,7 @@ namespace The_Genesis_Projekt
 				Console.Clear();
 				SaveGame("Scene_WaffeKontakt");
 
-				TypeText("KADE: Versuche, die Verbindung zur Atlaner-Superwaffe wieder aufzubauen...");
+				TypeText("KADE: Versuche, die Verbindung zur Atlanter-Superwaffe wieder aufzubauen...");
 				Thread.Sleep(700);
 
 				Console.Beep(350, 200);
@@ -1433,7 +1433,7 @@ namespace The_Genesis_Projekt
 
 			TypeText("Brücke – GENESIS");
 			TypeText("");
-			TypeText("KADE: Commander! Neuer Kontakt im Trümmerfeld – schwer bewaffnetes Schiff nähert sich!");
+			TypeText("KADE: Commander! Neuer Kontakt im Trümmerfeld ein schwer bewaffnetes Schiff nähert sich!");
 			TypeText("Oduro: Er ist kleiner als die HELIOS, aber stark gepanzert. Signatur: Ein Zerstörer. Alles sind infiziert…");
 			TypeText("Kade: Er hat sich vermutlich hinter der Helios versteckt.");
 			TypeText("");
@@ -2038,7 +2038,7 @@ namespace The_Genesis_Projekt
 
 			TypeText("KADE: Commander… keine feindlichen Signaturen mehr. Wir haben das Feld bereinigt.", 10);
 			TypeText("Oduro: GENESIS ist schwer beschädigt, aber wir leben noch.", 10);
-			TypeText("Commander: Reparaturteams auf alle Decks. Wir kehren zur Erde zurück – egal, was uns dort erwartet.", 10);
+			TypeText("Commander: Reparaturteams auf alle Decks. Wir kehren zur Erde zurück, egal was uns dort erwartet.", 10);
 			Console.WriteLine();
 			TypeText("Fortsetzung folgt…", 10);
 			Console.ReadKey();
@@ -2359,7 +2359,7 @@ namespace The_Genesis_Projekt
 			TypeText("");
 
 			TypeText("Kade: ARGOS meldet stabile Umlaufbahn über der Erdoberfläche.", 12);
-			TypeText("Kade: Noch immer keine endgültige Bestätigung, ob die Atlaner-Superwaffe ausgelöst wurde oder nicht.", 12);
+			TypeText("Kade: Noch immer keine endgültige Bestätigung, ob die Atlanter-Superwaffe ausgelöst wurde oder nicht.", 12);
 			TypeText("");
 
 			TypeText("Auf dem zentralen Holo tauchen Datenströme auf – Fragmente, Rauschen, vereinzelte klare Signale.", 12);
@@ -6598,8 +6598,10 @@ namespace The_Genesis_Projekt
 			TypeText("Ich atme tief durch und blicke auf die taktische Projektion. Überlappende Schilde, dichte Energieknoten.", 10);
 			TypeText("Ich: Wenn wir ihre Schilde nicht alleine knacken können, dann bündeln wir unsere Waffen.", 10);
 			TypeText("", 10);
+
 			Console.WriteLine("\n Taste drücken...");
 			Console.ReadKey();
+
 			TypeText("Ich öffne den Flotten-Komkanal.", 10);
 			TypeText("Ich: An alle Schiffe des Verbandes EINS: hier der Captain der GENESIS.", 10);
 			TypeText("Ich: Wir gehen auf koordinierte Zielschüsse über. Fokusfeuer auf ihre Schildsysteme.", 10);
@@ -6616,8 +6618,10 @@ namespace The_Genesis_Projekt
 			TypeText("Ich: Übertragen Sie die Koordinaten an alle Schiffe. Live-Feed auf die Zielcomputer.", 10);
 			TypeText("Sensoroffizier: Koordinaten werden an den Verband gesendet, Captain.", 10);
 			TypeText("", 10);
+
 			Console.WriteLine("\n Taste drücken...");
 			Console.ReadKey();
+
 			TypeText("Ich: Waffenoffizier, haben Sie die Zielpunkte?", 10);
 			TypeText("Waffenoffizier: Bestätigt, Captain. Die Energieknoten sind markiert. Alle Strahlenwaffen können synchronisieren.", 10);
 			TypeText("", 10);
@@ -6639,6 +6643,7 @@ namespace The_Genesis_Projekt
 			TypeText("Ich: Dann los.", 10);
 			TypeText("Ich: An alle Schiffe – Feuer!", 10);
 			TypeText("", 10);
+
 			Console.WriteLine("\n Taste drücken...");
 			Console.ReadKey();
 			// Kleines Fokus-Strahlenfeuer als Zwischencinematic
